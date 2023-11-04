@@ -1,4 +1,3 @@
 # Erugo
 
-Todo
-    - this readme
+A roguelike
