@@ -1,4 +1,0 @@
-(executable
- (public_name Erugo)
- (name main)
- (libraries Erugo))
