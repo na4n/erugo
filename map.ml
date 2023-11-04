@@ -1,7 +1,6 @@
 open Random
 
 let get_num = 
-	Random.self_init();
 	5 + (Random.int 10)
 
 let rec display_row n_col start = 
@@ -29,5 +28,7 @@ let create_room =
 	let c = get_num in
 		(display_room c (get_num) c)
 
-let _ = create_room
+let _ = 
+	Random.self_init();
+	create_room
 
