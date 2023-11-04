@@ -5,20 +5,20 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github na4n/erugo))
 
-(authors "Author Name")
+(authors "Nathan Annareddy")
 
-(maintainers "Maintainer Name")
+(maintainers "Nathan Annareddy")
 
-(license LICENSE)
+(license MIT)
 
 (documentation https://url/to/documentation)
 
 (package
  (name Erugo)
- (synopsis "A short synopsis")
- (description "A longer description")
+ (synopsis "A project")
+ (description "This is the project")
  (depends ocaml dune)
  (tags
   (topics "to describe" your project)))
