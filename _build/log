@@ -1,0 +1,5 @@
+# dune init project Erugo
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Workspace root: /home/nate/Documents/repos/erugo
+# Auto-detected concurrency: 8
