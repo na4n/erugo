@@ -1,1 +1,4 @@
-# erugo
+# Erugo
+
+Todo
+    - this readme
