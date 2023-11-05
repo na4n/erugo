@@ -1,6 +1,6 @@
 # Erugo
 - A roguelike written in OCaml
-- <code style="color : red">If you're reading this the project is unfinished</code>
+- If you're reading this the project is unfinished
 
 ## To Do
 1. https://prog21.dadgum.com/23.html
