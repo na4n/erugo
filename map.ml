@@ -1,5 +1,7 @@
 open Random
 
+type room = {row: int; column: int; door: int; next: room option}
+
 let get_num = 
 	Random.self_init();
 	3 + (Random.int 7)
@@ -35,4 +37,4 @@ let display_room n_row n_col = (display_room_aux n_row n_col n_row)
 let _ = 
 	Random.self_init();
 	create_room;
-	print_int get_num *)
+	print_int get_num *)1

@@ -1,9 +1,3 @@
-(*let validate s =
-	match s with
-	| "k" -> None
-	| _ -> Some s
-*)
-
 let inp i =
 	match i with
 	| 1 -> (match (read_line()) with
