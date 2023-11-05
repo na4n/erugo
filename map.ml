@@ -18,18 +18,21 @@ let rec plain n_col start =
 		   print_string " # ";
 		   (plain (n_col-1) start)
 
-let rec display_room n_row n_col first =
+let rec display_room_aux n_row n_col first =
 	match n_row with
 	| 0 -> plain n_col n_col
 	| _ -> if n_row = first then (plain n_col n_col);
 		   display_row n_col n_col;
-		   (display_room (n_row-1) (n_col) (first))
+		   (display_room_aux (n_row-1) (n_col) (first))
 
-let create_room = 
+let display_room n_row n_col = (display_room_aux n_row n_col n_row)
+
+(* let create_room = 
 	let c = 3 + (Random.int 7) in
-		(display_room c (3+ (Random.int 7)) c)
+		(display_room c (3+ (Random.int 7)) c) *)
 
+		(* 
 let _ = 
 	Random.self_init();
 	create_room;
-	print_int get_num
+	print_int get_num *)
