@@ -1,7 +1,8 @@
 open Random
 
 let get_num = 
-	5 + (Random.int 10)
+	Random.self_init();
+	3 + (Random.int 7)
 
 let rec display_row n_col start = 
 	match n_col with
@@ -25,10 +26,10 @@ let rec display_room n_row n_col first =
 		   (display_room (n_row-1) (n_col) (first))
 
 let create_room = 
-	let c = get_num in
-		(display_room c (get_num) c)
+	let c = 3 + (Random.int 7) in
+		(display_room c (3+ (Random.int 7)) c)
 
 let _ = 
 	Random.self_init();
-	create_room
-
+	create_room;
+	print_int get_num
