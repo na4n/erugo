@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/erugo/META"
+  "_build/install/default/lib/erugo/dune-package"
+  "_build/install/default/lib/erugo/opam"
+]
+bin: [
+  "_build/install/default/bin/erugo"
+]

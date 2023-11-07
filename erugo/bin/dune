@@ -1,0 +1,4 @@
+(executable
+ (public_name erugo)
+ (name main)
+ (libraries erugo curses))
