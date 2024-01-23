@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Erugo</title>
+		<link rel="icon" type="image/x-icon" href="static.png">
+		<link rel="stylesheet" href="style.css">
+		<script src="player.js"></script>
+	</head>
+
+	<body>
+		<div class="button-header">
+			<button onclick="printStats()">Player Stats</button>
+			<button onclick="statPrompt()">Train Stats</button>
+			<button onclick="refresh()">Refresh Stats</button>
+		</div>
+		<br>
+		<p id="stats"></p>
+		<script>refresh();</script>
+		<p id="error"></p>
+	</body>
+
+</html>
