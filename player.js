@@ -2,19 +2,26 @@
 const RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
 const STATMAX = 15;
 let trainStat = [0, 0, 0, 0];
+const ERR_SEC = 3;
 
-function wait(seconds) {
-	return new Promise((resolve) => {
-	  setTimeout(() => {
-		resolve('resolved');
-	  }, seconds * 1000);
-	});
+function fadeOut(element) {
+	var opacity = 1;
+	var interval = setInterval(function() {
+		if (opacity > 0) {
+			opacity -= 0.015;
+			element.style.opacity = opacity;
+		} 
+		else {
+			clearInterval(interval);
+			element.innerHTML = "";
+			element.style.opacity = 1;
+		}
+	}, 50);
 }
   
 async function logAndClear(errorMessage) {
 	document.getElementById('error').innerHTML = errorMessage;
-	const result = await wait(3);
-	document.getElementById('error').innerHTML = "";
+	fadeOut(document.getElementById('error'));
 }
 
 function refresh(){
@@ -25,7 +32,6 @@ function refresh(){
 }
 
 function playerStatsString(){
-	//const stat = player_stats();
 	return 'Health: ' + (RNGSTAT[0] + trainStat[0]) +
 	'\nStrength: ' + (RNGSTAT[1] + trainStat[1]) +
 	'\nIntelligence: ' + (RNGSTAT[2] + trainStat[2]) + 

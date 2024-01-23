@@ -5,13 +5,16 @@
 		<link rel="icon" type="image/x-icon" href="static.png">
 		<link rel="stylesheet" href="style.css">
 		<script src="player.js"></script>
+		<script src="main.js"></script>
 	</head>
 
 	<body>
 		<div class="button-header">
-			<button onclick="printStats()">Player Stats</button>
-			<button onclick="statPrompt()">Train Stats</button>
-			<button onclick="refresh()">Refresh Stats</button>
+			<button onclick="incStat(0)">Train Health</button>
+			<button onclick="incStat(1)">Train Strength</button>
+			<button onclick="incStat(2)">Train Intelligence</button>
+			<button onclick="incStat(3)">Train Defense</button>
+			<!-- <button onclick="refresh()">Refresh Stats</button> -->
 		</div>
 		<br>
 		<p id="stats"></p>
