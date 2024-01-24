@@ -1,14 +1,53 @@
-// Game Below
-const RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
-const STATMAX = 15;
-let trainStat = [0, 0, 0, 0];
-const ERR_SEC = 3;
+class Player {
+	constructor(vals){
+		if(vals===undefined){
+			this.RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
+			this.trainStat = [0, 0, 0, 0];	
+		}
+		else{
+			this.RNGSTAT = vals.slice(0, 4);
+			this.trainStat = vals.slice(4, 8);
+		}
+	}
+	retrieveStat(){ return this.RNGSTAT.concat(this.trainStat); }
+	trainAttribute(i){
+		if(this.trainStat[i] < TRAINMAX){
+			this.trainStat[i]++;
+			updateStats();
+			return;
+		}
+		else{
+			logAndClear('Attribute Cannot Increase');
+		}
+		return;	
+	}
+}
+
+let PLAYER = loadPlayer();
+const TRAINMAX = 10;
+
+function updateStats(){
+	CHANGE = 1;
+	const STATS = document.getElementById('stats');
+	
+	if(PLAYER == null){
+		STATS.innerHTML = "";
+		return;
+	}
+	
+	s = 'Health: ' + PLAYER.RNGSTAT[0] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[0] + `</a><br>` + 
+	'Strength: ' + PLAYER.RNGSTAT[1] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[1] + `</a><br>` + 
+	'Intelligence: ' + PLAYER.RNGSTAT[2] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[2] + `</a><br>` + 
+	'Defense: ' + PLAYER.RNGSTAT[3] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[3] + `</a><br>`;
+	
+	STATS.innerHTML = s;
+}
 
 function fadeOut(element) {
 	var opacity = 1;
 	var interval = setInterval(function() {
 		if (opacity > 0) {
-			opacity -= 0.015;
+			opacity -= 0.075;
 			element.style.opacity = opacity;
 		} 
 		else {
@@ -18,62 +57,18 @@ function fadeOut(element) {
 		}
 	}, 50);
 }
-  
+
 async function logAndClear(errorMessage) {
-	document.getElementById('error').innerHTML = errorMessage;
-	fadeOut(document.getElementById('error'));
-}
-
-function refresh(){
-	const pStat = document.getElementById('stats');
-	let s = playerStatsString();
-	s = s.replace(/\n/g, "<br>");
-	pStat.innerHTML = s;
-}
-
-function playerStatsString(){
-	return 'Health: ' + (RNGSTAT[0] + trainStat[0]) +
-	'\nStrength: ' + (RNGSTAT[1] + trainStat[1]) +
-	'\nIntelligence: ' + (RNGSTAT[2] + trainStat[2]) + 
-	'\nDefense: ' + (RNGSTAT[3] + trainStat[3]);
-}
-
-function printStats(){	console.log(playerStatsString()); }
-
-function statPrompt(){
-	let stat = parseInt(prompt("Enter 1-4"));
-	if(isNaN(stat) || stat < 1 || stat > 4){
-		console.log('Enter a valid number');
-		return;
-	}
-
-	incStat(stat-1);
-}
-
-function incStat(i){
-	if((trainStat[i] + RNGSTAT[i] + 1) <= STATMAX){
-		trainStat[i]++;
-		refresh();
-	}
-	else{
-		let text;
-		switch(i){
-			case 0:
-				text = 'healthy';
-				break;
-			case 1:
-				text = 'strong';
-				break;
-			case 2:
-				text = 'smart';
-				break;
-			case 3:
-				text = 'buff';
-				break;
-		}
-
-		logAndClear('you are too ' + text);
+	const errDiv = document.getElementById('error'); 
+	if(errDiv.innerHTML == ""){
+		errDiv.innerHTML = errorMessage;
+		fadeOut(document.getElementById('error'));
 	}
 }
 
-
+function handler(operation, param2){
+	if(operation == 0){
+		PLAYER.trainAttribute(param2);
+		updateStats();
+	}
+}

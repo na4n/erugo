@@ -4,21 +4,31 @@
 		<title>Erugo</title>
 		<link rel="icon" type="image/x-icon" href="static.png">
 		<link rel="stylesheet" href="style.css">
-		<script src="player.js"></script>
 		<script src="main.js"></script>
+		<script src="player.js"></script>
+		<script type="text/javascript">
+			if(CHANGE != 0){
+				window.onbeforeunload = function() {
+					return "Did you save your stuff?"
+				}
+			}
+		</script>
 	</head>
 
 	<body>
+		<button onclick="savePlayer()">Save Player</button>
+		<button onclick="deletePlayer()">Delete Player</button></br></br>
 		<div class="button-header">
-			<button onclick="incStat(0)">Train Health</button>
-			<button onclick="incStat(1)">Train Strength</button>
-			<button onclick="incStat(2)">Train Intelligence</button>
-			<button onclick="incStat(3)">Train Defense</button>
+			<button onclick="handler(0, 0)">Train Health</button>
+			<button onclick="handler(0, 1)">Train Strength</button>
+			<button onclick="handler(0, 2)">Train Intelligence</button>
+			<button onclick="handler(0, 3)">Train Defense</button>
 			<!-- <button onclick="refresh()">Refresh Stats</button> -->
 		</div>
 		<br>
 		<p id="stats"></p>
-		<script>refresh();</script>
+		<script>updateStats()</script>
+
 		<p id="error"></p>
 	</body>
 
