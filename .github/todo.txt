@@ -1,8 +1,11 @@
-1. Box for dungeons
+0. Change Cookies
+	- store player as string --> 
+	- store dungeons as string (non empty areas) --> parse
+
+Connect DB, Login
+-------------------------
+1. use FlexBox for dungeons
 -------------------------
 2. Move error messages to footer
-3. Store attributes as cookie
-	3a. give user option to clear/save
-	3b. rethink stats (mystery + train like EV/IV in pkmn)
 
 

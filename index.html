@@ -7,8 +7,9 @@
 		<script src="main.js"></script>
 		<script src="player.js"></script>
 		<script type="text/javascript">
-			if(CHANGE != 0){
-				window.onbeforeunload = function() {
+			window.onbeforeunload = function() {
+				console.log(CHANGE);
+				if(CHANGE != 0){
 					return "Did you save your stuff?"
 				}
 			}

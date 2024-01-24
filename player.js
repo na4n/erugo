@@ -8,11 +8,14 @@ class Player {
 			this.RNGSTAT = vals.slice(0, 4);
 			this.trainStat = vals.slice(4, 8);
 		}
+		this.currentFloor(0);
 	}
-	retrieveStat(){ return this.RNGSTAT.concat(this.trainStat); }
-	trainAttribute(i){
-		if(this.trainStat[i] < TRAINMAX){
-			this.trainStat[i]++;
+	retrieveStat(){ 
+		return this.RNGSTAT.concat(this.trainStat); 
+	}
+	trainAttribute(attribute){
+		if(this.trainStat[attribute] < TRAINMAX){
+			this.trainStat[attribute]++;
 			updateStats();
 			return;
 		}
@@ -20,6 +23,9 @@ class Player {
 			logAndClear('Attribute Cannot Increase');
 		}
 		return;	
+	}
+	updateFloor(floorNum){
+		this.currentFloor(floorNum);
 	}
 }
 
