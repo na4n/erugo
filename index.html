@@ -6,19 +6,20 @@
 		<link rel="stylesheet" href="style.css">
 		<script src="main.js"></script>
 		<script src="player.js"></script>
+		<script src="dungeon.js"></script>
 		<script type="text/javascript">
-			window.onbeforeunload = function() {
-				console.log(CHANGE);
-				if(CHANGE != 0){
-					return "Did you save your stuff?"
-				}
-			}
+			// window.onbeforeunload = function() {
+			// 	console.log(CHANGE);
+			// 	if(CHANGE != 0){
+			// 		return "Did you save your stuff?"
+			// 	}
+			// }
 		</script>
 	</head>
 
 	<body>
-		<button onclick="savePlayer()">Save Player</button>
-		<button onclick="deletePlayer()">Delete Player</button></br></br>
+		<!-- <button onclick="savePlayer()">Save Player</button>
+		<button onclick="deletePlayer()">Delete Player</button></br></br> -->
 		<div class="button-header">
 			<button onclick="handler(0, 0)">Train Health</button>
 			<button onclick="handler(0, 1)">Train Strength</button>
@@ -27,7 +28,11 @@
 			<!-- <button onclick="refresh()">Refresh Stats</button> -->
 		</div>
 		<br>
-		<p id="stats"></p>
+
+		<div id="dungeon" style="font-family: monospace"></div>
+        <script>displayFloor(FLOOR, true);</script>		
+		
+		<div id="stats"></div>
 		<script>updateStats()</script>
 
 		<p id="error"></p>

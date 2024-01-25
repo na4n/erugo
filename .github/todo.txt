@@ -1,11 +1,21 @@
-0. Change Cookies
+-3. Add mobs
+-------------------------
+-2. Handle RNG for different levels
+-------------------------
+-1. Connect player stats with dungeon
+-------------------------
+0. Use FlexBox for dungeons
+-------------------------
+1. Change Cookies
 	- store player as string --> 
 	- store dungeons as string (non empty areas) --> parse
-
-Connect DB, Login
+	- store by default, won't deal with previous floors just pretend like they can't go back (also prevents overleveling)
 -------------------------
-1. use FlexBox for dungeons
+2. Change player stats mechanics
 -------------------------
-2. Move error messages to footer
-
+3. Add mobs
+------------------------
+4. Move error messages to footer
+-------------------------
+5. Connect DB/external data storage for hall of fame
 

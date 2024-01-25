@@ -8,7 +8,7 @@ class Player {
 			this.RNGSTAT = vals.slice(0, 4);
 			this.trainStat = vals.slice(4, 8);
 		}
-		this.currentFloor(0);
+		this.currentFloor = 0;
 	}
 	retrieveStat(){ 
 		return this.RNGSTAT.concat(this.trainStat); 
