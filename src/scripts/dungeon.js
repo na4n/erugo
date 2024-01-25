@@ -1,18 +1,5 @@
 let ENTITY_LOCATIONS = [];
-
-let FLOOR = generateFloor(0);
-
-// function getFloor(floorNum){
-//     const f = getCookie('floor' + floorNum);
-//     if(f == null){
-//         let genFloor = generateFloor(floorNum);
-//         setCookie('floor' + floorNum, JSON.stringify(genFloor), 400);
-//         return genFloor;
-//     }
-//     else{
-//         return JSON.parse(f);
-//     }
-//}
+let FLOOR = generateFloor(1);
 
 function RNG(){
     return;
@@ -32,17 +19,11 @@ function displayFloor(dungeonArray, color){
             if(dungeonArray[i][j] == '.'){
                 stringRepresentation += "&nbsp;"
             }
-            else if(dungeonArray[i][j] == '@'){
-                    stringRepresentation += '@';
-            }
             else if(dungeonArray[i][j] == '*'){
                 stringRepresentation += '.';
             }
-            else if(dungeonArray[i][j] == '+'){
-                stringRepresentation += '+'
-            }
-            else if(dungeonArray[i][j] == '\\'){
-                stringRepresentation += '\\'
+            else{
+                stringRepresentation += dungeonArray[i][j];
             }
         }
         stringRepresentation += "|<br>";
@@ -52,7 +33,6 @@ function displayFloor(dungeonArray, color){
     }
 
     dungeonDiv.innerHTML = stringRepresentation;
-
 }
 
 function generateLocation(floorDimension){
@@ -69,9 +49,13 @@ function placeObject(dungeon, floorDimension, object){
     ENTITY_LOCATIONS.push(objectLocation);
 }
 
+function randomMob(floorNum){
+    const mob_types = ['%', '>', '~', '^', '&'];
+    return mob_types[Math.floor(Math.random()*(Math.floor(floorNum/2)))];
+}
 
 function generateFloor(floorNum){
-    const floorDimension = [Math.floor(Math.random()*30)+15, Math.floor(Math.random()*30)+15];
+    const floorDimension = [Math.floor(Math.random()*20)+20, Math.floor(Math.random()*20)+20];
     let dungeon = new Array(floorDimension[0]);
     for(let i = 0; i < floorDimension[0]; i++){
         dungeon[i] = new Array(floorDimension[1]);
@@ -82,15 +66,73 @@ function generateFloor(floorNum){
         }
     }
 
-    // mobs, based on floorNum                  ^: bat %: goblin ~: worm 
-    // door to next level
-
     placeObject(dungeon, floorDimension, '+');
     placeObject(dungeon, floorDimension, '@');
     placeObject(dungeon, floorDimension, '\\');
     for(let i = 0; i < 10; i++){
         placeObject(dungeon, floorDimension, '*');
     }
+    for(let i = 0; i < Math.floor((floorNum*3)/2); i++){
+        placeObject(dungeon, floorDimension, randomMob(floorNum));
+    }
 
     return dungeon;
 }
+
+function roughSizeOfObject(object) {
+    const objectList = [];
+    const stack = [object];
+    let bytes = 0;
+  
+    while (stack.length) {
+      const value = stack.pop();
+  
+      switch (typeof value) {
+        case 'boolean':
+          bytes += 4;
+          break;
+        case 'string':
+          bytes += value.length * 2;
+          break;
+        case 'number':
+          bytes += 8;
+          break;
+        case 'object':
+          if (!objectList.includes(value)) {
+            objectList.push(value);
+            for (const prop in value) {
+              if (value.hasOwnProperty(prop)) {
+                stack.push(value[prop]);
+              }
+            }
+          }
+          break;
+      }
+    }
+  
+    return bytes;
+}
+
+// TESTING
+
+
+// function generateMAXArray(){
+//     const arr = new Array(40);
+//     for(let i = 0; i < arr.length; i++){
+//         arr[i] = new Array(40);
+//         for(let j = 0; j < arr[i].length; j++){
+//             arr[i][j] = '@';
+//         }
+//     }
+//     return arr;
+// }
+
+// // Encode array into a string
+// function encodeArray(arr) {
+//     return arr.join(',');
+// }
+
+// // Decode string back into an array
+// function decodeString(encodedString) {
+//     return encodedString.split(',');
+// }

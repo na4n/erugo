@@ -10,26 +10,27 @@ class Player {
 		}
 		this.currentFloor = 0;
 	}
-	retrieveStat(){ 
-		return this.RNGSTAT.concat(this.trainStat); 
-	}
-	trainAttribute(attribute){
-		if(this.trainStat[attribute] < TRAINMAX){
-			this.trainStat[attribute]++;
-			updateStats();
+	getRNGStat(){ return this.RNGSTAT; }
+	getTrainStat(){ return this.trainStat; }
+	setTrainStat(attribute){
+		if(typeof(attribute) != Number || attribute < 0 || attribute >= 4){
 			return;
 		}
-		else{
-			logAndClear('Attribute Cannot Increase');
+		else if(this.trainStat[attribute] >= TRAINMAX){
+			logAndClear('Attribtue Cannot Increase');
+			return;
 		}
-		return;	
+
+		this.trainStat[attribute]++;
+		updateStats();
+		return;
 	}
-	updateFloor(floorNum){
-		this.currentFloor(floorNum);
-	}
+	getFloorNumber(){ return this.currentFloor; }
+	setFloorNumber(floorNum){ this.currentFloor = floorNum; }
+
 }
 
-let PLAYER = loadPlayer();
+let PLAYER = new Player();
 const TRAINMAX = 10;
 
 function updateStats(){
