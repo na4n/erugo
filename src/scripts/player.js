@@ -3,7 +3,7 @@ class Player {
 		if(jsonPlayer===undefined){
 			this.RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
 			this.trainStat = [0, 0, 0, 0];	
-			this.currentFloor = 0;
+			this.currentFloor = 1;
 		}
 		else{
 			const jsonObject = JSON.parse(jsonPlayer);
@@ -42,7 +42,9 @@ const TRAINMAX = 10;
 
 function getPlayer(){
 	if(localStorage.getItem('PLAYER') == null){
-		return new Player();
+		const newPlayer = new Player();
+		localStorage.setItem('PLAYER', JSON.stringify(newPlayer));
+		return newPlayer;
 	}
 	else{
 		return new Player(localStorage.getItem('PLAYER'));
@@ -51,7 +53,6 @@ function getPlayer(){
 }
 
 function updateStats(PLAYER){
-	CHANGE = 1;
 	const STATS = document.getElementById('stats');
 	
 	if(PLAYER == null){

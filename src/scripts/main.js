@@ -22,3 +22,10 @@ function getCookie(name) {
 function deleteCookie(name) {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
+
+function reset(){
+	localStorage.removeItem('FLOOR');
+	localStorage.removeItem('PLAYER');
+	updateStats(getPlayer());
+	displayFloor(getFloor());
+}

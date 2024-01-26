@@ -2,7 +2,9 @@ let ENTITY_LOCATIONS = [];
 
 function getFloor(){
 	if(localStorage.getItem('FLOOR') == null){
-		return generateFloor(1);
+		const newFloor = generateFloor(1);
+		localStorage.setItem('FLOOR', JSON.stringify(newFloor));
+		return newFloor;
 	}
 	else{
 		return JSON.parse(localStorage.getItem('FLOOR'));
