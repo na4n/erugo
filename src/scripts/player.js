@@ -4,6 +4,7 @@ class Player {
 			this.RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
 			this.trainStat = [0, 0, 0, 0];	
 			this.currentFloor = 1;
+			this.gold = 0;
 		}
 		else{
 			const jsonObject = JSON.parse(jsonPlayer);
@@ -11,6 +12,7 @@ class Player {
 			this.RNGSTAT = jsonObject.RNGSTAT;
 			this.trainStat = jsonObject.trainStat;
 			this.currentFloor = jsonObject.currentFloor;
+			this.gold = jsonObject.gold;
 		}
 	}
 	
@@ -31,6 +33,8 @@ class Player {
 	}
 	getFloorNumber(){ return this.currentFloor; }
 	setFloorNumber(floorNum){ this.currentFloor = floorNum; }
+	getGold(){ return this.gold; }
+	increaseGold(){ this.gold++; }
 	
 	playerString(){
 		return "yay: " + this.getRNGStat() + this.getTrainStat() + this.getFloorNumber();
@@ -39,17 +43,24 @@ class Player {
 }
 
 const TRAINMAX = 10;
+let PLAYER;
 
 function getPlayer(){
-	if(localStorage.getItem('PLAYER') == null){
-		const newPlayer = new Player();
-		localStorage.setItem('PLAYER', JSON.stringify(newPlayer));
-		return newPlayer;
+	if(PLAYER == null){
+		if(localStorage.getItem('PLAYER') == null){
+			const newPlayer = new Player();
+			localStorage.setItem('PLAYER', JSON.stringify(newPlayer));
+			PLAYER = newPlayer;
+			return newPlayer;
+		}
+		else{
+			PLAYER = new Player(localStorage.getItem('PLAYER'));
+			return PLAYER;
+		}
 	}
 	else{
-		return new Player(localStorage.getItem('PLAYER'));
+		return PLAYER;
 	}
-	
 }
 
 function updateStats(PLAYER){

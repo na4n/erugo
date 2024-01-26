@@ -1,13 +1,17 @@
-let ENTITY_LOCATIONS = [];
+let BLOCKING_ENTITY_LOCATIONS = [];
+let GOLD_LOCATIONS = [];
 let FLOOR;
 
-function loadDungeon(){	//populate DUNGEON and ENTITY_LOCATIONS
+function loadDungeon(){	//populate DUNGEON and BLOCKING_ENTITY_LOCATIONS
 	floor = getFloor();
 	
 	for(let i = 0; i < floor.length; i++){
 		for(let j = 0; j < floor[0].length; j++){
-			if(floor[i][j] != '.'){
-				ENTITY_LOCATIONS.push([i, j]);
+			if(floor[i][j] != '.' && floor[i][j] != '*'){
+				BLOCKING_ENTITY_LOCATIONS.push([i, j]);
+			}
+			else if(floor[i][j] == '*'){
+				GOLD_LOCATIONS.push([i, j]);
 			}
 		}
 	}
@@ -16,7 +20,6 @@ function loadDungeon(){	//populate DUNGEON and ENTITY_LOCATIONS
 }
 
 function getEntityLocation(floor, entity){ //gets row and column of a dungeon entity
-	//console.log(floor);
 	for(let i = 0; i < floor.length; i++){
 		for(let j = 0; j < floor[0].length; j++){
 			if(floor[i][j] == entity){
@@ -28,50 +31,53 @@ function getEntityLocation(floor, entity){ //gets row and column of a dungeon en
 	return [-1, -1];
 }
 
-function locationContainsBlockingEntity(dungeon, loc){
-	for(let i = 0; i < ENTITY_LOCATIONS.length; i++){
-		if(ENTITY_LOCATIONS[i][0] == loc[0] && ENTITY_LOCATIONS[i][1] == loc[1] && dungeon[loc[0]][loc[1]] != '*'){
-			return true;
+function locationIsEntityLocation(dungeon, entityLocations, loc){
+	for(let i = 0; i < entityLocations.length; i++){
+		if(entityLocations[i][0] == loc[0] && entityLocations[i][1] == loc[1]){
+			return i;
 		}
 	}
 	
-	return false;
+	return -1;
 }
 
 function moveCharacter(dungeon, keyPress){ //moves character
 	const playerLocation = getEntityLocation(dungeon, '@');
+	let nextLocation;
 	switch(keyPress){
 		case "ArrowUp":
-			if(playerLocation[0]-1 >= 0 && !locationContainsBlockingEntity(dungeon, [playerLocation[0]-1, playerLocation[1]])){
-				dungeon[playerLocation[0]-1][playerLocation[1]] = '@';
-				dungeon[playerLocation[0]][playerLocation[1]] = '.';
-				return 0;
-			}
-			return 1;
+			nextLocation = [playerLocation[0]-1, playerLocation[1]];
+			break;
 		case "ArrowDown":
-			if(playerLocation[0]+1 < dungeon.length && !locationContainsBlockingEntity(dungeon, [playerLocation[0]+1, playerLocation[1]])){
-				dungeon[playerLocation[0]+1][playerLocation[1]] = '@';
-				dungeon[playerLocation[0]][playerLocation[1]] = '.';
-				return 0;
-			}
-			return 1;
+			nextLocation = [playerLocation[0]+1, playerLocation[1]];
 			break;
 		case "ArrowLeft":
-			if(playerLocation[1]-1 >= 0 && !locationContainsBlockingEntity(dungeon, [playerLocation[0], playerLocation[1]-1])){
-				dungeon[playerLocation[0]][playerLocation[1]-1] = '@';
-				dungeon[playerLocation[0]][playerLocation[1]] = '.';
-				return 0;
-			}
-			return 1;
+			nextLocation = [playerLocation[0], playerLocation[1]-1];
 			break;
 		case "ArrowRight":
-			if(playerLocation[1]+1 < dungeon[0].length && !locationContainsBlockingEntity(dungeon, [playerLocation[0], playerLocation[1]+1])){
-				dungeon[playerLocation[0]][playerLocation[1]+1] = '@';
-				dungeon[playerLocation[0]][playerLocation[1]] = '.';
-				return 0;
-			}
-			return 1;
+			nextLocation = [playerLocation[0], playerLocation[1]+1];
 			break;
+		default:
+			nextLocation = null;	
+	}
+	
+	if(nextLocation == null){
+		return 1;
+	}
+	
+	if(nextLocation[0] >= 0 && nextLocation[0] < dungeon.length &&
+	   nextLocation[1] >= 0 && nextLocation[1] < dungeon[0].length &&
+	   locationIsEntityLocation(dungeon, BLOCKING_ENTITY_LOCATIONS, [nextLocation[0], nextLocation[1]]) == -1){
+		
+		dungeon[nextLocation[0]][nextLocation[1]] = '@';
+		dungeon[playerLocation[0]][playerLocation[1]] = '.';
+		
+		if(locationIsEntityLocation(dungeon, GOLD_LOCATIONS, [nextLocation[0], nextLocation[1]]) != -1){
+			getPlayer().increaseGold();
+			GOLD_LOCATIONS.splice(locationIsEntityLocation(dungeon, GOLD_LOCATIONS, [nextLocation[0], nextLocation[1]]), 1);
+		}
+	
+		return 0;
 	}
 	
 	return 1;
@@ -81,7 +87,8 @@ function keyHandler(keyPress){//maps key presses to actions
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
 		const floor = getFloor();
 		moveCharacter(floor, keyPress);
-		displayFloor(floor);
+		FLOOR = floor;
+		displayFloor(getFloor());
 	}
 	
 	return;
@@ -142,10 +149,10 @@ function generateFloor(floorNum){ //creates a floor
 		let objectLocation;
 		do{
 			objectLocation = generateLocation(floorDimension);
-		} while(ENTITY_LOCATIONS.includes(objectLocation));
+		} while(BLOCKING_ENTITY_LOCATIONS.includes(objectLocation));
 
 		dungeon[objectLocation[0]][objectLocation[1]] = object;
-		ENTITY_LOCATIONS.push(objectLocation);
+		BLOCKING_ENTITY_LOCATIONS.push(objectLocation);
 	}
 
 	function randomMob(floorNum){
