@@ -7,25 +7,15 @@
 		<script src="src/scripts/main.js"></script>
 		<script src="src/scripts/player.js"></script>
 		<script src="src/scripts/dungeon.js"></script>
-		<script type="text/javascript">
-			// window.onbeforeunload = function() {
-			// 	console.log(CHANGE);
-			// 	if(CHANGE != 0){
-			// 		return "Did you save your stuff?"
-			// 	}
-			// }
-		</script>
+		<script src="src/scripts/db.js"></script>
 	</head>
 
 	<body>
-		<!-- <button onclick="savePlayer()">Save Player</button>
-		<button onclick="deletePlayer()">Delete Player</button></br></br> -->
 		<div class="button-header">
 			<button onclick="handler(0, 0)">Train Health</button>
 			<button onclick="handler(0, 1)">Train Strength</button>
 			<button onclick="handler(0, 2)">Train Intelligence</button>
 			<button onclick="handler(0, 3)">Train Defense</button>
-			<!-- <button onclick="refresh()">Refresh Stats</button> -->
 		</div>
 		<br>
 
@@ -35,7 +25,7 @@
 		<div id="stats"></div>
 		<script>updateStats()</script>
 
-		<p id="error"></p>
+		<div id="error"></div>
 	</body>
 
 </html>
