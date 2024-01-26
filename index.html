@@ -4,9 +4,10 @@
 		<title>Erugo</title>
 		<link rel="icon" type="image/x-icon" href="static/wiz.png">
 		<link rel="stylesheet" href="src/style/style.css">
-		<script src="src/scripts/main.js"></script>
 		<script src="src/scripts/player.js"></script>
 		<script src="src/scripts/dungeon.js"></script>
+		<script src="src/scripts/main.js"></script>
+		<script src="src/scripts/key.js"></script>
 	</head>
 
 	<body>
@@ -18,9 +19,11 @@
 		</div>
 		<br> --->
 		
-		<button onclick="reset()">Reset Game</button><br><br>
+		<button onclick="reset()">Reset Game</button>
+		<button onclick="save()">Save Game</button><br><br>
 		
 		<div id="level">Level: </div>
+
 		<script>
 			let levelDiv = document.getElementById('level');
 			console.log(levelDiv.innerHTML);
@@ -30,14 +33,17 @@
 		<div id="dungeon" style="font-family: monospace; text-align: center"></div>
         <script>
 			displayFloor(getFloor(), true);
-		</script>		
+			loadDungeon(getFloor());
+		</script>
+		<div id="error" style="text-align:center"></div>
+		
 		
 		<div id="stats"></div>
 		<script>
 			updateStats(getPlayer());
+			clickListen();
 		</script>
 
-		<div id="error"></div>
 	</body>
 
 </html>
