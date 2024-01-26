@@ -23,8 +23,6 @@ function addData(playerData, floorData){
 	};
 
 	request.onsuccess = function () {
-		console.log("Database opened successfully");
-
 		const db = request.result;
 		const transaction = db.transaction("user", "readwrite");
 		const store = transaction.objectStore('user');
@@ -34,6 +32,8 @@ function addData(playerData, floorData){
 }
 
 function getData(){
+	return new Promise (function(resolve){
+	
 	const indexedDB =
 	window.indexedDB ||
 	window.mozIndexedDB ||
@@ -58,17 +58,25 @@ function getData(){
 	};
 
 	request.onsuccess = function () {
-		console.log("Database opened successfully");
-
 		const db = request.result;
 		const transaction = db.transaction("user", "readwrite");
 		const store = transaction.objectStore('user');
 		
 		const result = store.get(1);
 		result.onsuccess = function(){
-			console.log(result.result);
+			if(result.result == null){
+				console.log('no values so set localStorage values');
+				localStorage.setItem('PLAYER', JSON.stringify(new Player()));
+				localStorage.setItem('FLOOR', JSON.stringify(generateFloor(1)));
+			}
+			else{
+				localStorage.setItem('PLAYER', result.result.player);
+				localStorage.setItem('FLOOR', result.result.floor);
+			}
 		}
 	};
+	
+	});
 }
 
 function deleteData(){
@@ -96,8 +104,6 @@ function deleteData(){
 	};
 
 	request.onsuccess = function () {
-		console.log("Database opened successfully");
-
 		const db = request.result;
 		const transaction = db.transaction("user", "readwrite");
 		const store = transaction.objectStore('user');

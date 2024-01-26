@@ -1,15 +1,19 @@
 class Player {
-	constructor(vals){
-		if(vals===undefined){
+	constructor(jsonPlayer){
+		if(jsonPlayer===undefined){
 			this.RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
 			this.trainStat = [0, 0, 0, 0];	
+			this.currentFloor = 0;
 		}
 		else{
-			this.RNGSTAT = vals.slice(0, 4);
-			this.trainStat = vals.slice(4, 8);
+			const jsonObject = JSON.parse(jsonPlayer);
+
+			this.RNGSTAT = jsonObject.RNGSTAT;
+			this.trainStat = jsonObject.trainStat;
+			this.currentFloor = jsonObject.currentFloor;
 		}
-		this.currentFloor = 0;
 	}
+	
 	getRNGStat(){ return this.RNGSTAT; }
 	getTrainStat(){ return this.trainStat; }
 	setTrainStat(attribute){
@@ -27,13 +31,26 @@ class Player {
 	}
 	getFloorNumber(){ return this.currentFloor; }
 	setFloorNumber(floorNum){ this.currentFloor = floorNum; }
+	
+	playerString(){
+		return "yay: " + this.getRNGStat() + this.getTrainStat() + this.getFloorNumber();
+	}
 
 }
 
-let PLAYER = new Player();
 const TRAINMAX = 10;
 
-function updateStats(){
+function getPlayer(){
+	if(localStorage.getItem('PLAYER') == null){
+		return new Player();
+	}
+	else{
+		return new Player(localStorage.getItem('PLAYER'));
+	}
+	
+}
+
+function updateStats(PLAYER){
 	CHANGE = 1;
 	const STATS = document.getElementById('stats');
 	

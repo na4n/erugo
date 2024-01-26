@@ -7,7 +7,6 @@
 		<script src="src/scripts/main.js"></script>
 		<script src="src/scripts/player.js"></script>
 		<script src="src/scripts/dungeon.js"></script>
-		<script src="src/scripts/db.js"></script>
 	</head>
 
 	<body>
@@ -20,10 +19,14 @@
 		<br>
 
 		<div id="dungeon" style="font-family: monospace"></div>
-        <script>displayFloor(FLOOR, true);</script>		
+        <script>
+			displayFloor(getFloor(), true);
+		</script>		
 		
 		<div id="stats"></div>
-		<script>updateStats()</script>
+		<script>
+			updateStats(getPlayer());
+		</script>
 
 		<div id="error"></div>
 	</body>

@@ -1,5 +1,13 @@
 let ENTITY_LOCATIONS = [];
-let FLOOR = generateFloor(1);
+
+function getFloor(){
+	if(localStorage.getItem('FLOOR') == null){
+		return generateFloor(1);
+	}
+	else{
+		return JSON.parse(localStorage.getItem('FLOOR'));
+	}
+}
 
 function RNG(){
     return;
