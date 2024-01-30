@@ -24,14 +24,11 @@ function deleteCookie(name) {
 }
 
 function reset(){
-	localStorage.removeItem('FLOOR');
-	localStorage.removeItem('PLAYER');
-	FLOOR = null;
-	updateStats(getPlayer());
-	displayFloor(getFloor());
+	localStorage.clear();
+	location.reload();
 }
 
 function save(){
-	localStorage.setItem('FLOOR', JSON.stringify(FLOOR));
-	localStorage.setItem('PLAYER', JSON.stringify(getPlayer()));
+	saveData();
+	savePlayer();
 }

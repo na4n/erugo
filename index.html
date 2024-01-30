@@ -26,23 +26,22 @@
 
 		<script>
 			let levelDiv = document.getElementById('level');
-			console.log(levelDiv.innerHTML);
 			levelDiv.innerHTML += getPlayer().getFloorNumber();
 		</script>
 
-		<div id="dungeon" style="font-family: monospace; text-align: center"></div>
-        <script>
-			displayFloor(getFloor(), true);
-			loadDungeon(getFloor());
-		</script>
+		<div id="dungeon">
+			<script>
+				dungeonInit();
+			</script>
+		</div>
+
 		<div id="error" style="text-align:center"></div>
-		
-		
-		<div id="stats"></div>
-		<script>
-			updateStats(getPlayer());
-			clickListen();
-		</script>
+		<div id="stats">
+			<script>
+				updateStats(getPlayer());
+				clickListen();
+			</script>
+		</div>
 
 	</body>
 

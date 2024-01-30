@@ -1,7 +1,28 @@
-
-.button-header {
-    display: flex;
-    flex-direction: ltr;
-    flex-wrap: wrap;
+#dungeon {
+	font-family: monospace; 
+	!border: 1px solid #ccc; 
+	position: relative;
+	margin: auto;
+	height: fit-content; 
+	width: fit-content;
 }
 
+#fafentity-layer {
+    float:left;
+    !background-color: #F00;
+    !display: inline-block;
+    !height: 10px;
+    position: absolute;
+    !width: 200px;
+    !top: 0px;
+	!top: 15.333343505859375px; 
+	!left: 7.149993896484375px;
+}
+
+#test-entity{
+	top: 46.000030517578125px; 
+	left: 21.449981689453125px;
+	position: absolute;
+	float: left;
+	color: #f00;
+}

@@ -1,48 +1,68 @@
-let BLOCKING_ENTITY_LOCATIONS = [];
-let GOLD_LOCATIONS = [];
-let FLOOR;
+let LOCATIONS;
+let FLOORDIMENSION;
 
-function loadDungeon(){	//populate DUNGEON and BLOCKING_ENTITY_LOCATIONS
-	floor = getFloor();
+const CHARHEIGHT = 15.333343505859375;
+const CHARWIDTH = 7.149993896484375;
+
+function displayEntity(character, row, column){
+	const topPx = "" + CHARHEIGHT * (1+row) + "px";
+	const leftPx = "" + CHARWIDTH * (1+column) + "px";
 	
-	for(let i = 0; i < floor.length; i++){
-		for(let j = 0; j < floor[0].length; j++){
-			if(floor[i][j] != '.' && floor[i][j] != '*'){
-				BLOCKING_ENTITY_LOCATIONS.push([i, j]);
-			}
-			else if(floor[i][j] == '*'){
-				GOLD_LOCATIONS.push([i, j]);
-			}
-		}
-	}
-	
-	FLOOR = floor;
+	const d = document.getElementById('dungeon');
+	const addDiv = '<div id="entity"style=float:left;position:absolute;left:' + leftPx + ';top:' + topPx + ';>' + character + '</div>';
+
+	d.innerHTML = addDiv + d.innerHTML;
+	return addDiv;
 }
 
-function getEntityLocation(floor, entity){ //gets row and column of a dungeon entity
-	for(let i = 0; i < floor.length; i++){
-		for(let j = 0; j < floor[0].length; j++){
-			if(floor[i][j] == entity){
-				return [i, j];
-			}	
-		}
+function displayAllEntities(locations){
+	if(locations == null){
+		locations = LOCATIONS;
+	}
+	document.getElementById('dungeon').innerHTML = dungeonBackground(FLOORDIMENSION);
+	for(let i = 0; i < locations.length; i++){
+		displayEntity(locations[i].ch, locations[i].loc[0], locations[i].loc[1]);
 	}
 	
-	return [-1, -1];
+	return;
 }
 
-function locationIsEntityLocation(dungeon, entityLocations, loc){
-	for(let i = 0; i < entityLocations.length; i++){
-		if(entityLocations[i][0] == loc[0] && entityLocations[i][1] == loc[1]){
-			return i;
+function getLocationOfEntity(entityCharacter){
+	for(let i = 0; i < LOCATIONS.length; i++){
+		if(LOCATIONS[i].ch == entityCharacter){
+			return LOCATIONS[i].loc;
+		}
+	}
+	return null;
+}
+
+function getEntityAtLocation(loc){
+	for(let i = 0; i < LOCATIONS.length; i++){
+		if(LOCATIONS[i].loc[0] == loc[0] && LOCATIONS[i].loc[1] == loc[1]){
+			return LOCATIONS[i].ch;
 		}
 	}
 	
-	return -1;
+	return null;
+}
+
+function updateEntity(loc, newLoc){
+	for(let i = 0; i < LOCATIONS.length; i++){
+		if(LOCATIONS[i].loc[0] == loc[0] && LOCATIONS[i].loc[1] == loc[1]){
+			LOCATIONS[i].loc[0] = newLoc[0];
+			LOCATIONS[i].loc[1] = newLoc[1];
+		}
+	}
+	
+	return null;
 }
 
 function moveCharacter(dungeon, keyPress){ //moves character
-	const playerLocation = getEntityLocation(dungeon, '@');
+	const playerLocation = getLocationOfEntity('@');
+	if(playerLocation == null){
+		return 1;
+	}
+	
 	let nextLocation;
 	switch(keyPress){
 		case "ArrowUp":
@@ -58,25 +78,19 @@ function moveCharacter(dungeon, keyPress){ //moves character
 			nextLocation = [playerLocation[0], playerLocation[1]+1];
 			break;
 		default:
-			nextLocation = null;	
+			return 1;
 	}
 	
-	if(nextLocation == null){
-		return 1;
-	}
-	
-	if(nextLocation[0] >= 0 && nextLocation[0] < dungeon.length &&
-	   nextLocation[1] >= 0 && nextLocation[1] < dungeon[0].length &&
-	   locationIsEntityLocation(dungeon, BLOCKING_ENTITY_LOCATIONS, [nextLocation[0], nextLocation[1]]) == -1){
-		
-		dungeon[nextLocation[0]][nextLocation[1]] = '@';
+	if(getEntityAtLocation(nextLocation) == null || getEntityAtLocation(nextLocation) == '*'){
+		updateEntity(playerLocation, nextLocation);
+/*		dungeon[nextLocation[0]][nextLocation[1]] = '@';
 		dungeon[playerLocation[0]][playerLocation[1]] = '.';
 		
 		if(locationIsEntityLocation(dungeon, GOLD_LOCATIONS, [nextLocation[0], nextLocation[1]]) != -1){
 			getPlayer().increaseGold();
 			GOLD_LOCATIONS.splice(locationIsEntityLocation(dungeon, GOLD_LOCATIONS, [nextLocation[0], nextLocation[1]]), 1);
 		}
-	
+	*/
 		return 0;
 	}
 	
@@ -85,74 +99,60 @@ function moveCharacter(dungeon, keyPress){ //moves character
 
 function keyHandler(keyPress){//maps key presses to actions
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
-		const floor = getFloor();
-		moveCharacter(floor, keyPress);
-		FLOOR = floor;
-		displayFloor(getFloor());
+		//const floor = getFloor();
+		moveCharacter(null, keyPress);
+		displayAllEntities();
+		//FLOOR = floor;
+		//displayFloor(getFloor());
 	}
 	
 	return;
 }
 
-function getFloor(){ //checks FLOOR, and localStorage for dungeon
-	if(FLOOR == null){
-		if(localStorage.getItem('FLOOR') == null){
-			const newFloor = generateFloor(1);
-			localStorage.setItem('FLOOR', JSON.stringify(newFloor));
-			return newFloor;
-		}
-		else{
-			return JSON.parse(localStorage.getItem('FLOOR'));
-		}
-	}
-	else{
-		return FLOOR;
-	}
-}
-
-function displayFloor(dungeonArray, color){ //outputsFloor
-    const dungeonDiv = document.getElementById('dungeon');
+function dungeonBackground(dungeonDimension){ //outputsFloor
     stringRepresentation = "";
 
-    for(let j = 0; j < dungeonArray[0].length+2; j++){
+    for(let j = 0; j < dungeonDimension[1]+2; j++){
         stringRepresentation += "-";
     }
     stringRepresentation += "<br>";
-    for(let i = 0; i < dungeonArray.length; i++){
+    for(let i = 0; i < dungeonDimension[0]; i++){
         stringRepresentation += "|";
-        for(let j = 0; j < dungeonArray[i].length; j++){
-            if(dungeonArray[i][j] == '.'){
-                stringRepresentation += "&nbsp;"
-            }
-            else if(dungeonArray[i][j] == '*'){
-                stringRepresentation += '.';
-            }
-            else{
-                stringRepresentation += dungeonArray[i][j];
-            }
+        for(let j = 0; j < dungeonDimension[1]; j++){
+            stringRepresentation += "&nbsp;"
         }
         stringRepresentation += "|<br>";
     }
-    for(let j = 0; j < dungeonArray[0].length+2; j++){
+    for(let j = 0; j < dungeonDimension[1]+2; j++){
         stringRepresentation += "-";
     }
 
-    dungeonDiv.innerHTML = stringRepresentation;
+    return stringRepresentation;
 }
 
 function generateFloor(floorNum){ //creates a floor
+	const ENTITY_LOCATIONS = [];
+	
 	function generateLocation(floorDimension){
 		return [Math.floor(Math.random()*floorDimension[0]), Math.floor(Math.random()*floorDimension[1])];
 	}
 
-	function placeObject(dungeon, floorDimension, object){
+	function entityLocationIncludes(location){
+		for(let i = 0; i < ENTITY_LOCATIONS.length; i++){
+			if(ENTITY_LOCATIONS[i].loc[0] == location[0] && ENTITY_LOCATIONS[i].loc[1] == location[1]){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function placeObject(floorDimension, object){
 		let objectLocation;
 		do{
 			objectLocation = generateLocation(floorDimension);
-		} while(BLOCKING_ENTITY_LOCATIONS.includes(objectLocation));
+		} while(entityLocationIncludes(objectLocation));
 
-		dungeon[objectLocation[0]][objectLocation[1]] = object;
-		BLOCKING_ENTITY_LOCATIONS.push(objectLocation);
+		ENTITY_LOCATIONS.push({ch: object, loc: objectLocation});
 	}
 
 	function randomMob(floorNum){
@@ -160,27 +160,52 @@ function generateFloor(floorNum){ //creates a floor
 		return mob_types[Math.floor(Math.random()*(Math.floor(floorNum/2)))];
 	}
 	
-	
     const floorDimension = [Math.floor(Math.random()*20)+20, Math.floor(Math.random()*20)+20];
-    let dungeon = new Array(floorDimension[0]);
-    for(let i = 0; i < floorDimension[0]; i++){
-        dungeon[i] = new Array(floorDimension[1]);
-    }
-    for(let i = 0; i < floorDimension[0]; i++){
-        for(let j = 0; j < floorDimension[1]; j++){
-            dungeon[i][j] = '.';
-        }
-    }
-
-    placeObject(dungeon, floorDimension, '+');
-    placeObject(dungeon, floorDimension, '@');
-    placeObject(dungeon, floorDimension, '\\');
+    placeObject(floorDimension, '+');
+    placeObject(floorDimension, '@');
+    placeObject(floorDimension, '\\');
     for(let i = 0; i < 10; i++){
-        placeObject(dungeon, floorDimension, '*');
+        placeObject(floorDimension, '*');
     }
     for(let i = 0; i < Math.floor((floorNum*3)/2); i++){
-        placeObject(dungeon, floorDimension, randomMob(floorNum));
+        placeObject(floorDimension, randomMob(floorNum));
     }
 
-    return dungeon;
+	LOCATIONS = ENTITY_LOCATIONS;
+	FLOORDIMENSION = floorDimension;
+    return;
+}
+
+function saveData(){
+	if(LOCATIONS != null && FLOORDIMENSION != null){
+		localStorage.setItem('loc', JSON.stringify(LOCATIONS));
+		localStorage.setItem('fd', JSON.stringify(FLOORDIMENSION));
+	}
+	
+	return;
+}
+
+function dungeonInit(){
+	function getData(){
+		if(localStorage.getItem('fd') != null && localStorage.getItem('loc') != null){
+			FLOORDIMENSION = JSON.parse(localStorage.getItem('fd'));
+			LOCATIONS = JSON.parse(localStorage.getItem('loc'));
+			return true;
+		}	
+		
+		return false;
+	}
+	
+	if(!getData()){
+		generateFloor(1);
+		saveData();
+		console.info('new floor created');
+	}
+	const dungeonDiv = document.getElementById('dungeon');
+	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
+	//for(let i = 0; i < LOCATIONS.length; i++){
+	//	displayEntity(LOCATIONS[i].ch, LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]);
+	//}
+	displayAllEntities();
+	return;
 }
