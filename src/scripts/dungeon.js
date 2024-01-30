@@ -8,10 +8,11 @@ function displayEntity(character, row, column){
 	const topPx = "" + CHARHEIGHT * (1+row) + "px";
 	const leftPx = "" + CHARWIDTH * (1+column) + "px";
 	
-	const d = document.getElementById('dungeon');
+	const d = document.getElementById('entity-layer');
 	const addDiv = '<div id="entity"style=float:left;position:absolute;left:' + leftPx + ';top:' + topPx + ';>' + character + '</div>';
-
-	d.innerHTML = addDiv + d.innerHTML;
+	
+	d.insertAdjacentHTML('beforeend', addDiv);
+	
 	return addDiv;
 }
 
@@ -19,7 +20,8 @@ function displayAllEntities(locations){
 	if(locations == null){
 		locations = LOCATIONS;
 	}
-	document.getElementById('dungeon').innerHTML = dungeonBackground(FLOORDIMENSION);
+
+	document.getElementById('entity-layer').innerHTML = "";
 	for(let i = 0; i < locations.length; i++){
 		displayEntity(locations[i].ch, locations[i].loc[0], locations[i].loc[1]);
 	}
@@ -202,10 +204,13 @@ function dungeonInit(){
 		console.info('new floor created');
 	}
 	const dungeonDiv = document.getElementById('dungeon');
-	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
+	//dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true) + dungeonDiv.innerHTML;
 	//for(let i = 0; i < LOCATIONS.length; i++){
 	//	displayEntity(LOCATIONS[i].ch, LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]);
 	//}
-	displayAllEntities();
+	//displayAllEntities();
+	
+	dungeonDiv.insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));
+	
 	return;
 }
