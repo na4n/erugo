@@ -1,3 +1,5 @@
+let mode = 0;
+
 function fadeOut(element) {
 	var opacity = 1;
 	element.style.opacity = 1;
@@ -35,6 +37,26 @@ function save(){
 	savePlayer();
 }
 
+function nightMode(){
+	if(mode == 0){
+		const body = document.body;
+		body.style.backgroundColor = 'black';
+		body.style.color = 'white';
+		const dungeon = document.getElementById('dungeon');
+		dungeon.style.backgroundColor = 'black';
+		dungeon.style.color = 'white';
+		mode = 1;
+	}
+	else{
+		const body = document.body;
+		body.style.backgroundColor = 'white';
+		body.style.color = 'black';
+		const dungeon = document.getElementById('dungeon');
+		dungeon.style.backgroundColor = 'white';
+		dungeon.style.color = 'black';
+		mode = 0;
+	}
+}
 
 /* Cookie Functions
 
