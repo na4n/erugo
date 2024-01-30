@@ -56,6 +56,7 @@ function savePlayer(){
 function getPlayer(){
 	if(PLAYER == null){
 		PLAYER = new Player(localStorage.getItem('player'));
+		savePlayer();
 	}
 	
 	return PLAYER;

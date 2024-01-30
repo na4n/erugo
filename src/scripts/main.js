@@ -1,4 +1,16 @@
-let mode = 0;
+function getMode(){
+	if(localStorage.getItem('mode') == null){
+		localStorage.setItem('mode', 0);
+		return 0;
+	}
+	else{
+		return parseInt(localStorage.getItem('mode'));
+	}
+}
+
+function setMode(mode){
+	localStorage.setItem('mode', mode);
+}
 
 function fadeOut(element) {
 	var opacity = 1;
@@ -37,25 +49,23 @@ function save(){
 	savePlayer();
 }
 
-function nightMode(){
-	if(mode == 0){
+function colorTheme(theme){
+	if(theme != 0){
 		const body = document.body;
 		body.style.backgroundColor = 'black';
 		body.style.color = 'white';
-		const dungeon = document.getElementById('dungeon');
-		dungeon.style.backgroundColor = 'black';
-		dungeon.style.color = 'white';
-		mode = 1;
 	}
 	else{
 		const body = document.body;
 		body.style.backgroundColor = 'white';
 		body.style.color = 'black';
-		const dungeon = document.getElementById('dungeon');
-		dungeon.style.backgroundColor = 'white';
-		dungeon.style.color = 'black';
-		mode = 0;
 	}
+}
+
+function toggleTheme(){
+	const mode = parseInt(localStorage.getItem('mode'));
+	colorTheme(~mode);
+	localStorage.setItem('mode', ~mode);
 }
 
 /* Cookie Functions

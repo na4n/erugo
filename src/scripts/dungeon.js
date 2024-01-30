@@ -198,7 +198,7 @@ function generateFloor(floorNum){ //creates a floor
     const floorDimension = [Math.floor(Math.random()*20)+20, Math.floor(Math.random()*20)+20];
     placeObject(floorDimension, '+');
     placeObject(floorDimension, '@');
-    placeObject(floorDimension, '\u21D8');
+    placeObject(floorDimension, '\\');
     for(let i = 0; i < 10; i++){
         placeObject(floorDimension, '*');
     }
