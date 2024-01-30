@@ -1,6 +1,6 @@
 class Player {
 	constructor(jsonPlayer){
-		if(jsonPlayer===undefined){
+		if(jsonPlayer == null || jsonPlayer === undefined){
 			this.RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
 			this.trainStat = [0, 0, 0, 0];	
 			this.currentFloor = 1;
@@ -32,7 +32,7 @@ class Player {
 		return;
 	}
 	getFloorNumber(){ return this.currentFloor; }
-	setFloorNumber(floorNum){ this.currentFloor = floorNum; }
+	increaseFloorNumber(){ this.currentFloor++; }
 	getGold(){ return this.gold; }
 	increaseGold(){ this.gold++; }
 	
@@ -45,61 +45,42 @@ class Player {
 const TRAINMAX = 10;
 let PLAYER;
 
+function savePlayer(){
+	if(PLAYER != null){
+		localStorage.setItem('player', JSON.stringify(PLAYER));
+	}
+	
+	return;
+}
+
 function getPlayer(){
 	if(PLAYER == null){
-		if(localStorage.getItem('PLAYER') == null){
-			const newPlayer = new Player();
-			localStorage.setItem('PLAYER', JSON.stringify(newPlayer));
-			PLAYER = newPlayer;
-			return newPlayer;
-		}
-		else{
-			PLAYER = new Player(localStorage.getItem('PLAYER'));
-			return PLAYER;
-		}
+		PLAYER = new Player(localStorage.getItem('player'));
 	}
-	else{
-		return PLAYER;
-	}
+	
+	return PLAYER;
 }
 
 function updateStats(PLAYER){
 	const STATS = document.getElementById('stats');
+	const LEVEL = document.getElementById('level');
 	
 	if(PLAYER == null){
 		STATS.innerHTML = "";
 		return;
 	}
 	
-	s = 'Health: ' + PLAYER.RNGSTAT[0] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[0] + `</a><br>` + 
+	LEVEL.innerHTML = "Level: " + getPlayer().getFloorNumber();
+	
+	s = 'Gold: ' + PLAYER.getGold() + '<br><br>' + 
+	'Health: ' + PLAYER.RNGSTAT[0] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[0] + `</a><br>` + 
 	'Strength: ' + PLAYER.RNGSTAT[1] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[1] + `</a><br>` + 
 	'Intelligence: ' + PLAYER.RNGSTAT[2] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[2] + `</a><br>` + 
 	'Defense: ' + PLAYER.RNGSTAT[3] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[3] + `</a><br>`;
 	
 	STATS.innerHTML = s;
-}
-
-function fadeOut(element) {
-	var opacity = 1;
-	var interval = setInterval(function() {
-		if (opacity > 0) {
-			opacity -= 0.075;
-			element.style.opacity = opacity;
-		} 
-		else {
-			clearInterval(interval);
-			element.innerHTML = "";
-			element.style.opacity = 1;
-		}
-	}, 50);
-}
-
-async function logAndClear(errorMessage) {
-	const errDiv = document.getElementById('error'); 
-	if(errDiv.innerHTML == ""){
-		errDiv.innerHTML = errorMessage;
-		fadeOut(document.getElementById('error'));
-	}
+	
+	
 }
 
 function handler(operation, param2){

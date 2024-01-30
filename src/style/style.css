@@ -5,9 +5,15 @@
 	margin: auto;
 	height: fit-content; 
 	width: fit-content;
+	cursor: pointer;
 }
 
 #entity-layer {
     float:left;
     position: absolute;
+}
+
+#error {
+  height: 1.4em;
+  overflow: hidden;
 }

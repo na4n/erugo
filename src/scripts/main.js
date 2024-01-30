@@ -1,3 +1,43 @@
+function fadeOut(element) {
+	var opacity = 1;
+	element.style.opacity = 1;
+	var interval = setInterval(function() {
+		if (opacity > 0) {
+			opacity -= 0.075;
+			element.style.opacity = opacity;
+		} 
+		else {
+			clearInterval(interval);
+			//element.innerHTML = "";
+			element.style.opacity = 0;
+		}
+	}, 50);
+}
+
+async function logAndClear(errorMessage) {
+	const errDiv = document.getElementById('error'); 
+	if(errDiv.style.opacity != 0){
+		return;
+	}
+	//if(errDiv.innerHTML == ""){
+		errDiv.innerHTML = errorMessage;
+		fadeOut(document.getElementById('error'));
+	//}
+}
+
+function reset(){
+	localStorage.clear();
+	location.reload();
+}
+
+function save(){
+	saveData();
+	savePlayer();
+}
+
+
+/* Cookie Functions
+
 function setCookie(name, value, daysToExpire) {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + daysToExpire);
@@ -23,12 +63,4 @@ function deleteCookie(name) {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
 
-function reset(){
-	localStorage.clear();
-	location.reload();
-}
-
-function save(){
-	saveData();
-	savePlayer();
-}
+*/

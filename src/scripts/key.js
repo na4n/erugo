@@ -1,3 +1,5 @@
+const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e'];
+
 function clickListen(){
 	var myDiv = document.getElementById('dungeon');
 
@@ -7,7 +9,7 @@ function clickListen(){
 	});
 
 	function divKeyDownHandler(event) {
-		if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+		if(VALID_KEYS.includes(event.key)){
 			event.preventDefault();
 			keyHandler(event.key);
 		}

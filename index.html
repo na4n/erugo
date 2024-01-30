@@ -4,35 +4,21 @@
 		<title>Erugo</title>
 		<link rel="icon" type="image/x-icon" href="static/wiz.png">
 		<link rel="stylesheet" href="src/style/style.css">
+		<script src="src/scripts/main.js"></script>
 		<script src="src/scripts/player.js"></script>
 		<script src="src/scripts/dungeon.js"></script>
-		<script src="src/scripts/main.js"></script>
 		<script src="src/scripts/key.js"></script>
 	</head>
 
 	<body>
-		<!---<div class="button-header">
-			<button onclick="handler(0, 0)">Train Health</button>
-			<button onclick="handler(0, 1)">Train Strength</button>
-			<button onclick="handler(0, 2)">Train Intelligence</button>
-			<button onclick="handler(0, 3)">Train Defense</button>
-		</div>
-		<br> --->
 		<button onclick="reset()">Reset Game</button>
 		<button onclick="save()">Save Game</button><br><br>
 		
-		<div id="level">Level: </div>
-
-		<script>
-			let levelDiv = document.getElementById('level');
-			levelDiv.innerHTML += getPlayer().getFloorNumber();
-		</script>
+		<div id="level"></div>
 
 		<div id="dungeon">
 			<div id="entity-layer"></div>
-			<script>
-				dungeonInit();
-			</script>
+			<script>dungeonInit();</script>
 		</div>
 
 		<div id="error" style="text-align:center"></div>

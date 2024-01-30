@@ -4,19 +4,19 @@ let FLOORDIMENSION;
 const CHARHEIGHT = 15.333343505859375;
 const CHARWIDTH = 7.149993896484375;
 
-function displayEntity(character, row, column){
-	const topPx = "" + CHARHEIGHT * (1+row) + "px";
-	const leftPx = "" + CHARWIDTH * (1+column) + "px";
-	
-	const d = document.getElementById('entity-layer');
-	const addDiv = '<div id="entity"style=float:left;position:absolute;left:' + leftPx + ';top:' + topPx + ';>' + character + '</div>';
-	
-	d.insertAdjacentHTML('beforeend', addDiv);
-	
-	return addDiv;
-}
-
 function displayAllEntities(locations){
+	function displayEntity(character, row, column){
+		const topPx = "" + CHARHEIGHT * (1+row) + "px";
+		const leftPx = "" + CHARWIDTH * (1+column) + "px";
+	
+		const d = document.getElementById('entity-layer');
+		const addDiv = '<div id="entity"style=float:left;position:absolute;left:' + leftPx + ';top:' + topPx + ';>' + character + '</div>';
+	
+		d.insertAdjacentHTML('beforeend', addDiv);
+	
+		return addDiv;
+	}
+	
 	if(locations == null){
 		locations = LOCATIONS;
 	}
@@ -59,7 +59,21 @@ function updateEntity(loc, newLoc){
 	return null;
 }
 
-function moveCharacter(dungeon, keyPress){ //moves character
+function removeEntity(loc){
+	for(let i = 0; i < LOCATIONS.length; i++){
+		if(LOCATIONS[i].loc[0] == loc[0] && LOCATIONS[i].loc[1] == loc[1]){
+			LOCATIONS.splice(i, 1);
+			return;
+		}
+	}
+	return;
+}
+
+function moveCharacter(keyPress){ //moves character
+	function validLocation(loc){
+		return 0 <= loc[0] && loc[0] < FLOORDIMENSION[0] && 0 <= loc[1] && loc[1] < FLOORDIMENSION[1];
+	}
+
 	const playerLocation = getLocationOfEntity('@');
 	if(playerLocation == null){
 		return 1;
@@ -83,29 +97,48 @@ function moveCharacter(dungeon, keyPress){ //moves character
 			return 1;
 	}
 	
-	if(getEntityAtLocation(nextLocation) == null || getEntityAtLocation(nextLocation) == '*'){
-		updateEntity(playerLocation, nextLocation);
-/*		dungeon[nextLocation[0]][nextLocation[1]] = '@';
-		dungeon[playerLocation[0]][playerLocation[1]] = '.';
-		
-		if(locationIsEntityLocation(dungeon, GOLD_LOCATIONS, [nextLocation[0], nextLocation[1]]) != -1){
-			getPlayer().increaseGold();
-			GOLD_LOCATIONS.splice(locationIsEntityLocation(dungeon, GOLD_LOCATIONS, [nextLocation[0], nextLocation[1]]), 1);
+	if(validLocation(nextLocation) && getEntityAtLocation(nextLocation) == null || getEntityAtLocation(nextLocation) == '*'){
+		if(getEntityAtLocation(nextLocation) == '*'){
+			removeEntity(nextLocation);
+			const p = getPlayer();
+			p.increaseGold();
+			updateStats(p);
 		}
-	*/
+		updateEntity(playerLocation, nextLocation);
 		return 0;
 	}
 	
 	return 1;
 }
 
+function enterStairs(){
+	const stairsLoc = getLocationOfEntity('\\');
+	const charLoc = getLocationOfEntity('@');
+	
+	if((Math.abs(stairsLoc[0]-charLoc[0]) + Math.abs(stairsLoc[1]-charLoc[1])) > 1){
+		logAndClear("You are too far from the stairs");
+	}
+	else{
+		getPlayer().increaseFloorNumber();
+		generateFloor(getPlayer().getFloorNumber());
+		const dungeonDiv = document.getElementById('dungeon');
+		const ldiv = document.getElementById('entity-layer');
+		dungeonDiv.innerHTML = '<div id="entity-layer"></div>'
+		dungeonDiv.insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));
+		displayAllEntities();
+		updateStats(getPlayer());
+	}
+
+	return;
+}
+
 function keyHandler(keyPress){//maps key presses to actions
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
-		//const floor = getFloor();
-		moveCharacter(null, keyPress);
+		moveCharacter(keyPress);
 		displayAllEntities();
-		//FLOOR = floor;
-		//displayFloor(getFloor());
+	}
+	else if(keyPress == 'e'){
+		enterStairs();
 	}
 	
 	return;
@@ -204,11 +237,6 @@ function dungeonInit(){
 		console.info('new floor created');
 	}
 	const dungeonDiv = document.getElementById('dungeon');
-	//dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true) + dungeonDiv.innerHTML;
-	//for(let i = 0; i < LOCATIONS.length; i++){
-	//	displayEntity(LOCATIONS[i].ch, LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]);
-	//}
-	
 	dungeonDiv.insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));
 	displayAllEntities();
 
