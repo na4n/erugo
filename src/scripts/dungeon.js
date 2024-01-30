@@ -208,9 +208,9 @@ function dungeonInit(){
 	//for(let i = 0; i < LOCATIONS.length; i++){
 	//	displayEntity(LOCATIONS[i].ch, LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]);
 	//}
-	//displayAllEntities();
 	
 	dungeonDiv.insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));
-	
+	displayAllEntities();
+
 	return;
 }
