@@ -1,7 +1,0 @@
-
-
-1. update entity locations on each "turn"
-	- initiate turn after player moves/does action
-2. add actions for floors
-3. introduce mobs
-
