@@ -191,7 +191,7 @@ function generateFloor(floorNum){ //creates a floor
 
 	function randomMob(floorNum){
 		const mob_types = ['%', '>', '~', '^', '&'];
-		return mob_types[Math.floor(Math.random()*(Math.floor(floorNum/2)))];
+		return mob_types[Math.floor(Math.random()*(Math.floor(floorNum/2))) % 6];
 	}
 	
     const floorDimension = [Math.floor(Math.random()*20)+20, Math.floor(Math.random()*20)+20];
