@@ -12,68 +12,30 @@
 		<script src="src/scripts/main.js"></script>
 		<script src="src/scripts/player.js"></script>
 		<script src="src/scripts/dungeon.js"></script>
-		<script src="src/scripts/key.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    function getMonospaceCharacterDimensions(character, fontSize) {
-      const hiddenElement = document.createElement('div');
-      hiddenElement.style.fontSize = fontSize;
-      hiddenElement.style.fontFamily = 'monospace';
-      hiddenElement.textContent = character;
-
-      hiddenElement.style.position = 'absolute';
-      hiddenElement.style.left = '-9999px';
-
-      document.body.appendChild(hiddenElement);
-      const rect = hiddenElement.getBoundingClientRect();
-
-      document.body.removeChild(hiddenElement);
-
-      return {
-        height: rect.height,
-        width: rect.width
-      };
-    }
-    const { width, height } = getMonospaceCharacterDimensions('@', '16');
-    console.log(width);
-	console.log(height);
-	CHARHEIGHT = height;
-	CHARWIDTH = width;
-	
-	colorTheme(getMode());
-	dungeonInit();
-	arrowKeys();
-	updateStats(getPlayer());
-	clickListen();
-  });
-</script>
-
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				({ width: CHARWIDTH, height: CHARHEIGHT } = getMonospaceCharacterDimensions('@', '16'));
+				colorTheme(getMode());
+				dungeonInit();
+				updateStats(getPlayer());
+				addArrowKeyButtons();
+				clickListen();
+			});
+		</script>
 	</head>
 
 	<body>
 		<button onclick="reset()">Reset Game</button>
 		<button onclick="save()">Save Game</button>
 		<button onclick="toggleTheme()">Night Mode</button><br><br>
-		<!--<script>colorTheme(getMode())</script>-->
 		
 		<div id="level"></div>
-
 		<div id="dungeon">
 			<div id="entity-layer"></div>
-			<!--<script>dungeonInit();</script>-->
 		</div>
-
 		<div id="error" style="text-align:center"></div>
-		
 		<div id="arrow-keys"></div>
-		<!--<script>arrowKeys();</script>-->
-		
-		<div id="stats">
-			<!--<script>
-				updateStats(getPlayer());
-				clickListen();
-			</script>-->
-		</div>
+		<div id="stats"></div>
 
 	</body>
 

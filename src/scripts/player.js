@@ -83,10 +83,3 @@ function updateStats(PLAYER){
 	
 	
 }
-
-function handler(operation, param2){
-	if(operation == 0){
-		PLAYER.trainAttribute(param2);
-		updateStats();
-	}
-}

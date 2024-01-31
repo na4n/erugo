@@ -1,4 +1,29 @@
-function arrowKeys(){
+const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e'];
+
+function clickListen(){
+	var myDiv = document.getElementById('dungeon');
+
+	myDiv.addEventListener('click', function() {
+		document.addEventListener('keydown', divKeyDownHandler);
+		document.addEventListener('click', clickOutsideHandler);
+	});
+
+	function divKeyDownHandler(event) {
+		if(VALID_KEYS.includes(event.key)){
+			event.preventDefault();
+			keyHandler(event.key);
+		}
+	}
+
+	function clickOutsideHandler(event) {
+		if (!myDiv.contains(event.target)) {
+			document.removeEventListener('keydown', divKeyDownHandler);
+			document.removeEventListener('click', clickOutsideHandler);
+		}
+	}
+}
+
+function addArrowKeyButtons(){
 	function isMobile() {
 		return /iPhone|iPad|iPod|Android|Windows Phone/i.test(navigator.userAgent);
 	}
@@ -13,6 +38,18 @@ function arrowKeys(){
 	}
 }
 
+function getMonospaceCharacterDimensions(character, fontSize) {
+	const hiddenElement = document.createElement('div');
+	hiddenElement.style.cssText = `font-size: ${fontSize}; font-family: monospace; position: absolute; left: -9999px;`;
+	hiddenElement.textContent = character;
+
+	document.body.appendChild(hiddenElement);
+	const rect = hiddenElement.getBoundingClientRect();
+	document.body.removeChild(hiddenElement);
+
+	return { height: rect.height, width: rect.width };
+}
+
 function getMode(){
 	if(localStorage.getItem('mode') == null){
 		localStorage.setItem('mode', 0);
@@ -23,9 +60,25 @@ function getMode(){
 	}
 }
 
-function setMode(mode){
-	localStorage.setItem('mode', mode);
+function colorTheme(theme){
+	if(theme != 0){
+		const body = document.body;
+		body.style.backgroundColor = 'black';
+		body.style.color = 'white';
+	}
+	else{
+		const body = document.body;
+		body.style.backgroundColor = 'white';
+		body.style.color = 'black';
+	}
 }
+
+function toggleTheme(){
+	const mode = parseInt(localStorage.getItem('mode'));
+	colorTheme(~mode);
+	localStorage.setItem('mode', ~mode);
+}
+
 
 function fadeOut(element) {
 	var opacity = 1;
@@ -63,26 +116,6 @@ function save(){
 	saveData();
 	savePlayer();
 }
-
-function colorTheme(theme){
-	if(theme != 0){
-		const body = document.body;
-		body.style.backgroundColor = 'black';
-		body.style.color = 'white';
-	}
-	else{
-		const body = document.body;
-		body.style.backgroundColor = 'white';
-		body.style.color = 'black';
-	}
-}
-
-function toggleTheme(){
-	const mode = parseInt(localStorage.getItem('mode'));
-	colorTheme(~mode);
-	localStorage.setItem('mode', ~mode);
-}
-
 /* Cookie Functions
 
 function setCookie(name, value, daysToExpire) {
@@ -109,5 +142,4 @@ function getCookie(name) {
 function deleteCookie(name) {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
-
 */
