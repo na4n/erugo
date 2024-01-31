@@ -1,3 +1,19 @@
+
+function arrowKeys(){
+	function isMobile() {
+		return /iPhone|iPad|iPod|Android|Windows Phone/i.test(navigator.userAgent);
+	}
+
+	if(isMobile()){
+		const keyDiv = document.getElementById('arrow-keys');
+		keyDiv.style.textAlign = 'center';
+		keyDiv.innerHTML = '<button onclick="keyHandler(\'ArrowUp\')">Up</button>' + 
+		'<br><button onclick="keyHandler(\'ArrowLeft\')">Left</button><button onclick="keyHandler(\'ArrowRight\')">Right</button><br>' +
+		'<button onclick="keyHandler(\'ArrowDown\')">Down</button><br><br>' + 
+		'<button onclick="keyHandler(\'e\')">E</button>';
+	}
+}
+
 function getMode(){
 	if(localStorage.getItem('mode') == null){
 		localStorage.setItem('mode', 0);
