@@ -1,4 +1,3 @@
-
 function arrowKeys(){
 	function isMobile() {
 		return /iPhone|iPad|iPod|Android|Windows Phone/i.test(navigator.userAgent);

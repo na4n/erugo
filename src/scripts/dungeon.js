@@ -1,8 +1,8 @@
 let LOCATIONS;
 let FLOORDIMENSION;
 
-const CHARHEIGHT = 15.333343505859375;
-const CHARWIDTH = 7.149993896484375;
+let CHARHEIGHT;// = 15.333343505859375;
+let CHARWIDTH;// = 7.149993896484375;
 
 function displayAllEntities(locations){
 	function displayEntity(character, row, column){
