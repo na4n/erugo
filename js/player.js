@@ -74,9 +74,9 @@ function updateStats(){
 	
 	s = 'Gold: ' + p.getGold() + '<br><br>' + 
 	'Health: ' + getPlayer().getTrainStat()[0] + `<br>` + 
-	'Strength: ' + getPlayer().getTrainStat()[0] + `<br>` + 
-	'Intelligence: ' + getPlayer().getTrainStat()[0] + `<br>` + 
-	'Defense: ' + getPlayer().getTrainStat()[0] + `<br>`;
+	'Strength: ' + getPlayer().getTrainStat()[1] + `<br>` + 
+	'Intelligence: ' + getPlayer().getTrainStat()[2] + `<br>` + 
+	'Defense: ' + getPlayer().getTrainStat()[3] + `<br>`;
 	
 	STATS.innerHTML = s;
 }
