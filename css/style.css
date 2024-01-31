@@ -1,6 +1,12 @@
+@font-face {
+    font-family: 'Luminari';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Luminari'), url('Luminari-Regular.woff') format('woff');
+}
+
 #dungeon {
 	font-family: monospace; 
-	!border: 1px solid #ccc; 
 	position: relative;
 	margin: auto;
 	height: fit-content; 

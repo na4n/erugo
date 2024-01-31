@@ -25,16 +25,20 @@
 	</head>
 
 	<body>
-		<button onclick="reset()">Reset Game</button>
-		<button onclick="save()">Save Game</button>
-		<button onclick="toggleTheme()">Night Mode</button><br><br>
-		
-		<div id="level"></div>
+		<h1 style="text-align:center; font-family:Luminari;">Erugo</h1>
+		<div id="buttons" style="align-items:center;justify-content:center;text-align:center;">
+			<button onclick="reset()">Reset Game</button>
+			<button onclick="save()">Save Game</button>
+			<button onclick="toggleTheme()">Night Mode</button><br><br>
+		</div>
+
 		<div id="dungeon">
 			<div id="entity-layer"></div>
 		</div>
 		<div id="error" style="text-align:center"></div>
 		<div id="arrow-keys"></div>
+
+		<div id="level"></div>
 		<div id="stats"></div>
 
 	</body>
