@@ -19,23 +19,20 @@ class Player {
 	getRNGStat(){ return this.RNGSTAT; }
 	getTrainStat(){ return this.trainStat; }
 	setTrainStat(attribute){
-		if(typeof(attribute) != Number || attribute < 0 || attribute >= 4){
+		if(attribute < 0 || attribute >= 4){
 			return;
 		}
 		else if(this.trainStat[attribute] >= TRAINMAX){
-			logAndClear('Attribtue Cannot Increase');
+			logAndClear('Attribute Cannot Increase');
 			return;
 		}
-
 		this.trainStat[attribute]++;
-		updateStats();
 		return;
 	}
 	getFloorNumber(){ return this.currentFloor; }
 	increaseFloorNumber(){ this.currentFloor++; }
 	getGold(){ return this.gold; }
-	increaseGold(){ this.gold++; }
-	
+	setGold(amt){this.gold=amt;}
 	playerString(){
 		return "yay: " + this.getRNGStat() + this.getTrainStat() + this.getFloorNumber();
 	}
@@ -62,24 +59,30 @@ function getPlayer(){
 	return PLAYER;
 }
 
-function updateStats(PLAYER){
+function updateStats(){
 	const STATS = document.getElementById('stats');
 	const LEVEL = document.getElementById('level');
 	
-	if(PLAYER == null){
+	const p = getPlayer();
+
+	if(p == null){
 		STATS.innerHTML = "";
 		return;
 	}
 	
 	LEVEL.innerHTML = "Level: " + getPlayer().getFloorNumber();
 	
-	s = 'Gold: ' + PLAYER.getGold() + '<br><br>' + 
-	'Health: ' + PLAYER.RNGSTAT[0] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[0] + `</a><br>` + 
-	'Strength: ' + PLAYER.RNGSTAT[1] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[1] + `</a><br>` + 
-	'Intelligence: ' + PLAYER.RNGSTAT[2] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[2] + `</a><br>` + 
-	'Defense: ' + PLAYER.RNGSTAT[3] + '<a style="font-size: smaller; color:red;"> +' + PLAYER.trainStat[3] + `</a><br>`;
+	s = 'Gold: ' + p.getGold() + '<br><br>' + 
+	'Health: ' + getPlayer().getTrainStat()[0] + `<br>` + 
+	'Strength: ' + getPlayer().getTrainStat()[0] + `<br>` + 
+	'Intelligence: ' + getPlayer().getTrainStat()[0] + `<br>` + 
+	'Defense: ' + getPlayer().getTrainStat()[0] + `<br>`;
 	
 	STATS.innerHTML = s;
-	
-	
+}
+
+function debug(){
+	console.log(getPlayer().RNGSTAT);
+	console.log(getPlayer().trainStat);
+	return;
 }

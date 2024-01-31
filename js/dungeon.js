@@ -100,7 +100,7 @@ function moveCharacter(keyPress){ //moves character
 		if(getEntityAtLocation(nextLocation) == '*'){
 			removeEntity(nextLocation);
 			const p = getPlayer();
-			p.increaseGold();
+			p.setGold(p.getGold()+1);
 			updateStats(p);
 		}
 		updateEntity(playerLocation, nextLocation);
@@ -129,6 +129,23 @@ function enterStairs(){
 	}
 
 	return;
+}
+
+function train(key){
+	if(key != '1' && key != '2' && key != '3' && key != '4'){
+		logAndClear('Invalid Attribute, must be 1-4');
+		return;
+	}
+	else{
+		let p = getPlayer();
+		if(p.getGold() < 10){
+			logAndClear('Not enough gold, need 10 to train 1 attribute');
+			return;
+		}
+		p.setTrainStat(parseInt(key)-1);
+		p.setGold(p.getGold()-10);
+		updateStats();
+	}
 }
 
 function keyHandler(keyPress){//maps key presses to actions

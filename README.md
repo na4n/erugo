@@ -3,7 +3,7 @@ Erugo is a rogue-like game made in JS that ~~runs in modern web browsers~~ at le
 
 # To Do
 - Add mob movement (and turns)
-- Add trainer functionality
-- Hide RNG stats
 - refactor code
+	- consistent getplayer and getfloor
+	- spaghetti code (event listeners for training)
 

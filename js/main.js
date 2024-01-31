@@ -1,25 +1,42 @@
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e'];
+let isFirstKeyPress = false;
 
-function clickListen(){
-	var myDiv = document.getElementById('dungeon');
+function clickListen() {
+    var myDiv = document.getElementById('dungeon');
 
-	myDiv.addEventListener('click', function() {
-		document.addEventListener('keydown', divKeyDownHandler);
-		document.addEventListener('click', clickOutsideHandler);
-	});
+    myDiv.addEventListener('click', function () {
+        document.addEventListener('keydown', divKeyDownHandler);
+        document.addEventListener('click', clickOutsideHandler);
+    });
 
-	function divKeyDownHandler(event) {
-		if(VALID_KEYS.includes(event.key)){
+    function divKeyDownHandler(event) {
+		if (VALID_KEYS.includes(event.key)) {
 			event.preventDefault();
 			keyHandler(event.key);
 		}
-	}
-
-	function clickOutsideHandler(event) {
-		if (!myDiv.contains(event.target)) {
-			document.removeEventListener('keydown', divKeyDownHandler);
-			document.removeEventListener('click', clickOutsideHandler);
+		else if(event.key == 't'){
+			const trainLoc = getLocationOfEntity('+');
+			const charLoc = getLocationOfEntity('@');
+	
+			if((Math.abs(trainLoc[0]-charLoc[0]) + Math.abs(trainLoc[1]-charLoc[1])) > 1){
+				logAndClear("You are too far from the trainer");
+			}
+			else{
+				document.addEventListener('keydown', secondKey);
+			}
 		}
+    }
+
+    function clickOutsideHandler(event) {
+        if (!myDiv.contains(event.target)) {
+            document.removeEventListener('keydown', divKeyDownHandler);
+            document.removeEventListener('click', clickOutsideHandler);
+        }
+    }
+
+	function secondKey(event){
+		train(event.key);
+		document.removeEventListener('keydown', secondKey);
 	}
 }
 
