@@ -1,3 +1,4 @@
+
 function clickListen() {
 	const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't'];
 	var myDiv = document.getElementById('dungeon');
@@ -56,24 +57,24 @@ function toggleTheme(){
 	localStorage.setItem('mode', ~mode);
 }
 
+let interval;
+function fadeOut(element) {
+	var opacity = 1;
+	interval = setInterval(function() {
+		if (opacity > 0) {
+			opacity -= 0.075;
+			element.style.opacity = opacity;
+		} 
+		else {
+			clearInterval(interval);
+			element.style.opacity = 0;
+		}
+	}, 75);
+}
+
 const LOCK = 'lock';
 const FADE = 'fade';
 function logMsg(message, option){
-	let interval;
-	function fadeOut(element) {
-		var opacity = 1;
-		interval = setInterval(function() {
-			if (opacity > 0) {
-				opacity -= 0.075;
-				element.style.opacity = opacity;
-			} 
-			else {
-				clearInterval(interval);
-				element.style.opacity = 0;
-			}
-		}, 75);
-	}
-	
 	const msgDiv = document.getElementById('msg');
 	if(msgDiv == null){
 		return;
