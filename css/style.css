@@ -19,7 +19,7 @@
     position: absolute;
 }
 
-#error {
-  height: 1.4em;
+#msg {
+  height: 1em;
   overflow: hidden;
 }

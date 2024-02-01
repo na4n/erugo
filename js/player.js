@@ -8,7 +8,6 @@ class Player {
 		}
 		else{
 			const jsonObject = JSON.parse(jsonPlayer);
-
 			this.RNGSTAT = jsonObject.RNGSTAT;
 			this.trainStat = jsonObject.trainStat;
 			this.currentFloor = jsonObject.currentFloor;
@@ -18,25 +17,11 @@ class Player {
 	
 	getRNGStat(){ return this.RNGSTAT; }
 	getTrainStat(){ return this.trainStat; }
-	setTrainStat(attribute){
-		if(attribute < 0 || attribute >= 4){
-			return;
-		}
-		else if(this.trainStat[attribute] >= TRAINMAX){
-			logAndClear('Attribute Cannot Increase');
-			return;
-		}
-		this.trainStat[attribute]++;
-		return;
-	}
+	setTrainStat(attribute){ this.trainStat[attribute]++;}
 	getFloorNumber(){ return this.currentFloor; }
 	increaseFloorNumber(){ this.currentFloor++; }
 	getGold(){ return this.gold; }
 	setGold(amt){this.gold=amt;}
-	playerString(){
-		return "yay: " + this.getRNGStat() + this.getTrainStat() + this.getFloorNumber();
-	}
-
 }
 
 const TRAINMAX = 10;

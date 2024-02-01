@@ -1,5 +1,6 @@
 let LOCATIONS;
 let FLOORDIMENSION;
+
 let CHARHEIGHT;
 let CHARWIDTH;
 
@@ -72,10 +73,10 @@ function moveCharacter(keyPress){ //moves character
 	function validLocation(loc){
 		return 0 <= loc[0] && loc[0] < FLOORDIMENSION[0] && 0 <= loc[1] && loc[1] < FLOORDIMENSION[1];
 	}
-
+	
 	const playerLocation = getLocationOfEntity('@');
 	if(playerLocation == null){
-		return 1;
+		return -1;
 	}
 	
 	let nextLocation;
@@ -97,17 +98,17 @@ function moveCharacter(keyPress){ //moves character
 	}
 	
 	if(validLocation(nextLocation) && getEntityAtLocation(nextLocation) == null || getEntityAtLocation(nextLocation) == '*'){
+		let set = false;
 		if(getEntityAtLocation(nextLocation) == '*'){
 			removeEntity(nextLocation);
-			const p = getPlayer();
-			p.setGold(p.getGold()+1);
-			updateStats(p);
+			getPlayer().setGold(getPlayer().getGold()+1);
+			set = true;
 		}
 		updateEntity(playerLocation, nextLocation);
-		return 0;
+		return set;
 	}
 	
-	return 1;
+	return -1;
 }
 
 function enterStairs(){
@@ -115,13 +116,15 @@ function enterStairs(){
 	const charLoc = getLocationOfEntity('@');
 	
 	if((Math.abs(stairsLoc[0]-charLoc[0]) + Math.abs(stairsLoc[1]-charLoc[1])) > 1){
-		logAndClear("You are too far from the stairs");
+		logMsg('You are too far from the stairs', FADE);
+	}
+	else if(getPlayer().getFloorNumber() == 10){
+		logMsg('You win', LOCK);
 	}
 	else{
 		getPlayer().increaseFloorNumber();
 		generateFloor(getPlayer().getFloorNumber());
 		const dungeonDiv = document.getElementById('dungeon');
-		const ldiv = document.getElementById('entity-layer');
 		dungeonDiv.innerHTML = '<div id="entity-layer"></div>'
 		dungeonDiv.insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));
 		displayAllEntities();
@@ -133,28 +136,55 @@ function enterStairs(){
 
 function train(key){
 	if(key != '1' && key != '2' && key != '3' && key != '4'){
-		logAndClear('Invalid Attribute, must be 1-4');
-		return;
+		logMsg('Invalid Attribute, must be 1-4', FADE);
 	}
 	else{
 		let p = getPlayer();
 		if(p.getGold() < 10){
-			logAndClear('Not enough gold, need 10 to train 1 attribute');
-			return;
+			logMsg('Not enough gold, need 10 to train 1 attribute', FADE);
 		}
-		p.setTrainStat(parseInt(key)-1);
-		p.setGold(p.getGold()-10);
-		updateStats();
+		else{
+			p.setTrainStat(parseInt(key)-1);
+			p.setGold(p.getGold()-10);
+		}
 	}
+
+	return;
 }
 
 function keyHandler(keyPress){//maps key presses to actions
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
-		moveCharacter(keyPress);
-		displayAllEntities();
+		const move = moveCharacter(keyPress);
+		if(move < 0){
+			logMsg('Can\'t move there', FADE);
+		}
+		else{
+			displayAllEntities();
+		}
+
+		if(move == 1){
+			updateStats();
+		}
 	}
 	else if(keyPress == 'e'){
 		enterStairs();
+	}
+	else if(keyPress == 't'){
+		const trainLoc = getLocationOfEntity('+');
+		const charLoc = getLocationOfEntity('@');
+
+		function secondKeyListen(event){
+			
+			document.removeEventListener('keydown', secondKeyListen);
+		}
+
+		if((Math.abs(trainLoc[0]-charLoc[0]) + Math.abs(trainLoc[1]-charLoc[1])) > 1){
+			logMsg("You are too far from the trainer", FADE);
+		}
+		else{
+			document.addEventListener('keydown', secondKeyListen);
+		}
+		updateStats();
 	}
 	
 	return;

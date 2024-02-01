@@ -15,7 +15,7 @@
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
 				({ width: CHARWIDTH, height: CHARHEIGHT } = getMonospaceCharacterDimensions('@', '16'));
-				colorTheme(getMode());
+				colorTheme(localStorage.getItem('mode'));
 				dungeonInit();
 				updateStats();
 				addArrowKeyButtons();
@@ -35,7 +35,7 @@
 		<div id="dungeon">
 			<div id="entity-layer"></div>
 		</div>
-		<div id="error" style="text-align:center"></div>
+		<div id="msg" style="text-align:center"></div>
 		<div id="arrow-keys"></div>
 
 		<div id="level"></div>

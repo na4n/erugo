@@ -1,8 +1,6 @@
-const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e'];
-let isFirstKeyPress = false;
-
 function clickListen() {
-    var myDiv = document.getElementById('dungeon');
+	const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't'];
+	var myDiv = document.getElementById('dungeon');
 
     myDiv.addEventListener('click', function () {
         document.addEventListener('keydown', divKeyDownHandler);
@@ -14,17 +12,6 @@ function clickListen() {
 			event.preventDefault();
 			keyHandler(event.key);
 		}
-		else if(event.key == 't'){
-			const trainLoc = getLocationOfEntity('+');
-			const charLoc = getLocationOfEntity('@');
-	
-			if((Math.abs(trainLoc[0]-charLoc[0]) + Math.abs(trainLoc[1]-charLoc[1])) > 1){
-				logAndClear("You are too far from the trainer");
-			}
-			else{
-				document.addEventListener('keydown', secondKey);
-			}
-		}
     }
 
     function clickOutsideHandler(event) {
@@ -33,11 +20,6 @@ function clickListen() {
             document.removeEventListener('click', clickOutsideHandler);
         }
     }
-
-	function secondKey(event){
-		train(event.key);
-		document.removeEventListener('keydown', secondKey);
-	}
 }
 
 function addArrowKeyButtons(){
@@ -52,28 +34,6 @@ function addArrowKeyButtons(){
 		'<br><button onclick="keyHandler(\'ArrowLeft\')">Left</button><button onclick="keyHandler(\'ArrowRight\')">Right</button><br>' +
 		'<button onclick="keyHandler(\'ArrowDown\')">Down</button><br><br>' + 
 		'<button onclick="keyHandler(\'e\')">E</button>';
-	}
-}
-
-function getMonospaceCharacterDimensions(character, fontSize) {
-	const hiddenElement = document.createElement('div');
-	hiddenElement.style.cssText = `font-size: ${fontSize}; font-family: monospace; position: absolute; left: -9999px;`;
-	hiddenElement.textContent = character;
-
-	document.body.appendChild(hiddenElement);
-	const rect = hiddenElement.getBoundingClientRect();
-	document.body.removeChild(hiddenElement);
-
-	return { height: rect.height, width: rect.width };
-}
-
-function getMode(){
-	if(localStorage.getItem('mode') == null){
-		localStorage.setItem('mode', 0);
-		return 0;
-	}
-	else{
-		return parseInt(localStorage.getItem('mode'));
 	}
 }
 
@@ -96,32 +56,40 @@ function toggleTheme(){
 	localStorage.setItem('mode', ~mode);
 }
 
-
-function fadeOut(element) {
-	var opacity = 1;
-	element.style.opacity = 1;
-	var interval = setInterval(function() {
-		if (opacity > 0) {
-			opacity -= 0.075;
-			element.style.opacity = opacity;
-		} 
-		else {
-			clearInterval(interval);
-			//element.innerHTML = "";
-			element.style.opacity = 0;
-		}
-	}, 50);
-}
-
-async function logAndClear(errorMessage) {
-	const errDiv = document.getElementById('error'); 
-	if(errDiv.style.opacity != 0){
+const LOCK = 'lock';
+const FADE = 'fade';
+function logMsg(message, option){
+	let interval;
+	function fadeOut(element) {
+		var opacity = 1;
+		interval = setInterval(function() {
+			if (opacity > 0) {
+				opacity -= 0.075;
+				element.style.opacity = opacity;
+			} 
+			else {
+				clearInterval(interval);
+				element.style.opacity = 0;
+			}
+		}, 75);
+	}
+	
+	const msgDiv = document.getElementById('msg');
+	if(msgDiv == null){
 		return;
 	}
-	//if(errDiv.innerHTML == ""){
-		errDiv.innerHTML = errorMessage;
-		fadeOut(document.getElementById('error'));
-	//}
+
+	msgDiv.innerHTML = message;
+	msgDiv.style.opacity = 1;
+	if(option == FADE){
+		clearInterval(interval);
+		fadeOut(msgDiv);
+	}
+	else if(option == LOCK){
+		msgDiv.setAttribute('id', 'msg_lock');
+	}
+
+	return;
 }
 
 function reset(){
@@ -133,30 +101,16 @@ function save(){
 	saveData();
 	savePlayer();
 }
-/* Cookie Functions
 
-function setCookie(name, value, daysToExpire) {
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + daysToExpire);
+function getMonospaceCharacterDimensions(character, fontSize) { // LLM Generated
+	const hiddenElement = document.createElement('div');
+	hiddenElement.style.cssText = `font-size: ${fontSize}; font-family: monospace; position: absolute; left: -9999px;`;
+	hiddenElement.textContent = character;
 
-    const cookieString = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
-    document.cookie = cookieString;
+	document.body.appendChild(hiddenElement);
+	const rect = hiddenElement.getBoundingClientRect();
+	document.body.removeChild(hiddenElement);
+
+	return { height: rect.height, width: rect.width };
 }
 
-function getCookie(name) {
-    const cookies = document.cookie.split('; ');
-
-    for (const cookie of cookies) {
-        const [cookieName, cookieValue] = cookie.split('=');
-        if (cookieName === name) {
-            return cookieValue;
-        }
-    }
-
-    return null;
-}
-
-function deleteCookie(name) {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-}
-*/
