@@ -15,11 +15,13 @@
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
 				({ width: CHARWIDTH, height: CHARHEIGHT } = getMonospaceCharacterDimensions('@', '16'));
-				colorTheme(localStorage.getItem('mode'));
+				
+				setColorTheme();
+				addArrowKeyButtons();
+				enableDungeonEventListener();
+
 				dungeonInit();
 				updateStats();
-				addArrowKeyButtons();
-				clickListen();
 			});
 		</script>
 	</head>

@@ -1,5 +1,5 @@
 
-function clickListen() {
+function enableDungeonEventListener() {
 	const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't'];
 	var myDiv = document.getElementById('dungeon');
 
@@ -24,11 +24,7 @@ function clickListen() {
 }
 
 function addArrowKeyButtons(){
-	function isMobile() {
-		return /iPhone|iPad|iPod|Android|Windows Phone/i.test(navigator.userAgent);
-	}
-
-	if(isMobile()){
+	if(/iPhone|iPad|iPod|Android|Windows Phone/i.test(navigator.userAgent)){
 		const keyDiv = document.getElementById('arrow-keys');
 		keyDiv.style.textAlign = 'center';
 		keyDiv.innerHTML = '<button onclick="keyHandler(\'ArrowUp\')">Up</button>' + 
@@ -38,23 +34,25 @@ function addArrowKeyButtons(){
 	}
 }
 
-function colorTheme(theme){
-	if(theme != null && theme == -1){
-		const body = document.body;
-		body.style.backgroundColor = 'black';
-		body.style.color = 'white';
-	}
-	else{
+function setColorTheme(){
+	const theme = getCookie('theme');
+	if(theme == null || theme == '0'){
 		const body = document.body;
 		body.style.backgroundColor = 'white';
 		body.style.color = 'black';
 	}
+	else{
+		const body = document.body;
+		body.style.backgroundColor = 'black';
+		body.style.color = 'white';
+	}
 }
 
 function toggleTheme(){
-	const mode = parseInt(localStorage.getItem('mode'));
-	colorTheme(~mode);
-	localStorage.setItem('mode', ~mode);
+	let currentTheme = getCookie('theme');
+	currentTheme == null || currentTheme == '0' ? currentTheme = '-1' : currentTheme = '0';
+	setCookie('theme', currentTheme, 400);
+	setColorTheme();
 }
 
 let interval;
@@ -115,3 +113,6 @@ function getMonospaceCharacterDimensions(character, fontSize) { // LLM Generated
 	return { height: rect.height, width: rect.width };
 }
 
+const setCookie = (name, value, days) => { document.cookie = `${name}=${value}; expires=${new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString()}; path=/`; };
+const getCookie = (name) => { const decodedCookie = decodeURIComponent(document.cookie); const cookies = decodedCookie.split(';'); return cookies.find(cookie => cookie.trim().startsWith(name + '='))?.split('=')[1] || null; };
+const deleteCookie = (name) => { document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`; };
