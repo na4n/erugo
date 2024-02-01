@@ -280,7 +280,6 @@ function dungeonInit(){
 	if(!getData()){
 		generateFloor(1);
 		saveData();
-		console.info('new floor created');
 	}
 	const dungeonDiv = document.getElementById('dungeon');
 	dungeonDiv.insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));

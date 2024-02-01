@@ -39,7 +39,7 @@ function addArrowKeyButtons(){
 }
 
 function colorTheme(theme){
-	if(theme != 0){
+	if(theme != null && theme == -1){
 		const body = document.body;
 		body.style.backgroundColor = 'black';
 		body.style.color = 'white';
