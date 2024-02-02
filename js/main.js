@@ -1,6 +1,7 @@
 
+const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't'];
+
 function enableDungeonEventListener() {
-	const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't'];
 	var myDiv = document.getElementById('dungeon');
 
     myDiv.addEventListener('click', function () {
@@ -9,11 +10,29 @@ function enableDungeonEventListener() {
     });
 
     function divKeyDownHandler(event) {
+		function ctrlSecond(event){
+			if(event.key == 's'){
+				event.preventDefault();
+				save();
+				document.removeEventListener('keydown', ctrlSecond);
+			}
+			else if(event.key == 'r'){
+				event.preventDefault();
+				reset();
+				document.removeEventListener('keydown', ctrlSecond);
+			}
+		}
+	
+		if(event.key == 'Control'){
+			event.preventDefault();
+			document.addEventListener('keydown', ctrlSecond);
+		}
 		if (VALID_KEYS.includes(event.key)) {
 			event.preventDefault();
 			keyHandler(event.key);
 		}
     }
+
 
     function clickOutsideHandler(event) {
         if (!myDiv.contains(event.target)) {
@@ -93,17 +112,23 @@ function logMsg(message, option){
 
 function reset(){
 	localStorage.clear();
-	location.reload();
+	logMsg('Reset Game', FADE);
+	const ddiv = document.getElementById('dungeon')
+	ddiv.innerHTML = '<div id="entity-layer"></div>';
+	dungeonInit();
+	updateStats();
+	ddiv.click();
 }
 
 function save(){
 	saveData();
 	savePlayer();
+	logMsg('Saved Game', FADE);
 }
 
-function getMonospaceCharacterDimensions(character, fontSize) { // LLM Generated
+function getCharacterDimensions(fontType, character, fontSize) { // LLM Generated
 	const hiddenElement = document.createElement('div');
-	hiddenElement.style.cssText = `font-size: ${fontSize}; font-family: monospace; position: absolute; left: -9999px;`;
+	hiddenElement.style.cssText = `font-size: ${fontSize}; font-family: ${fontType}; position: absolute; left: -9999px;`;
 	hiddenElement.textContent = character;
 
 	document.body.appendChild(hiddenElement);

@@ -25,23 +25,23 @@ class Player {
 }
 
 const TRAINMAX = 10;
-let PLAYER;
+let USER;
 
 function savePlayer(){
-	if(PLAYER != null){
-		localStorage.setItem('player', JSON.stringify(PLAYER));
+	if(USER != null){
+		localStorage.setItem('player', JSON.stringify(USER));
 	}
 	
 	return;
 }
 
 function getPlayer(){
-	if(PLAYER == null){
-		PLAYER = new Player(localStorage.getItem('player'));
+	if(USER == null){
+		USER = new Player(localStorage.getItem('player'));
 		savePlayer();
 	}
 	
-	return PLAYER;
+	return USER;
 }
 
 function updateStats(){
@@ -61,7 +61,7 @@ function updateStats(){
 	'Health: ' + getPlayer().getTrainStat()[0] + `<br>` + 
 	'Strength: ' + getPlayer().getTrainStat()[1] + `<br>` + 
 	//'Intelligence: ' + getPlayer().getTrainStat()[2] + `<br>` + 
-	'Defense: ' + getPlayer().getTrainStat()[3] + `<br>`;
+	'Defense: ' + getPlayer().getTrainStat()[2] + `<br>`;
 	
 	STATS.innerHTML = s;
 }
