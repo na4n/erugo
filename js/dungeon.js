@@ -19,7 +19,7 @@ function moveEntities(){
 		const addToDone = (c) => done.set(c.toString(), true);
 		const withinBounds = (c) => c[0] >= 0 && c[0] < FLOORDIMENSION[0] && c[1] >= 0 && c[1] < FLOORDIMENSION[1];
 		target = new Set(target);
-	
+
 		while (stack.length) {
 			const cur = stack.shift();
 			addToDone(cur);
@@ -32,14 +32,19 @@ function moveEntities(){
 			neighbors.forEach(n => {
 				const nStr = n.toString();
 				if (!done.has(nStr) && withinBounds(n)) stack.push(n);
+				console.log(n);
 			});
 		}
 	}
 
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(MOBTYPES.includes(LOCATIONS[i].ch)){
+			//console.log('found a mob at ' + LOCATIONS[i].loc);
+			//console.log(FLOORDIMENSION);
 			let targetLoc = (LOCATIONS[i].target == false ? bfs(LOCATIONS[i].loc, [STAIRS, TRAINER]) : LOCATIONS[i].target);
 			LOCATIONS[i].target = targetLoc;
+			console.log(targetLoc);
+			continue;
 			const playerLoc = getLocationOfEntity(PLAYER);
 			const playerDist = dist(LOCATIONS[i].loc, playerLoc);
 			
@@ -48,42 +53,36 @@ function moveEntities(){
 			}
 
 			if(dist(targetLoc, LOCATIONS[i].loc) <= 1){
+				if(getEntityAtLocation(targetLoc) == PLAYER){
+					logMsg('Player was attacked', FADE);
+				}
 				continue;
 			}
 
 			const h = (targetLoc[1] < LOCATIONS[i].loc[1] ? -1 : (targetLoc[1] == LOCATIONS[i].loc[1] ? 0 : 1));
 			const v = (targetLoc[0] < LOCATIONS[i].loc[0] ? -1 : (targetLoc[0] == LOCATIONS[i].loc[0] ? 0 : 1));
-			console.log([h,v]);
 			
-			tried = 0;
+			let attempt = 0;
 			let tryloc;
-			while(tried < 4){
-				switch (tried % 2 == 0){
+			while(attempt < 4){
+				tryloc = [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]];
+				switch (attempt % 2 == 0){
 					case true:
-						if(tried >=2){
-							tryloc = [LOCATIONS[i].loc[0]+-v, LOCATIONS[i].loc[1]];	
-						}
-						else{
-							tryloc = [LOCATIONS[i].loc[0]+v, LOCATIONS[i].loc[1]];
-						}
+						attempt >= 2 ? tryloc[0]-=v : tryloc[0]+=v;
+						break;
 					case false:
-						if(tried >= 2){
-							tryloc = [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]+-h];
-						}
-						else{
-							tryloc = [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]+h];
-						}
+						attempt >= 2 ? tryloc[1]-=h : tryloc[1]+=h;
+						break;
 					default:
 						break;
 				};
-
+			
 				if(!getEntityAtLocation(tryloc)===null && getEntityAtLocation(tryloc) != '*'){
-					console.log('blocked');
-					tried++;
+					attempt++;
 				}
 				else{
+					//removeEntity(tryloc);
 					updateEntity(LOCATIONS[i].loc, tryloc);
-					displayAllEntities();
 					break;
 				}
 			}
@@ -217,8 +216,11 @@ function enterStairs(){
 		const dungeonDiv = document.getElementById('dungeon');
 		dungeonDiv.innerHTML = '<div id="entity-layer"></div>'
 		dungeonDiv.insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));
+		console.log('printed out dungeon');
 		displayAllEntities();
+		console.log('displayed all entities');
 		updateStats(getPlayer());
+		console.log('updatedfafaf');
 	}
 
 	return;
@@ -243,6 +245,8 @@ function train(key){
 }
 
 function keyHandler(keyPress){//maps key presses to actions
+	console.log(keyPress);
+
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
 		const move = moveCharacter(keyPress);
 		if(move < 0){
@@ -255,6 +259,7 @@ function keyHandler(keyPress){//maps key presses to actions
 		if(move == 1){
 			updateStats();
 		}
+		moveEntities();
 	}
 	else if(keyPress == 'e'){
 		enterStairs();
@@ -279,6 +284,7 @@ function keyHandler(keyPress){//maps key presses to actions
 			document.addEventListener('keydown', secondKeyListen);
 		}
 		updateStats();
+		moveEntities();
 	}
 	
 	return;

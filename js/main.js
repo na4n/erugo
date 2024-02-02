@@ -92,6 +92,7 @@ function fadeOut(element) {
 const LOCK = 'lock';
 const FADE = 'fade';
 function logMsg(message, option){
+	return;
 	const msgDiv = document.getElementById('msg');
 	if(msgDiv == null){
 		return;
