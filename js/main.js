@@ -99,8 +99,8 @@ function logMsg(message, option){
 
 	msgDiv.innerHTML = message;
 	msgDiv.style.opacity = 1;
+	clearInterval(interval);
 	if(option == FADE){
-		clearInterval(interval);
 		fadeOut(msgDiv);
 	}
 	else if(option == LOCK){
