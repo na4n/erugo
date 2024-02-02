@@ -9,25 +9,26 @@
 		<link rel="stylesheet" href="css/style.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<script src="js/main.js?v=1"></script>
-		<script src="js/player.js?v=1"></script>
-		<script src="js/dungeon.js?v=1"></script>
+		<script src="js/main.js"></script>
+		<script src="js/player.js"></script>
+		<script src="js/dungeon.js"></script>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
-				({ width: CHARWIDTH, height: CHARHEIGHT } = getMonospaceCharacterDimensions('@', '16'));
-				
+				({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '16'));
+				document.getElementById('msg').style.height = `${getCharacterDimensions('times', 'H', '16').height}` + 'px';
 				setColorTheme();
 				addArrowKeyButtons();
 				enableDungeonEventListener();
 
 				dungeonInit();
 				updateStats();
+				document.getElementById('dungeon').click();
 			});
 		</script>
 	</head>
 
 	<body>
-		<h1 style="text-align:center; font-family:Luminari;">Erugo</h1>
+		<!-- <h1 style="text-align:center; font-family:Luminari;">Erugo</h1> -->
 		<div id="buttons" style="align-items:center;justify-content:center;text-align:center;">
 			<button onclick="reset()">Reset Game</button>
 			<button onclick="save()">Save Game</button>
@@ -42,7 +43,6 @@
 
 		<div id="level"></div>
 		<div id="stats"></div>
-
 	</body>
 
 </html>

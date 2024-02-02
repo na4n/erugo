@@ -4,6 +4,96 @@ let FLOORDIMENSION;
 let CHARHEIGHT;
 let CHARWIDTH;
 
+const MOBTYPES = ['%', '>', '~', '^', '&'];
+const PLAYER = '@';
+const STAIRS = '\\';
+const TRAINER = '+';
+
+const dist = function(loc1, loc2){
+	return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]);
+};
+
+function moveEntities(){
+	function bfs(start, target) {
+		const done = new Map(), stack = [start];
+		const addToDone = (c) => done.set(c.toString(), true);
+		const withinBounds = (c) => c[0] >= 0 && c[0] < FLOORDIMENSION[0] && c[1] >= 0 && c[1] < FLOORDIMENSION[1];
+		target = new Set(target);
+	
+		while (stack.length) {
+			const cur = stack.shift();
+			addToDone(cur);
+
+			const entityAtLoc = getEntityAtLocation(cur);
+			if (entityAtLoc && target.has(entityAtLoc)) return cur;
+	
+			const neighbors = [[cur[0]+1,cur[1]], [cur[0]-1,cur[1]], [cur[0],cur[1]+1], [cur[0],cur[1]-1]];
+	
+			neighbors.forEach(n => {
+				const nStr = n.toString();
+				if (!done.has(nStr) && withinBounds(n)) stack.push(n);
+			});
+		}
+	}
+
+	for(let i = 0; i < LOCATIONS.length; i++){
+		if(MOBTYPES.includes(LOCATIONS[i].ch)){
+			let targetLoc = (LOCATIONS[i].target == false ? bfs(LOCATIONS[i].loc, [STAIRS, TRAINER]) : LOCATIONS[i].target);
+			LOCATIONS[i].target = targetLoc;
+			const playerLoc = getLocationOfEntity(PLAYER);
+			const playerDist = dist(LOCATIONS[i].loc, playerLoc);
+			
+			if(dist(playerLoc, LOCATIONS[i].loc) <= 5){
+				targetLoc = playerLoc;
+			}
+
+			if(dist(targetLoc, LOCATIONS[i].loc) <= 1){
+				continue;
+			}
+
+			const h = (targetLoc[1] < LOCATIONS[i].loc[1] ? -1 : (targetLoc[1] == LOCATIONS[i].loc[1] ? 0 : 1));
+			const v = (targetLoc[0] < LOCATIONS[i].loc[0] ? -1 : (targetLoc[0] == LOCATIONS[i].loc[0] ? 0 : 1));
+			console.log([h,v]);
+			
+			tried = 0;
+			let tryloc;
+			while(tried < 4){
+				switch (tried % 2 == 0){
+					case true:
+						if(tried >=2){
+							tryloc = [LOCATIONS[i].loc[0]+-v, LOCATIONS[i].loc[1]];	
+						}
+						else{
+							tryloc = [LOCATIONS[i].loc[0]+v, LOCATIONS[i].loc[1]];
+						}
+					case false:
+						if(tried >= 2){
+							tryloc = [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]+-h];
+						}
+						else{
+							tryloc = [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]+h];
+						}
+					default:
+						break;
+				};
+
+				if(!getEntityAtLocation(tryloc)===null && getEntityAtLocation(tryloc) != '*'){
+					console.log('blocked');
+					tried++;
+				}
+				else{
+					updateEntity(LOCATIONS[i].loc, tryloc);
+					displayAllEntities();
+					break;
+				}
+			}
+	 	}
+	}
+
+	displayAllEntities();
+}
+
+
 function displayAllEntities(locations){
 	function displayEntity(character, row, column){
 		const topPx = "" + CHARHEIGHT * (1+row) + "px";
@@ -74,7 +164,7 @@ function moveCharacter(keyPress){ //moves character
 		return 0 <= loc[0] && loc[0] < FLOORDIMENSION[0] && 0 <= loc[1] && loc[1] < FLOORDIMENSION[1];
 	}
 	
-	const playerLocation = getLocationOfEntity('@');
+	const playerLocation = getLocationOfEntity(PLAYER);
 	if(playerLocation == null){
 		return -1;
 	}
@@ -112,8 +202,8 @@ function moveCharacter(keyPress){ //moves character
 }
 
 function enterStairs(){
-	const stairsLoc = getLocationOfEntity('\\');
-	const charLoc = getLocationOfEntity('@');
+	const stairsLoc = getLocationOfEntity(STAIRS);
+	const charLoc = getLocationOfEntity(PLAYER);
 	
 	if((Math.abs(stairsLoc[0]-charLoc[0]) + Math.abs(stairsLoc[1]-charLoc[1])) > 1){
 		logMsg('You are too far from the stairs', FADE);
@@ -170,12 +260,16 @@ function keyHandler(keyPress){//maps key presses to actions
 		enterStairs();
 	}
 	else if(keyPress == 't'){
-		const trainLoc = getLocationOfEntity('+');
-		const charLoc = getLocationOfEntity('@');
+		const trainLoc = getLocationOfEntity(TRAINER);
+		const charLoc = getLocationOfEntity(PLAYER);
 
 		function secondKeyListen(event){
-			
-			document.removeEventListener('keydown', secondKeyListen);
+			if(VALID_KEYS.includes(event.key)){
+				document.removeEventListener('keydown', secondKeyListen);
+			}
+			else{
+				train(event.key);
+			}
 		}
 
 		if((Math.abs(trainLoc[0]-charLoc[0]) + Math.abs(trainLoc[1]-charLoc[1])) > 1){
@@ -233,18 +327,17 @@ function generateFloor(floorNum){ //creates a floor
 			objectLocation = generateLocation(floorDimension);
 		} while(entityLocationIncludes(objectLocation));
 
-		ENTITY_LOCATIONS.push({ch: object, loc: objectLocation});
+		ENTITY_LOCATIONS.push({ch: object, loc: objectLocation, target: false});
 	}
 
 	function randomMob(floorNum){
-		const mob_types = ['%', '>', '~', '^', '&'];
-		return mob_types[Math.floor(Math.random()*(Math.floor(floorNum/2))) % 6];
+		return MOBTYPES[Math.floor(Math.random()*(Math.floor(floorNum/2))) % 6];
 	}
 	
     const floorDimension = [Math.floor(Math.random()*20)+20, Math.floor(Math.random()*20)+20];
-    placeObject(floorDimension, '+');
-    placeObject(floorDimension, '@');
-    placeObject(floorDimension, '\\');
+    placeObject(floorDimension, TRAINER);
+    placeObject(floorDimension, PLAYER);
+    placeObject(floorDimension, STAIRS);
     for(let i = 0; i < 10; i++){
         placeObject(floorDimension, '*');
     }
