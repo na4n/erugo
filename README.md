@@ -2,10 +2,8 @@
 Erugo is a rogue-like game made in JS that ~~runs in modern web browsers~~ at least works locally (and may work for you).
 
 # To Do
-- Fix BFS
+- Add combat mechanics
 
-- Add non-traditional mob movement
-- Add clmbat mechanics
 - more interesting dungeons
 - colored entities
 - css, night/light theme corner

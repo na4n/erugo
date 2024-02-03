@@ -6,13 +6,8 @@ function divKeyDownHandler(event) {
 		if(event.key == 's'){
 			event.preventDefault();
 			save();
-			document.removeEventListener('keydown', ctrlSecond);
 		}
-		else if(event.key == 'r'){
-			event.preventDefault();
-			reset();
-			document.removeEventListener('keydown', ctrlSecond);
-		}
+		document.removeEventListener('keydown', ctrlSecond);
 	}
 
 	if(event.key == 'Control'){

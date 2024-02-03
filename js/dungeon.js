@@ -8,6 +8,7 @@ const MOBTYPES = ['%', '>', '~', '^', '&'];
 const PLAYER = '@';
 const STAIRS = '\\';
 const TRAINER = '+';
+const GOLD = '*'
 
 const dist = function(loc1, loc2){
 	return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]);
@@ -20,10 +21,10 @@ function moveEntities(){
 		return Math.hypot(loc1[0] - loc2[0], loc1[1] - loc2[1]);
 	}	
 
+	const withinBounds = (c) => c[0] >= 0 && c[0] < FLOORDIMENSION[0] && c[1] >= 0 && c[1] < FLOORDIMENSION[1];
 	function bfs(start, target) {
 		const done = new Map(), stack = [start];
 		const addToDone = (c) => done.set(c.toString(), true);
-		const withinBounds = (c) => c[0] >= 0 && c[0] < FLOORDIMENSION[0] && c[1] >= 0 && c[1] < FLOORDIMENSION[1];
 		target = new Set(target);
 	
 		while (stack.length) {
@@ -62,40 +63,16 @@ function moveEntities(){
 				continue;
 			}
 
-			const h = (targetLoc[1] < LOCATIONS[i].loc[1] ? -1 : (targetLoc[1] == LOCATIONS[i].loc[1] ? 0 : 1));
-			const v = (targetLoc[0] < LOCATIONS[i].loc[0] ? -1 : (targetLoc[0] == LOCATIONS[i].loc[0] ? 0 : 1));
-			
-			let attempt = 0;
-			let tryloc;
-			while(attempt < 4){
-				tryloc = [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]];
-				switch (attempt % 2 == 0){
-					case true:
-						if(v == 0){
-							attempt++;
-							continue;
-						}
-						attempt >= 2 ? tryloc[0]-=v : tryloc[0]+=v;
-						break;
-					case false://not work?
-						if(h == 0){
-							attempt++;
-							continue;
-						}
-						attempt >= 2 ? tryloc[1]-=h : tryloc[1]+=h;
-						break;
-					default:
-						break;
-				};
-
-				if(getEntityAtLocation(tryloc)===null || getEntityAtLocation(tryloc) == '*'){
-					if(removeEntity(tryloc)){
-						i -= 1;
-					} 
-					updateEntity(LOCATIONS[i].loc, tryloc);
+			const moveDistances = [[LOCATIONS[i].loc[0]+1, LOCATIONS[i].loc[1]], [LOCATIONS[i].loc[0]-1, LOCATIONS[i].loc[1]], [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]+1], [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]-1]];
+			moveDistances.sort((a, b) => dist(targetLoc, a) - dist(targetLoc, b));
+			let j = 0;
+			while(j < 4){
+				if(withinBounds(moveDistances[j]) && (getEntityAtLocation(moveDistances[j])===null || getEntityAtLocation(moveDistances[j] == GOLD))){
+					if(removeEntity(moveDistances[j])){ i -= 1; }
+					updateEntity(LOCATIONS[i].loc, moveDistances[j]);
 					break;
 				}
-				attempt++;
+				j++;
 			}
 	 	}
 	}
