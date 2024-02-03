@@ -4,6 +4,7 @@ Erugo is a rogue-like game made in JS that ~~runs in modern web browsers~~ at le
 # To Do
 - Add combat mechanics
 
+- seed based randomization
 - more interesting dungeons
 - colored entities
 - css, night/light theme corner
