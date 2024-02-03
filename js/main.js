@@ -1,6 +1,30 @@
 
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't'];
 
+function divKeyDownHandler(event) {
+	function ctrlSecond(event){
+		if(event.key == 's'){
+			event.preventDefault();
+			save();
+			document.removeEventListener('keydown', ctrlSecond);
+		}
+		else if(event.key == 'r'){
+			event.preventDefault();
+			reset();
+			document.removeEventListener('keydown', ctrlSecond);
+		}
+	}
+
+	if(event.key == 'Control'){
+		event.preventDefault();
+		document.addEventListener('keydown', ctrlSecond);
+	}
+	if (VALID_KEYS.includes(event.key)) {
+		event.preventDefault();
+		keyHandler(event.key);
+	}
+}
+
 function enableDungeonEventListener() {
 	var myDiv = document.getElementById('dungeon');
 
@@ -8,31 +32,6 @@ function enableDungeonEventListener() {
         document.addEventListener('keydown', divKeyDownHandler);
         document.addEventListener('click', clickOutsideHandler);
     });
-
-    function divKeyDownHandler(event) {
-		function ctrlSecond(event){
-			if(event.key == 's'){
-				event.preventDefault();
-				save();
-				document.removeEventListener('keydown', ctrlSecond);
-			}
-			else if(event.key == 'r'){
-				event.preventDefault();
-				reset();
-				document.removeEventListener('keydown', ctrlSecond);
-			}
-		}
-	
-		if(event.key == 'Control'){
-			event.preventDefault();
-			document.addEventListener('keydown', ctrlSecond);
-		}
-		if (VALID_KEYS.includes(event.key)) {
-			event.preventDefault();
-			keyHandler(event.key);
-		}
-    }
-
 
     function clickOutsideHandler(event) {
         if (!myDiv.contains(event.target)) {
@@ -74,41 +73,33 @@ function toggleTheme(){
 	setColorTheme();
 }
 
-let interval;
-function fadeOut(element) {
-	var opacity = 1;
-	interval = setInterval(function() {
-		if (opacity > 0) {
-			opacity -= 0.075;
-			element.style.opacity = opacity;
-		} 
-		else {
-			clearInterval(interval);
-			element.style.opacity = 0;
-		}
-	}, 75);
+function delay(milliseconds){
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds);
+    });
 }
 
-const LOCK = 'lock';
-const FADE = 'fade';
-function logMsg(message, option){
-	return;
+const FADE = 'FADE';
+const LOCK = 'LOCK';
+
+let interval;
+async function logMsg(message, option){
 	const msgDiv = document.getElementById('msg');
-	if(msgDiv == null){
-		return;
+	
+	function fade(msgDiv) {
+		let opacity = 1;
+		msgDisplay = true;
+		interval = setInterval(() => {
+			msgDiv.style.opacity = (opacity -= 0.075) > 0 ? opacity : (clearInterval(interval), msgDiv.innerHTML = '', 0);
+		}, 75);
 	}
 
-	msgDiv.innerHTML = message;
-	msgDiv.style.opacity = 1;
 	clearInterval(interval);
-	if(option == FADE){
-		fadeOut(msgDiv);
-	}
-	else if(option == LOCK){
-		msgDiv.setAttribute('id', 'msg_lock');
-	}
+	msgDiv.style.opacity = 1;
+	msgDiv.innerHTML = message;
 
-	return;
+	if(option == FADE){ fade(msgDiv); }
+	else if(option == LOCK){ msgDiv.setAttribute('id', 'msg_lock'); }
 }
 
 function reset(){

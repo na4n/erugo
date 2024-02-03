@@ -13,17 +13,23 @@ const dist = function(loc1, loc2){
 	return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]);
 };
 
+
+
 function moveEntities(){
+	function dist(loc1, loc2) {
+		return Math.hypot(loc1[0] - loc2[0], loc1[1] - loc2[1]);
+	}	
+
 	function bfs(start, target) {
 		const done = new Map(), stack = [start];
 		const addToDone = (c) => done.set(c.toString(), true);
 		const withinBounds = (c) => c[0] >= 0 && c[0] < FLOORDIMENSION[0] && c[1] >= 0 && c[1] < FLOORDIMENSION[1];
 		target = new Set(target);
-
+	
 		while (stack.length) {
 			const cur = stack.shift();
 			addToDone(cur);
-
+	
 			const entityAtLoc = getEntityAtLocation(cur);
 			if (entityAtLoc && target.has(entityAtLoc)) return cur;
 	
@@ -31,22 +37,19 @@ function moveEntities(){
 	
 			neighbors.forEach(n => {
 				const nStr = n.toString();
-				if (!done.has(nStr) && withinBounds(n)) stack.push(n);
-				console.log(n);
+				if (!done.has(nStr) && withinBounds(n)){ 
+					stack.push(n);
+					addToDone(n);
+				}
 			});
 		}
 	}
 
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(MOBTYPES.includes(LOCATIONS[i].ch)){
-			//console.log('found a mob at ' + LOCATIONS[i].loc);
-			//console.log(FLOORDIMENSION);
 			let targetLoc = (LOCATIONS[i].target == false ? bfs(LOCATIONS[i].loc, [STAIRS, TRAINER]) : LOCATIONS[i].target);
 			LOCATIONS[i].target = targetLoc;
-			console.log(targetLoc);
-			continue;
 			const playerLoc = getLocationOfEntity(PLAYER);
-			const playerDist = dist(LOCATIONS[i].loc, playerLoc);
 			
 			if(dist(playerLoc, LOCATIONS[i].loc) <= 5){
 				targetLoc = playerLoc;
@@ -68,23 +71,31 @@ function moveEntities(){
 				tryloc = [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]];
 				switch (attempt % 2 == 0){
 					case true:
+						if(v == 0){
+							attempt++;
+							continue;
+						}
 						attempt >= 2 ? tryloc[0]-=v : tryloc[0]+=v;
 						break;
-					case false:
+					case false://not work?
+						if(h == 0){
+							attempt++;
+							continue;
+						}
 						attempt >= 2 ? tryloc[1]-=h : tryloc[1]+=h;
 						break;
 					default:
 						break;
 				};
-			
-				if(!getEntityAtLocation(tryloc)===null && getEntityAtLocation(tryloc) != '*'){
-					attempt++;
-				}
-				else{
-					//removeEntity(tryloc);
+
+				if(getEntityAtLocation(tryloc)===null || getEntityAtLocation(tryloc) == '*'){
+					if(removeEntity(tryloc)){
+						i -= 1;
+					} 
 					updateEntity(LOCATIONS[i].loc, tryloc);
 					break;
 				}
+				attempt++;
 			}
 	 	}
 	}
@@ -152,10 +163,10 @@ function removeEntity(loc){
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(LOCATIONS[i].loc[0] == loc[0] && LOCATIONS[i].loc[1] == loc[1]){
 			LOCATIONS.splice(i, 1);
-			return;
+			return true;
 		}
 	}
-	return;
+	return false;
 }
 
 function moveCharacter(keyPress){ //moves character
@@ -216,11 +227,8 @@ function enterStairs(){
 		const dungeonDiv = document.getElementById('dungeon');
 		dungeonDiv.innerHTML = '<div id="entity-layer"></div>'
 		dungeonDiv.insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));
-		console.log('printed out dungeon');
 		displayAllEntities();
-		console.log('displayed all entities');
 		updateStats(getPlayer());
-		console.log('updatedfafaf');
 	}
 
 	return;
@@ -244,9 +252,7 @@ function train(key){
 	return;
 }
 
-function keyHandler(keyPress){//maps key presses to actions
-	console.log(keyPress);
-
+async function keyHandler(keyPress){//maps key presses to actions
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
 		const move = moveCharacter(keyPress);
 		if(move < 0){
@@ -259,7 +265,16 @@ function keyHandler(keyPress){//maps key presses to actions
 		if(move == 1){
 			updateStats();
 		}
+
+		function handle(event){
+			event.preventDefault();
+		}
+		document.removeEventListener('keydown', divKeyDownHandler)
+		document.addEventListener('keydown', handle);
+		await delay(25);
 		moveEntities();
+		document.removeEventListener('keydown', handle);
+		document.addEventListener('keydown', divKeyDownHandler);
 	}
 	else if(keyPress == 'e'){
 		enterStairs();
@@ -284,7 +299,10 @@ function keyHandler(keyPress){//maps key presses to actions
 			document.addEventListener('keydown', secondKeyListen);
 		}
 		updateStats();
+		document.removeEventListener('keydown', divKeyDownHandler)
+		await delay(25);
 		moveEntities();
+		document.addEventListener('keydown', divKeyDownHandler);
 	}
 	
 	return;
