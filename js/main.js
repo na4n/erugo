@@ -1,4 +1,3 @@
-
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't'];
 
 function divKeyDownHandler(event) {
@@ -22,18 +21,21 @@ function divKeyDownHandler(event) {
 
 function enableDungeonEventListener() {
 	var myDiv = document.getElementById('dungeon');
+	
+	function enable(event){
+		document.addEventListener('keydown', divKeyDownHandler);
+		document.addEventListener('click', clickOutsideHandler);
+	}
 
-    myDiv.addEventListener('click', function () {
-        document.addEventListener('keydown', divKeyDownHandler);
-        document.addEventListener('click', clickOutsideHandler);
-    });
+	function clickOutsideHandler(event) {
+		var myDiv = document.getElementById('dungeon');
+		if (event === null || !myDiv.contains(event.target)) {
+			document.removeEventListener('keydown', divKeyDownHandler);
+			document.removeEventListener('click', clickOutsideHandler);
+		}
+	}	
 
-    function clickOutsideHandler(event) {
-        if (!myDiv.contains(event.target)) {
-            document.removeEventListener('keydown', divKeyDownHandler);
-            document.removeEventListener('click', clickOutsideHandler);
-        }
-    }
+    myDiv.addEventListener('click', enable);
 }
 
 function addArrowKeyButtons(){
@@ -89,6 +91,9 @@ async function logMsg(message, option){
 		}, 75);
 	}
 
+	if(msgDiv == null){
+		return;
+	}
 	clearInterval(interval);
 	msgDiv.style.opacity = 1;
 	msgDiv.innerHTML = message;

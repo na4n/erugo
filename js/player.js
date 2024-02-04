@@ -1,8 +1,8 @@
 class Player {
 	constructor(jsonPlayer){
 		if(jsonPlayer == null || jsonPlayer === undefined){
-			this.RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
-			this.trainStat = [0, 0, 0, 0];	
+			this.RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
+			this.trainStat = [10, 0, 0];	
 			this.currentFloor = 1;
 			this.gold = 0;
 		}
@@ -60,7 +60,6 @@ function updateStats(){
 	s = 'Gold: ' + p.getGold() + '<br><br>' + 
 	'Health: ' + getPlayer().getTrainStat()[0] + `<br>` + 
 	'Strength: ' + getPlayer().getTrainStat()[1] + `<br>` + 
-	//'Intelligence: ' + getPlayer().getTrainStat()[2] + `<br>` + 
 	'Defense: ' + getPlayer().getTrainStat()[2] + `<br>`;
 	
 	STATS.innerHTML = s;

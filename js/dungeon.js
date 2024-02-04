@@ -14,8 +14,6 @@ const dist = function(loc1, loc2){
 	return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]);
 };
 
-
-
 function moveEntities(){
 	function dist(loc1, loc2) {
 		return Math.hypot(loc1[0] - loc2[0], loc1[1] - loc2[1]);
@@ -58,7 +56,15 @@ function moveEntities(){
 
 			if(dist(targetLoc, LOCATIONS[i].loc) <= 1){
 				if(getEntityAtLocation(targetLoc) == PLAYER){
-					logMsg('Player was attacked', FADE);
+					if(getPlayer().getTrainStat()[0] > 0){
+						getPlayer().getTrainStat()[0]--; //change depending on entity
+						updateStats();
+						if(getPlayer().getTrainStat()[0] <= 0){
+							logMsg('You Lose', LOCK);
+						}
+						logMsg('Player was attacked', FADE);	
+					}
+					return;
 				}
 				continue;
 			}
