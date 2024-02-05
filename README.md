@@ -17,3 +17,5 @@ This is a list of things I need to do, or _we_ need to do if you want to fork an
 12. more interesting dungeons
 13. colored entities
 14. hall of fame { might require server :( }
+15. message backlog
+16. 
