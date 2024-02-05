@@ -123,13 +123,17 @@ function reset(){
 		msgDiv.setAttribute('id', 'msg');
 		msgDiv.innerHTML = '';
 	}
-	gameVOer = false;
-	localStorage.clear();
 	logMsg('Reset Game', FADE);
+
+	gameOver = false;
+	localStorage.clear();
+	USER = null;
+
 	const ddiv = document.getElementById('dungeon')
 	ddiv.innerHTML = '<div id="entity-layer"></div>';
 	dungeonInit();
 	updateStats();
+	
 	ddiv.click();
 }
 

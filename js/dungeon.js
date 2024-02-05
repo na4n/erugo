@@ -246,9 +246,10 @@ function attack(key){
 	let i = 0;
 	while(i < LOCATIONS.length){
 		if(MOBTYPES.includes(LOCATIONS[i].ch) && dist(charLoc, LOCATIONS[i].loc) <= 1){
-			logMsg('Player Attacked ' + LOCATIONS[i].ch, FADE);
+			logMsg('You Attacked ' + LOCATIONS[i].ch, FADE);
 			LOCATIONS[i].health--;
 			if(LOCATIONS[i].health <= 0){
+				logMsg('You Killed ' + LOCATIONS[i].ch, FADE);
 				removeEntity(LOCATIONS[i].loc);
 				return;
 			}
@@ -259,28 +260,23 @@ function attack(key){
 }
 
 async function keyHandler(keyPress){//maps key presses to actions
-	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
-		const move = moveCharacter(keyPress);
-		if(move < 0){
-			logMsg('Can\'t move there', FADE);
-		}
-		else{
-			displayAllEntities();
-		}
-
-		if(move == 1){
-			updateStats();
-		}
-
-		function handle(event){
-			event.preventDefault();
-		}
+	function preventDefaultHandler(event){ event.preventDefault(); }
+	async function lockMoveWait(){
 		document.removeEventListener('keydown', divKeyDownHandler)
-		document.addEventListener('keydown', handle);
+		document.addEventListener('keydown', preventDefaultHandler);
 		await delay(25);
 		moveEntities();
-		document.removeEventListener('keydown', handle);
+		document.removeEventListener('keydown', preventDefaultHandler);
 		document.addEventListener('keydown', divKeyDownHandler);
+	}
+
+	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
+		const move = moveCharacter(keyPress);
+		if(move < 0){ logMsg('Can\'t move there', FADE); }
+		else{ displayAllEntities(); }
+
+		if(move == 1){ updateStats(); }
+		lockMoveWait();
 	}
 	else if(keyPress == 'e'){
 		if(!gameOver){
@@ -292,12 +288,10 @@ async function keyHandler(keyPress){//maps key presses to actions
 		const charLoc = getLocationOfEntity(PLAYER);
 
 		function secondKeyListen(event){
-			if(VALID_KEYS.includes(event.key)){
-				document.removeEventListener('keydown', secondKeyListen);
-			}
-			else{
+			if([1,2,3].includes(event.key)){
 				train(event.key);
 			}
+			document.removeEventListener('keydown', secondKeyListen);
 		}
 
 		if((Math.abs(trainLoc[0]-charLoc[0]) + Math.abs(trainLoc[1]-charLoc[1])) > 1){
@@ -307,16 +301,11 @@ async function keyHandler(keyPress){//maps key presses to actions
 			document.addEventListener('keydown', secondKeyListen);
 		}
 		updateStats();
-		document.removeEventListener('keydown', divKeyDownHandler)
-		await delay(25);
-		moveEntities();
-		document.addEventListener('keydown', divKeyDownHandler);
+		lockMoveWait()
 	}
 	else if(keyPress == 'a'){
 		attack(keyPress);
-		await delay(25);
-		moveEntities();
-		displayAllEntities();
+		lockMoveWait();
 	}
 
 	return;
@@ -374,7 +363,7 @@ function generateFloor(floorNum){ //creates a floor
 		ENTITY_LOCATIONS.push(entity);
 	}
 	
-    const floorDimension = [Math.floor(Math.random()*15)+10, Math.floor(Math.random()*25)+15];
+    const floorDimension = [Math.floor(Math.random()*20)+20, Math.floor(Math.random()*20)+20];
     placeObject(floorDimension, TRAINER);
     placeObject(floorDimension, PLAYER);
     placeObject(floorDimension, STAIRS);
