@@ -52,7 +52,11 @@ function getPlayer(){
 function updateStats(){
 	const STATS = document.getElementById('stats');
 	const LEVEL = document.getElementById('level');
-	
+	const GOLD =  document.getElementById('gold');
+	const STRENGTH =  document.getElementById('strength');
+	const HEALTH =  document.getElementById('health');
+	const DEFENSE =  document.getElementById('defense');
+
 	const p = getPlayer();
 
 	if(p == null){
@@ -60,14 +64,13 @@ function updateStats(){
 		return;
 	}
 	
-	LEVEL.innerHTML = "Level: " + getPlayer().getFloorNumber();
-	
-	s = 'Gold: ' + p.getGold() + '<br><br>' + 
-	'Health: ' + getPlayer().getTrainStat()[0] + `<br>` + 
-	'Strength: ' + getPlayer().getTrainStat()[1] + `<br>` + 
-	'Defense: ' + getPlayer().getTrainStat()[2] + `<br>`;
-	
-	STATS.innerHTML = s;
+	LEVEL.innerHTML = "<b>Level:</b> " + getPlayer().getFloorNumber();
+	GOLD.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Gold:</b> ' + getPlayer().getGold();
+	STRENGTH.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Strenth:</b>' + getPlayer().getTrainStat()[1];
+	HEALTH.innerHTML = '<b>Health: </b>' + getPlayer().getTrainStat()[0];
+	DEFENSE.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Defense: </b>' + getPlayer().getTrainStat()[2];
+
+	return;
 }
 
 function debug(){

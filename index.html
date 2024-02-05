@@ -30,19 +30,31 @@
 	<body>
 		<div class="theme" onclick="toggleTheme()"></div>
 		<h1 style="text-align:center;font-family:Luminari;">Erugo</h1>
-		<div id="buttons" style="align-items:center;justify-content:center;text-align:center;">
-			<button onclick="reset()">Reset Game</button>
-			<button onclick="save()">Save Game</button>
+		<div id="abc" style="display:flex;">
+			<div id="level" style="display:inline-block;">Level: </div>
+			<div id="gold" style="display:inline-block;"></div>
+			<div id="contain" style="display:inline-block;margin-left:auto">
+				<div id="health" style="display:inline-block;margin-left:auto;"></div>
+				<div id="strength" style="display:inline-block;margin-left:auto;"></div>
+				<div id="defense" style="display:inline-block;margin-left:auto;"></div>	
+			</div>
 		</div>
+
+		<script>
+			const ddiv = document.getElementById('456');
+			ddiv.innerHTML = ddiv.innerHTML + '23';
+		</script>
 
 		<div id="dungeon">
 			<div id="entity-layer"></div>
 		</div>
 		<div id="msg" style="text-align:center;overflow:hidden;"></div>
 		<div id="arrow-keys"></div>
-
-		<div id="level"></div>
-		<div id="stats"></div>
+		<br>
+		<div id="buttons" style="align-items:center;justify-content:center;text-align:center;">
+			<button onclick="reset()">Reset Game</button>
+			<button onclick="save()">Save Game</button>
+		</div>
 	</body>
 
 </html>
