@@ -94,16 +94,17 @@ const FADE = 'FADE';
 const LOCK = 'LOCK';
 
 let interval;
+function fade(msgDiv) {
+	let opacity = 1;
+	msgDisplay = true;
+	interval = setInterval(() => {
+		msgDiv.style.opacity = (opacity -= 0.075) > 0 ? opacity : (clearInterval(interval), msgDiv.innerHTML = '', 0);
+	}, 75);
+}
+let backlog = [];
 async function logMsg(message, option){
 	const msgDiv = document.getElementById('msg');
 	
-	function fade(msgDiv) {
-		let opacity = 1;
-		msgDisplay = true;
-		interval = setInterval(() => {
-			msgDiv.style.opacity = (opacity -= 0.075) > 0 ? opacity : (clearInterval(interval), msgDiv.innerHTML = '', 0);
-		}, 75);
-	}
 
 	if(msgDiv == null){
 		return;
@@ -117,6 +118,12 @@ async function logMsg(message, option){
 }
 
 function reset(){
+	const msgDiv = document.getElementById('msg_lock');
+	if(msgDiv != null){
+		msgDiv.setAttribute('id', 'msg');
+		msgDiv.innerHTML = '';
+	}
+	gameVOer = false;
 	localStorage.clear();
 	logMsg('Reset Game', FADE);
 	const ddiv = document.getElementById('dungeon')

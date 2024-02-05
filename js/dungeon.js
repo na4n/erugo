@@ -10,9 +10,7 @@ const STAIRS = '\\';
 const TRAINER = '+';
 const GOLD = '*'
 
-const dist = function(loc1, loc2){
-	return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]);
-};
+const dist = function(loc1, loc2){return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]);};
 
 function moveEntities(){
 	function dist(loc1, loc2) {
@@ -200,9 +198,12 @@ function enterStairs(){
 	
 	if((Math.abs(stairsLoc[0]-charLoc[0]) + Math.abs(stairsLoc[1]-charLoc[1])) > 1){
 		logMsg('You are too far from the stairs', FADE);
+		return false;
 	}
 	else if(getPlayer().getFloorNumber() == 10){
 		logMsg('You win', LOCK);
+		gameOver = true;
+		return false;
 	}
 	else{
 		getPlayer().increaseFloorNumber();
@@ -214,7 +215,7 @@ function enterStairs(){
 		updateStats(getPlayer());
 	}
 
-	return;
+	return true;
 }
 
 function train(key){
@@ -250,7 +251,6 @@ function attack(key){
 			if(LOCATIONS[i].health <= 0){
 				removeEntity(LOCATIONS[i].loc);
 				return;
-				//break;
 			}
 		}
 		i++;
@@ -314,6 +314,7 @@ async function keyHandler(keyPress){//maps key presses to actions
 	}
 	else if(keyPress == 'a'){
 		attack(keyPress);
+		await delay(25);
 		moveEntities();
 		displayAllEntities();
 	}
@@ -345,9 +346,8 @@ function dungeonBackground(dungeonDimension){ //outputsFloor
 function generateFloor(floorNum){ //creates a floor
 	const ENTITY_LOCATIONS = [];
 	
-	function generateLocation(floorDimension){
-		return [Math.floor(Math.random()*floorDimension[0]), Math.floor(Math.random()*floorDimension[1])];
-	}
+	function generateLocation(floorDimension){ return [Math.floor(Math.random()*floorDimension[0]), Math.floor(Math.random()*floorDimension[1])]; }
+	function randomMob(floorNum){ return Math.floor(Math.random()*(Math.floor(floorNum/2))) % 6; }
 
 	function entityLocationIncludes(location){
 		for(let i = 0; i < ENTITY_LOCATIONS.length; i++){
@@ -358,20 +358,23 @@ function generateFloor(floorNum){ //creates a floor
 		return false;
 	}
 
-	function placeObject(floorDimension, object){
+	function placeObject(floorDimension, object, target, health){
 		let objectLocation;
 		do{
 			objectLocation = generateLocation(floorDimension);
 		} while(entityLocationIncludes(objectLocation));
-
-		ENTITY_LOCATIONS.push({ch: object, loc: objectLocation, target: false, health: 3});
-	}
-
-	function randomMob(floorNum){
-		return MOBTYPES[Math.floor(Math.random()*(Math.floor(floorNum/2))) % 6];
+		
+		const entity = {ch: object, loc: objectLocation};
+		if(target!==undefined){
+			entity.target = false;
+		}
+		if(health!==undefined){
+			entity.health = health;
+		}
+		ENTITY_LOCATIONS.push(entity);
 	}
 	
-    const floorDimension = [Math.floor(Math.random()*20)+20, Math.floor(Math.random()*20)+20];
+    const floorDimension = [Math.floor(Math.random()*15)+10, Math.floor(Math.random()*25)+15];
     placeObject(floorDimension, TRAINER);
     placeObject(floorDimension, PLAYER);
     placeObject(floorDimension, STAIRS);
@@ -379,7 +382,8 @@ function generateFloor(floorNum){ //creates a floor
         placeObject(floorDimension, GOLD);
     }
     for(let i = 0; i < Math.floor((floorNum*3)/2); i++){
-        placeObject(floorDimension, randomMob(floorNum));
+		const mobIndex = randomMob(floorNum);
+        placeObject(floorDimension, MOBTYPES[mobIndex], false, mobIndex+1);
     }
 
 	LOCATIONS = ENTITY_LOCATIONS;
