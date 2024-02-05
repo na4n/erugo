@@ -66,7 +66,7 @@ function updateStats(){
 	
 	LEVEL.innerHTML = "<b>Level:</b> " + getPlayer().getFloorNumber();
 	GOLD.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Gold:</b> ' + getPlayer().getGold();
-	STRENGTH.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Strength:</b>' + getPlayer().getTrainStat()[1];
+	STRENGTH.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Strength: </b>' + getPlayer().getTrainStat()[1];
 	HEALTH.innerHTML = '<b>Health: </b>' + getPlayer().getTrainStat()[0];
 	DEFENSE.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Defense: </b>' + getPlayer().getTrainStat()[2];
 
