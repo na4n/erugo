@@ -27,7 +27,7 @@
   position: absolute;
   top: 20px; /* Adjust top position as needed */
   right: 20px; /* Adjust right position as needed */
-  box-shadow: 0 0 40px rgba(240, 240, 240, 0.7); /* Sun glow effect */
+  box-shadow: 0 0 40px 20px rgba(240, 240, 240, 0.4); /* Sun glow effect */
 }
 
 #sun {
@@ -38,5 +38,5 @@
   position: absolute;
   top: 20px; /* Adjust top position as needed */
   right: 20px; /* Adjust right position as needed */
-  box-shadow: 0 0 20px rgba(253, 188, 75, 0.7); /* Sun glow effect */
+  box-shadow: 0 0 40px 20px rgba(253, 188, 75, 0.4); /* Sun glow effect */
 }
