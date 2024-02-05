@@ -61,6 +61,7 @@ function moveEntities(){
 						updateStats();
 						if(getPlayer().getTrainStat()[0] <= 0){
 							logMsg('You Lose', LOCK);
+							gameOver = true;
 						}
 						logMsg('Player was attacked', FADE);	
 					}
@@ -85,7 +86,6 @@ function moveEntities(){
 
 	displayAllEntities();
 }
-
 
 function displayAllEntities(locations){
 	function displayEntity(character, row, column){
@@ -180,9 +180,9 @@ function moveCharacter(keyPress){ //moves character
 			return 1;
 	}
 	
-	if(validLocation(nextLocation) && getEntityAtLocation(nextLocation) == null || getEntityAtLocation(nextLocation) == '*'){
+	if(validLocation(nextLocation) && getEntityAtLocation(nextLocation) == null || getEntityAtLocation(nextLocation) == GOLD){
 		let set = false;
-		if(getEntityAtLocation(nextLocation) == '*'){
+		if(getEntityAtLocation(nextLocation) == GOLD){
 			removeEntity(nextLocation);
 			getPlayer().setGold(getPlayer().getGold()+1);
 			set = true;
@@ -235,6 +235,29 @@ function train(key){
 	return;
 }
 
+function attack(key){
+	if(key != 'a'){
+		console.log('not a');
+		return;
+	}
+
+	const charLoc = getLocationOfEntity(PLAYER);
+	let i = 0;
+	while(i < LOCATIONS.length){
+		if(MOBTYPES.includes(LOCATIONS[i].ch) && dist(charLoc, LOCATIONS[i].loc) <= 1){
+			logMsg('Player Attacked ' + LOCATIONS[i].ch, FADE);
+			LOCATIONS[i].health--;
+			if(LOCATIONS[i].health <= 0){
+				removeEntity(LOCATIONS[i].loc);
+				return;
+				//break;
+			}
+		}
+		i++;
+	}
+	logMsg('You Attacked Air', FADE);
+}
+
 async function keyHandler(keyPress){//maps key presses to actions
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
 		const move = moveCharacter(keyPress);
@@ -260,7 +283,9 @@ async function keyHandler(keyPress){//maps key presses to actions
 		document.addEventListener('keydown', divKeyDownHandler);
 	}
 	else if(keyPress == 'e'){
-		enterStairs();
+		if(!gameOver){
+			enterStairs();
+		}
 	}
 	else if(keyPress == 't'){
 		const trainLoc = getLocationOfEntity(TRAINER);
@@ -287,7 +312,12 @@ async function keyHandler(keyPress){//maps key presses to actions
 		moveEntities();
 		document.addEventListener('keydown', divKeyDownHandler);
 	}
-	
+	else if(keyPress == 'a'){
+		attack(keyPress);
+		moveEntities();
+		displayAllEntities();
+	}
+
 	return;
 }
 
@@ -334,7 +364,7 @@ function generateFloor(floorNum){ //creates a floor
 			objectLocation = generateLocation(floorDimension);
 		} while(entityLocationIncludes(objectLocation));
 
-		ENTITY_LOCATIONS.push({ch: object, loc: objectLocation, target: false});
+		ENTITY_LOCATIONS.push({ch: object, loc: objectLocation, target: false, health: 3});
 	}
 
 	function randomMob(floorNum){
@@ -346,7 +376,7 @@ function generateFloor(floorNum){ //creates a floor
     placeObject(floorDimension, PLAYER);
     placeObject(floorDimension, STAIRS);
     for(let i = 0; i < 10; i++){
-        placeObject(floorDimension, '*');
+        placeObject(floorDimension, GOLD);
     }
     for(let i = 0; i < Math.floor((floorNum*3)/2); i++){
         placeObject(floorDimension, randomMob(floorNum));

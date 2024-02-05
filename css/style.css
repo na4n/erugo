@@ -15,10 +15,28 @@
 }
 
 #entity-layer {
-    float:left;
-    position: absolute;
+  float:left;
+  position: absolute;
 }
 
-#msg {
-  overflow: hidden;
+#moon {
+  width: 30px;
+  height: 30px;
+  background-color: #f0f0f0; /* Sun color */
+  border-radius: 50%;
+  position: absolute;
+  top: 20px; /* Adjust top position as needed */
+  right: 20px; /* Adjust right position as needed */
+  box-shadow: 0 0 40px rgba(240, 240, 240, 0.7); /* Sun glow effect */
+}
+
+#sun {
+  width: 30px;
+  height: 30px;
+  background-color: #fdbc4b; /* Sun color */
+  border-radius: 50%;
+  position: absolute;
+  top: 20px; /* Adjust top position as needed */
+  right: 20px; /* Adjust right position as needed */
+  box-shadow: 0 0 20px rgba(253, 188, 75, 0.7); /* Sun glow effect */
 }

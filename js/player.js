@@ -37,8 +37,13 @@ function savePlayer(){
 
 function getPlayer(){
 	if(USER == null){
-		USER = new Player(localStorage.getItem('player'));
-		savePlayer();
+		if(localStorage.getItem('player') == null){
+			USER = new Player();
+			savePlayer();
+		}
+		else{
+			USER = new Player(localStorage.getItem('player'));
+		}
 	}
 	
 	return USER;

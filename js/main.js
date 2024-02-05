@@ -1,5 +1,6 @@
-const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't'];
+const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't', 'a'];
 
+let gameOver = false;
 function divKeyDownHandler(event) {
 	function ctrlSecond(event){
 		if(event.key == 's'){
@@ -55,15 +56,28 @@ function setColorTheme(){
 		const body = document.body;
 		body.style.backgroundColor = 'white';
 		body.style.color = 'black';
+		const themeDiv = document.getElementsByClassName('theme');
+		themeDiv[0].setAttribute('id', 'sun');
 	}
 	else{
 		const body = document.body;
 		body.style.backgroundColor = 'black';
 		body.style.color = 'white';
+		const themeDiv = document.getElementsByClassName('theme');
+		themeDiv[0].setAttribute('id', 'moon');
 	}
 }
 
 function toggleTheme(){
+	const sunDiv = document.getElementById('sun');
+	const moonDiv = document.getElementById('moon');
+	if(sunDiv == null){
+		moonDiv.setAttribute('id', 'sun');
+	}
+	else{
+		sunDiv.setAttribute('id', 'moon');
+	}
+
 	let currentTheme = getCookie('theme');
 	currentTheme == null || currentTheme == '0' ? currentTheme = '-1' : currentTheme = '0';
 	setCookie('theme', currentTheme, 400);
