@@ -29,7 +29,36 @@
 
 	<body>
 		<div class="theme" onclick="toggleTheme()"></div>
-		<h1 style="text-align:center;font-family:Luminari;">Erugo</h1>
+		<h1 id="content" style="text-align:center;font-family:Luminari;margin:auto;height:fit-content;width:fit-content;">Erugo</h1>
+		<script>
+			document.getElementById('content').addEventListener('mouseover', function(event) {
+			const hoverDiv = document.createElement('div');
+			const theme = getCookie('theme');
+			if(theme == null || theme == '0'){
+				hoverDiv.style.backgroundColor = 'white';
+				hoverDiv.style.color = 'black';
+			}
+			else{
+				hoverDiv.style.backgroundColor = 'black';
+				hoverDiv.style.color = 'white';
+			}
+			  hoverDiv.className = 'hover-div';
+			  hoverDiv.innerHTML = 'This is Erugo, a dungeon crawler roguelike.<br><br>The purpose of the game is to get through ten levels without dying.<br><br>Entity List: <br>&emsp;@: Player (controlled by arrow keys)<br>&emsp;\\: Stairs (enter using "e" to get to the next level)<br>&emsp;+: Trainer (Pay 10 gold to train an attack or defense stat)<br>&emsp;*: Gold';
+			  
+			  hoverDiv.style.left = event.clientX + 'px';
+			  hoverDiv.style.top = event.clientY + 'px';
+		  
+			  document.body.appendChild(hoverDiv);
+		  
+			  hoverDiv.style.display = 'block';
+		  
+			  document.getElementById('content').addEventListener('mouseout', function() {
+				hoverDiv.style.display = 'none';
+				document.body.removeChild(hoverDiv);
+			  });
+			});
+		  </script>		  
+		
 		<div id="abc" style="display:flex">
 			<div id="level" style="display:inline-block;">Level: </div>
 			<div id="gold" style="display:inline-block;"></div>
@@ -39,11 +68,6 @@
 				<div id="defense" style="display:inline-block;margin-left:auto;"></div>	
 			</div>
 		</div>
-
-		<script>
-			const ddiv = document.getElementById('456');
-			ddiv.innerHTML = ddiv.innerHTML + '23';
-		</script>
 
 		<div id="dungeon">
 			<div id="entity-layer"></div>

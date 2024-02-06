@@ -20,23 +20,37 @@
 }
 
 #moon {
-  width: 30px;
-  height: 30px;
-  background-color: #f0f0f0; /* Sun color */
+  width: 25px;
+  height: 25px;
+  background-color: #f0f0f0;
   border-radius: 50%;
   position: absolute;
-  top: 20px; /* Adjust top position as needed */
-  right: 20px; /* Adjust right position as needed */
-  box-shadow: 0 0 40px 20px rgba(240, 240, 240, 0.4); /* Sun glow effect */
+  top: 10px;
+  right: 10px;
+  box-shadow: 0 0 40px 20px rgba(240, 240, 240, 0.3);
 }
 
 #sun {
-  width: 30px;
-  height: 30px;
-  background-color: #fdbc4b; /* Sun color */
+  width: 25px;
+  height: 25px;
+  background-color: #fdbc4b;
   border-radius: 50%;
   position: absolute;
-  top: 20px; /* Adjust top position as needed */
-  right: 20px; /* Adjust right position as needed */
-  box-shadow: 0 0 40px 20px rgba(253, 188, 75, 0.4); /* Sun glow effect */
+  top: 10px; 
+  right: 10px; 
+  box-shadow: 0 0 40px 20px rgba(253, 188, 75, 0.3);
+}
+
+h1:hover{
+  color: #228b22;
+}
+
+.hover-div {
+  position: fixed;
+  display: none;
+  background-color: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
