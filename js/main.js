@@ -1,6 +1,6 @@
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd'];
 
-let gameOver = localStorage.getItem('gameOver') === null ? false : Boolean(localStorage.getItem('gameOver'));
+let gameOver = localStorage.getItem('gameOver') === null || localStorage.getItem('gameOver') == 'false' ? false : true;
 function divKeyDownHandler(event) {
 	function ctrlSecond(event){
 		if(event.key == 's'){
@@ -79,8 +79,8 @@ function reset(){
 	d.style.top = '0px';
 	d.style.left = '0px';
 
-	gameOver = false;
 	localStorage.clear();
+	gameOver = false;
 
 	USER = null;
 
