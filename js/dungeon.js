@@ -83,6 +83,7 @@ function moveEntities(){
 		updateStats();  
 		gameOver = true;
 		localStorage.setItem('gameOver', true);
+		savePlayer();
 		displayGameOver();
 		return;
 	}
@@ -215,6 +216,12 @@ function train(key){
 	else{
 		p.setTrainStat(parseInt(key)-1);
 		p.setGold(p.getGold()-10);
+		if(key == 's'){
+			logMsg('Trained Strength', FADE);
+		}
+		else{
+			logMsg('Trained Defense', FADE);
+		}
 	}
 
 	return;
@@ -230,18 +237,19 @@ function attack(){
 			const dmg = Math.floor(((getPlayer().RNGSTAT[1] + getPlayer().getTrainStat()[1])) / 5);
 			dmg == 0 ? LOCATIONS[i].health -= 1 : LOCATIONS[i].health -= dmg; 
 			if(LOCATIONS[i].health <= 0){
-				logMsg('You Killed ' + LOCATIONS[i].ch, FADE);
+				logMsg('You killed ' + LOCATIONS[i].ch, FADE);
 				getPlayer().mobkilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
 				removeEntity(LOCATIONS[i].loc);
 			}
 			else{
-				logMsg('You Attacked ' + LOCATIONS[i].ch, FADE);
+				logMsg('You attacked ' + LOCATIONS[i].ch, FADE);
 			}
 			
 			return true;
 		}
 	}
 
+	logMsg('You attacked air', FADE);
 	return false;
 }
 
@@ -270,7 +278,7 @@ async function keyHandler(keyPress){//maps key presses to actions
 	else if(keyPress == 's' || keyPress == 'd'){
 		const trainLoc = getLocationOfEntity(TRAINER);
 		const charLoc = getLocationOfEntity(PLAYER);
-
+		console.log('train');
 		if((Math.abs(trainLoc[0]-charLoc[0]) + Math.abs(trainLoc[1]-charLoc[1])) > 1){
 			logMsg("You are too far from the trainer", FADE);
 		}
@@ -279,6 +287,9 @@ async function keyHandler(keyPress){//maps key presses to actions
 				keyPress == 's' ? getPlayer().setTrainStat(1) : getPlayer().setTrainStat(2);
 				getPlayer().setGold(getPlayer().getGold()-10);
 				updateStats();
+			}
+			else{
+				logMsg("You need 10 gold to train an attribute", FADE);
 			}
 		}
 	}
@@ -362,9 +373,9 @@ function displayGameOver(){
 	const dungeonBackground = document.getElementById('dungeon-background');//['%', '>', '~', '^', '&'];
 	const entityLayer = document.getElementById('entity-layer');
 	entityLayer.style.textAlign = 'center';
-	entityLayer.innerHTML = `<b>GAME OVER</b><br><br>Strength:${getPlayer().RNGSTAT[1]}<small>+${getPlayer().trainStat[1]}</small><br>Defense:${getPlayer().RNGSTAT[2]}<small>+${getPlayer().trainStat[2]}</small><br><br>Killed<br>%:${getPlayer().mobkilled[0]}<br>\>:${getPlayer().mobkilled[1]}<br>~:${getPlayer().mobkilled[2]}<br>^:${getPlayer().mobkilled[3]}<br>&:${getPlayer().mobkilled[4]}<br>`;
+	entityLayer.innerHTML = `<b>GAME OVER</b><br><br>Strength:${getPlayer().RNGSTAT[1]}<small> +${getPlayer().trainStat[1]}</small><br>Defense:${getPlayer().RNGSTAT[2]}<small> +${getPlayer().trainStat[2]}</small><br><br>Killed<br>%:${getPlayer().mobkilled[0]}<br>\>:${getPlayer().mobkilled[1]}<br>~:${getPlayer().mobkilled[2]}<br>^:${getPlayer().mobkilled[3]}<br>&:${getPlayer().mobkilled[4]}<br>`;
 	entityLayer.style.top = (dungeonBackground.clientHeight / 2) - (10 * CHARHEIGHT/2)+ 'px'; //- ( * CHARHEIGHT) + 'px';
-	entityLayer.style.left = ((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength:x+x'.length)/2) * CHARWIDTH)) + 1 + 'px'
+	entityLayer.style.left = ((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength:x +x'.length)/2) * CHARWIDTH)) + 1 + 'px'
 	return;
 }
 
