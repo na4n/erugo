@@ -9,6 +9,7 @@ const PLAYER = '@';
 const STAIRS = '\\';
 const TRAINER = '+';
 const GOLD = '*';
+const HEALTHPOTION = 'o';
 
 function moveEntities(){
 	function totalDistance(loc1, loc2) { return Math.hypot(loc1[0] - loc2[0], loc1[1] - loc2[1]); }	
@@ -283,13 +284,13 @@ async function keyHandler(keyPress){//maps key presses to actions
 			logMsg("You are too far from the trainer", FADE);
 		}
 		else{
-			if(getPlayer().getGold() >= 10){
+			if(getPlayer().getGold() >= 5){
 				keyPress == 's' ? getPlayer().setTrainStat(1) : getPlayer().setTrainStat(2);
-				getPlayer().setGold(getPlayer().getGold()-10);
+				getPlayer().setGold(getPlayer().getGold()-5);
 				updateStats();
 			}
 			else{
-				logMsg("You need 10 gold to train an attribute", FADE);
+				logMsg("You need 5 gold to train an attribute", FADE);
 			}
 		}
 	}
@@ -347,7 +348,7 @@ function generateFloor(floorNum){ //creates a floor
     placeObject(floorDimension, TRAINER);
     placeObject(floorDimension, PLAYER);
     placeObject(floorDimension, STAIRS);
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < Math.floor(Math.random()*5)+3; i++){
         placeObject(floorDimension, GOLD);
     }
     for(let i = 0; i < Math.floor((floorNum*3)/2); i++){
@@ -370,8 +371,15 @@ function saveData(){
 }
 
 function displayGameOver(){
-	const dungeonBackground = document.getElementById('dungeon-background');//['%', '>', '~', '^', '&'];
+	document.body.style.backgroundColor = 'black';
+	document.body.style.color = 'white';
+
+	const dungeonBackground = document.getElementById('dungeon-background');
 	const entityLayer = document.getElementById('entity-layer');
+	
+	const dungeon = document.getElementById('dungeon');
+	dungeon.style.color = 'white';
+	
 	entityLayer.style.textAlign = 'center';
 	entityLayer.innerHTML = `<b>GAME OVER</b><br><br>Strength:${getPlayer().RNGSTAT[1]}<small> +${getPlayer().trainStat[1]}</small><br>Defense:${getPlayer().RNGSTAT[2]}<small> +${getPlayer().trainStat[2]}</small><br><br>Killed<br>%:${getPlayer().mobkilled[0]}<br>\>:${getPlayer().mobkilled[1]}<br>~:${getPlayer().mobkilled[2]}<br>^:${getPlayer().mobkilled[3]}<br>&:${getPlayer().mobkilled[4]}<br>`;
 	entityLayer.style.top = (dungeonBackground.clientHeight / 2) - (10 * CHARHEIGHT/2)+ 'px'; //- ( * CHARHEIGHT) + 'px';

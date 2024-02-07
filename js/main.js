@@ -79,6 +79,11 @@ function reset(){
 	d.style.top = '0px';
 	d.style.left = '0px';
 
+	const dungeon = document.getElementById('dungeon');
+	dungeon.style.color = 'black';
+	document.body.style.backgroundColor = 'white';
+	document.body.style.color = 'black';
+
 	localStorage.clear();
 	gameOver = false;
 
