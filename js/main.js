@@ -1,6 +1,6 @@
-const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 't', 'a'];
+const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd'];
 
-let gameOver = false;
+let gameOver = localStorage.getItem('gameOver') === null || localStorage.getItem('gameOver') == 'false' ? false : true;
 function divKeyDownHandler(event) {
 	function ctrlSecond(event){
 		if(event.key == 's'){
@@ -39,51 +39,6 @@ function enableDungeonEventListener() {
     myDiv.addEventListener('click', enable);
 }
 
-function addArrowKeyButtons(){
-	if(/iPhone|iPad|iPod|Android|Windows Phone/i.test(navigator.userAgent)){
-		const keyDiv = document.getElementById('arrow-keys');
-		keyDiv.style.textAlign = 'center';
-		keyDiv.innerHTML = '<button onclick="keyHandler(\'ArrowUp\')">Up</button>' + 
-		'<br><button onclick="keyHandler(\'ArrowLeft\')">Left</button><button onclick="keyHandler(\'ArrowRight\')">Right</button><br>' +
-		'<button onclick="keyHandler(\'ArrowDown\')">Down</button><br><br>' + 
-		'<button onclick="keyHandler(\'e\')">E</button>';
-	}
-}
-
-function setColorTheme(){
-	const theme = getCookie('theme');
-	if(theme == null || theme == '0'){
-		const body = document.body;
-		body.style.backgroundColor = 'white';
-		body.style.color = 'black';
-		const themeDiv = document.getElementsByClassName('theme');
-		themeDiv[0].setAttribute('id', 'sun');
-	}
-	else{
-		const body = document.body;
-		body.style.backgroundColor = 'black';
-		body.style.color = 'white';
-		const themeDiv = document.getElementsByClassName('theme');
-		themeDiv[0].setAttribute('id', 'moon');
-	}
-}
-
-function toggleTheme(){
-	const sunDiv = document.getElementById('sun');
-	const moonDiv = document.getElementById('moon');
-	if(sunDiv == null){
-		moonDiv.setAttribute('id', 'sun');
-	}
-	else{
-		sunDiv.setAttribute('id', 'moon');
-	}
-
-	let currentTheme = getCookie('theme');
-	currentTheme == null || currentTheme == '0' ? currentTheme = '-1' : currentTheme = '0';
-	setCookie('theme', currentTheme, 400);
-	setColorTheme();
-}
-
 function delay(milliseconds){
     return new Promise(resolve => {
         setTimeout(resolve, milliseconds);
@@ -92,7 +47,6 @@ function delay(milliseconds){
 
 const FADE = 'FADE';
 const LOCK = 'LOCK';
-
 let interval;
 function fade(msgDiv) {
 	let opacity = 1;
@@ -118,28 +72,33 @@ async function logMsg(message, option){
 }
 
 function reset(){
-	const msgDiv = document.getElementById('msg_lock');
-	if(msgDiv != null){
-		msgDiv.setAttribute('id', 'msg');
-		msgDiv.innerHTML = '';
-	}
 	logMsg('Reset Game', FADE);
 
-	gameOver = false;
+	const d = document.getElementById('entity-layer');
+	d.innerHTML = '';
+	d.style.top = '0px';
+	d.style.left = '0px';
+
+	const dungeon = document.getElementById('dungeon');
+	dungeon.style.color = 'black';
+	document.body.style.backgroundColor = 'white';
+	document.body.style.color = 'black';
+
 	localStorage.clear();
+	gameOver = false;
+
 	USER = null;
 
-	const ddiv = document.getElementById('dungeon')
-	ddiv.innerHTML = '<div id="entity-layer"></div>';
-	dungeonInit();
+	dungeonRefresh();
 	updateStats();
 	
-	ddiv.click();
+	document.getElementById('dungeon').click();
 }
 
 function save(){
 	saveData();
 	savePlayer();
+	localStorage.setItem('gameOver', gameOver);
 	logMsg('Saved Game', FADE);
 }
 

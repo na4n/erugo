@@ -16,11 +16,9 @@
 			document.addEventListener('DOMContentLoaded', function() {
 				({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '16'));
 				document.getElementById('msg').style.height = `${getCharacterDimensions('times', 'H', '16').height}` + 'px';
-				setColorTheme();
-				addArrowKeyButtons();
 				enableDungeonEventListener();
 
-				dungeonInit();
+				dungeonRefresh();
 				updateStats();
 				document.getElementById('dungeon').click();
 			});
@@ -30,7 +28,7 @@
 	<body>
 		<div class="theme" onclick="toggleTheme()"></div>
 		<h1 style="text-align:center;font-family:Luminari;">Erugo</h1>
-		<div id="abc" style="display:flex">
+		<div id="abc" style="display:flex;flex-wrap:wrap;">
 			<div id="level" style="display:inline-block;">Level: </div>
 			<div id="gold" style="display:inline-block;"></div>
 			<div id="contain" style="display:inline-block;margin-left:auto">
@@ -40,16 +38,12 @@
 			</div>
 		</div>
 
-		<script>
-			const ddiv = document.getElementById('456');
-			ddiv.innerHTML = ddiv.innerHTML + '23';
-		</script>
-
+        <br>
 		<div id="dungeon">
-			<div id="entity-layer"></div>
+            <div id="dungeon-background"></div>
+			<div id="entity-layer" style="position:absolute;left:0px;top:0px"></div>
 		</div>
 		<div id="msg" style="text-align:center;overflow:hidden;"></div>
-		<div id="arrow-keys"></div>
 		<br>
 		<div id="buttons" style="align-items:center;justify-content:center;text-align:center;">
 			<button onclick="reset()">Reset Game</button>
