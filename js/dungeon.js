@@ -381,9 +381,9 @@ function displayGameOver(){
 	dungeon.style.color = 'white';
 	
 	entityLayer.style.textAlign = 'center';
-	entityLayer.innerHTML = `<b>GAME OVER</b><br><br>Strength:${getPlayer().RNGSTAT[1]}<small> +${getPlayer().trainStat[1]}</small><br>Defense:${getPlayer().RNGSTAT[2]}<small> +${getPlayer().trainStat[2]}</small><br><br>Killed<br>%:${getPlayer().mobkilled[0]}<br>\>:${getPlayer().mobkilled[1]}<br>~:${getPlayer().mobkilled[2]}<br>^:${getPlayer().mobkilled[3]}<br>&:${getPlayer().mobkilled[4]}<br>`;
+	entityLayer.innerHTML = `<b>GAME OVER</b><br><br>Strength: ${getPlayer().RNGSTAT[1]}<small>+${getPlayer().trainStat[1]}</small><br>Defense: ${getPlayer().RNGSTAT[2]}<small>+${getPlayer().trainStat[2]}</small><br><br>Killed<br>%: ${getPlayer().mobkilled[0]}<br>\>: ${getPlayer().mobkilled[1]}<br>~: ${getPlayer().mobkilled[2]}<br>^: ${getPlayer().mobkilled[3]}<br>&: ${getPlayer().mobkilled[4]}<br>`;
 	entityLayer.style.top = (dungeonBackground.clientHeight / 2) - (10 * CHARHEIGHT/2)+ 'px'; //- ( * CHARHEIGHT) + 'px';
-	entityLayer.style.left = ((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength:x +x'.length)/2) * CHARWIDTH)) + 1 + 'px'
+	entityLayer.style.left = ((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length)/2) * CHARWIDTH)) + 1 + 'px'
 	return;
 }
 
