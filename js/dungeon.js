@@ -355,10 +355,10 @@ function keyHandler(keyPress){
 		}
 	}
 	else if(keyPress == 's' || keyPress == 'd'){
+		mobAttack();
 		if(train(keyPress)){
 			lockMoveWait();
 		}
-		mobAttack();
 	}
 	else if(keyPress == 'a'){
 		attack(keyPress);
