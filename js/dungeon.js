@@ -220,7 +220,7 @@ function moveCharacter(keyPress){
 	if(validLocation(nextLocation) && [GOLD, HEALTHPOTION, null].includes(getEntityAtLocation(nextLocation))){
 		if(locationIndex(nextLocation, GOLD) != null){
 			getPlayer().gold += 1;
-			dungeonMessage('+1', 'gold');
+			dungeonMessage('+1', 'goldenrod');
 			let i = locationIndex(nextLocation, GOLD)
 			removeEntityDiv(i);
 			LOCATIONS.splice(i, 1);
@@ -229,7 +229,7 @@ function moveCharacter(keyPress){
 		else if(locationIndex(nextLocation, HEALTHPOTION) != null){
 			const currentHealth = getPlayer().health;
 			getPlayer().health = (currentHealth + 1) >= 10 ? 10 : currentHealth + 1;
-			dungeonMessage('+1', 'pink');
+			dungeonMessage('+1', 'deeppink');
 			let i = locationIndex(nextLocation, HEALTHPOTION)
 			removeEntityDiv(i);
 			LOCATIONS.splice(i, 1);
