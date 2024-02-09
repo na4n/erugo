@@ -1,3 +1,5 @@
+const VERSION = 1;
+
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd'];
 
 let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));

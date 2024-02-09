@@ -32,7 +32,7 @@ async function displayDamage(amount, attack){
 		position: 'absolute',
 		left: `${CHARWIDTH * (1 + loc[1])}px`,
 		top: `${CHARHEIGHT * (1 + loc[0])}px`,
-		backgroundColor: 'white'
+		backgroundColor: document.body.style.backgroundColor
 	});
 
 	entityLayerDiv.appendChild(div);		
@@ -440,6 +440,7 @@ function saveData(){
 	if(LOCATIONS != null && FLOORDIMENSION != null){
 		localStorage.setItem('loc', JSON.stringify(LOCATIONS));
 		localStorage.setItem('fd', JSON.stringify(FLOORDIMENSION));
+		localStorage.setItem('version', VERSION);
 	}
 	
 	return;
@@ -474,10 +475,12 @@ function dungeonRefresh(floor){
 		return false;
 	}
 	
-	if(!getData()){
+	if(!getData() || localStorage.getItem('version') === null || Number(localStorage.getItem('version')) != VERSION){
 		let floorNumber = floor === undefined ? 1 : floor;
 		generateFloor(floorNumber);
+		USER = new Player();
 		saveData();
+		savePlayer();
 	}
 	const dungeonDiv = document.getElementById('dungeon-background');
 	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
