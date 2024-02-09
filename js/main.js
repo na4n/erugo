@@ -2,18 +2,6 @@ const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a',
 
 let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
 function divKeyDownHandler(event) {
-	function ctrlSecond(event){
-		if(event.key == 's'){
-			event.preventDefault();
-			save();
-		}
-		document.removeEventListener('keydown', ctrlSecond);
-	}
-
-	if(event.key == 'Control'){
-		event.preventDefault();
-		document.addEventListener('keydown', ctrlSecond);
-	}
 	if (VALID_KEYS.includes(event.key)) {
 		event.preventDefault();
 		keyHandler(event.key);
@@ -49,16 +37,24 @@ const FADE = 'FADE';
 const LOCK = 'LOCK';
 let interval;
 let backlog = [];
+
+async function fade(msgDiv, rm) {
+    msgDiv.style.opacity = 1;
+    let interval = setInterval(() => {
+        if (msgDiv.style.opacity <= 0) {
+            clearInterval(interval);
+            if (rm === 'rm') {
+                setTimeout(() => {
+                    msgDiv.remove();
+                }, 1000);
+            }
+        } else {
+            msgDiv.style.opacity -= 0.075;
+        }
+    }, 100);
+}
 async function logMsg(message, option){
 	const msgDiv = document.getElementById('msg');
-	
-	function fade(msgDiv) {
-		let opacity = 1;
-		msgDisplay = true;
-		interval = setInterval(() => {
-			msgDiv.style.opacity = (opacity -= 0.075) > 0 ? opacity : (clearInterval(interval), msgDiv.innerHTML = '', 0);
-		}, 75);
-	}
 	
 	if(msgDiv == null){
 		return;
@@ -67,8 +63,12 @@ async function logMsg(message, option){
 	msgDiv.style.opacity = 1;
 	msgDiv.innerHTML = message;
 
-	if(option == FADE){ fade(msgDiv); }
-	else if(option == LOCK){ msgDiv.setAttribute('id', 'msg_lock'); }
+	if(option == FADE){ 
+		fade(msgDiv); 
+	}
+	else if(option == LOCK){ 
+		msgDiv.setAttribute('id', 'msg_lock'); 
+	}
 }
 
 function reset(){

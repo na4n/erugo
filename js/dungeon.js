@@ -1,4 +1,4 @@
-let LOCATIONS;
+let LOCATIONS; //0: PLAYER, 1: TRAINER, 2: STAIRS
 let FLOORDIMENSION;
 
 let CHARHEIGHT;
@@ -11,8 +11,37 @@ const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
 
+async function displayDamage(amount, attack){
+	let loc = structuredClone(LOCATIONS[0].loc);
+	while(getEntityAtLocation(loc) !== null){
+		attack ? loc[0]++ : loc[0]--;
+	}
+
+	const entityLayerDiv = document.getElementById('entity-layer');
+	if(document.getElementById('dmg') !== null){
+		document.getElementById('dmg').remove();
+	}
+
+	const div = document.createElement('div');
+	div.id = 'dmg';
+	div.innerHTML = `<b>${attack ? '+' : '-'}${amount.toFixed(2)}</b>`;
+	Object.assign(div.style, {
+		opacity: '1',
+		color: (attack ? 'green' : 'red'),
+		float: 'left',
+		position: 'absolute',
+		left: `${CHARWIDTH * (1 + loc[1])}px`,
+		top: `${CHARHEIGHT * (1 + loc[0])}px`,
+		backgroundColor: 'white'
+	});
+
+	entityLayerDiv.appendChild(div);		
+	await fade(div, 'rm');
+	return;
+}
+
 function mobAttack(){
-	const playerLocation = getLocationOfEntity(PLAYER);
+	const playerLocation = LOCATIONS[0].loc;
 	let playerDamage = 0;
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(MOBTYPES.includes(LOCATIONS[i].ch) && oneSpaceAway(LOCATIONS[i].loc, playerLocation) <= 1){
@@ -35,24 +64,31 @@ function mobAttack(){
 	}
 
 	playerDamage /= (getPlayer().RNGSTAT[1] + getPlayer().trainStat[1])/5;
-	if(playerDamage > 0){ 
+	if(playerDamage > 0){	
 		getPlayer().health -= playerDamage; 
+
+		if(getPlayer().health <= 0){
+			getPlayer().health = 0;
+			gameOver = -1;
+			localStorage.setItem('gameOver', gameOver);
+			savePlayer();
+			displayGameOver(gameOver);
+		}
+		else{
+			displayDamage(playerDamage, false);
+		}
+		updateStats();  
+		return getPlayer().health <= 0;
 	}
 
-	if(getPlayer().health <= 0){
-		gameOver = -1;
-		getPlayer().health = 0;
-		localStorage.setItem('gameOver', -1);
-		savePlayer();
-		displayGameOver(-1);
-	}
-
-	updateStats();  
+	return false;
 }
 
 function moveEntities(){
 	function totalDistance(loc1, loc2) { return Math.hypot(loc1[0] - loc2[0], loc1[1] - loc2[1]); }	
+	
 	const withinBounds = (c) => c[0] >= 0 && c[0] < FLOORDIMENSION[0] && c[1] >= 0 && c[1] < FLOORDIMENSION[1];
+	
 	function bfs(start, target) {
 		const done = new Map(), stack = [start];
 		const addToDone = (c) => done.set(c.toString(), true);
@@ -63,8 +99,10 @@ function moveEntities(){
 			addToDone(cur);
 	
 			const entityAtLoc = getEntityAtLocation(cur);
-			if (entityAtLoc && target.has(entityAtLoc)) return cur;
-	
+			if (entityAtLoc && target.has(entityAtLoc)){
+				return cur;
+			}
+			
 			const neighbors = [[cur[0]+1,cur[1]], [cur[0]-1,cur[1]], [cur[0],cur[1]+1], [cur[0],cur[1]-1]];
 	
 			neighbors.forEach(n => {
@@ -81,7 +119,7 @@ function moveEntities(){
 		if(MOBTYPES.includes(LOCATIONS[i].ch)){
 			let targetLoc = (LOCATIONS[i].target == false ? bfs(LOCATIONS[i].loc, [STAIRS, TRAINER]) : LOCATIONS[i].target);
 			LOCATIONS[i].target = targetLoc;
-			const playerLoc = getLocationOfEntity(PLAYER);
+			const playerLoc = LOCATIONS[0].loc;
 			
 			if(totalDistance(playerLoc, LOCATIONS[i].loc) <= 5){
 				targetLoc = playerLoc;
@@ -94,52 +132,33 @@ function moveEntities(){
 			let j = 0;
 			while(j < 4){
 				if(withinBounds(moveDistances[j]) && (getEntityAtLocation(moveDistances[j])===null || getEntityAtLocation(moveDistances[j] == GOLD))){
-					if(removeEntity(moveDistances[j])){ i -= 1; }
-					updateEntity(LOCATIONS[i].loc, moveDistances[j]);
+					const div = document.getElementById(i);
+					div.style.left = CHARWIDTH * (moveDistances[j][1]+1) + 'px';
+					div.style.top = CHARHEIGHT * (moveDistances[j][0]+1) + 'px';
+					LOCATIONS[i].loc = moveDistances[j];
+					
 					break;
 				}
 				j++;
 			}
 	 	}
 	}
-
-	displayAllEntities();
+	return;
 }
 
-function displayAllEntities(){
-	function displayEntity(character, row, column){
-		const topPx = `${CHARHEIGHT * (1+row)}px`;
-		const leftPx = `${CHARWIDTH * (1+column)}px`;
-	
-		const enttiyLayerDiv = document.getElementById('entity-layer');
-		const addDiv = `<div id="entity"style=float:left;position:absolute;left:${leftPx};top:${topPx};>${character}</div>`;
-		enttiyLayerDiv.insertAdjacentHTML('beforeend', addDiv);
-	
-		return true;
-	}
-
-	if(gameOver){ 
-		return false; 
-	}
-
-
+function entitiesRefresh(){
 	document.getElementById('entity-layer').innerHTML = '';
-	for(let i = 0; i < LOCATIONS.length; i++){
-		if(!displayEntity(LOCATIONS[i].ch, LOCATIONS[i].loc[0], LOCATIONS[i].loc[1])){
-			console.log(`failed to display ${LOCATIONS[i].ch} at [${LOCATIONS[i].loc[0]}, ${LOCATIONS[i].loc[0]}]`);
+	for(let i=0; i < LOCATIONS.length; i++){
+		const div = `<div id="${i}"style=float:left;position:absolute;left:${CHARWIDTH * (1+LOCATIONS[i].loc[1])}px;top:${CHARHEIGHT * (1+LOCATIONS[i].loc[0])}px;>${LOCATIONS[i].ch}</div>`
+		const entityLayerDiv = document.getElementById('entity-layer');
+		const a = document.getElementById(i);
+		if(a !== null){
+			a.remove();
 		}
+		entityLayerDiv.insertAdjacentHTML('beforeend', div);
 	}
-	
-	return true;
-}
 
-function getLocationOfEntity(entityCharacter){
-	for(let i = 0; i < LOCATIONS.length; i++){
-		if(LOCATIONS[i].ch == entityCharacter){
-			return LOCATIONS[i].loc;
-		}
-	}
-	return null;
+	return true;
 }
 
 function getEntityAtLocation(loc){
@@ -152,37 +171,34 @@ function getEntityAtLocation(loc){
 	return null;
 }
 
-function updateEntity(loc, newLoc){
-	for(let i = 0; i < LOCATIONS.length; i++){
-		if(LOCATIONS[i].loc[0] == loc[0] && LOCATIONS[i].loc[1] == loc[1]){
-			LOCATIONS[i].loc[0] = newLoc[0];
-			LOCATIONS[i].loc[1] = newLoc[1];
-			return true;
-		}
-	}
-	
-	return false;
-}
 
-function removeEntity(loc){
-	for(let i = 0; i < LOCATIONS.length; i++){
-		if(LOCATIONS[i].loc[0] == loc[0] && LOCATIONS[i].loc[1] == loc[1]){
-			LOCATIONS.splice(i, 1);
-			return true;
-		}
+function removeEntityDiv(id){
+	const rdiv = document.getElementById(id);
+	rdiv.remove();
+	for(let i = id+1; i < LOCATIONS.length; i++){
+		const currDiv = document.getElementById(i);
+		currDiv.setAttribute('id', i-1);
 	}
-	return false;
 }
 
 function moveCharacter(keyPress){
 	function validLocation(loc){ 
 		return 0 <= loc[0] && loc[0] < FLOORDIMENSION[0] && 0 <= loc[1] && loc[1] < FLOORDIMENSION[1];  
 	}
+
+	function locationIndex(location, char){
+		for(let i = 0; i < LOCATIONS.length; i++){
+			if(LOCATIONS[i].loc[0] == location[0] && LOCATIONS[i].loc[1] == location[1]){
+				if(LOCATIONS[i].ch == char){
+					return i;
+				}
+			}
+		}
 	
-	const playerLocation = getLocationOfEntity(PLAYER);
-	if(playerLocation == null){ 
-		return false; 
+		return null;
 	}
+
+	const playerLocation = LOCATIONS[0].loc;
 	
 	let nextLocation;
 	if(keyPress == 'ArrowUp'){ 
@@ -202,18 +218,27 @@ function moveCharacter(keyPress){
 	}
 
 	if(validLocation(nextLocation) && [GOLD, HEALTHPOTION, null].includes(getEntityAtLocation(nextLocation))){
-		if(getEntityAtLocation(nextLocation) == GOLD){
-			removeEntity(nextLocation);
+		if(locationIndex(nextLocation, GOLD) != null){
 			getPlayer().gold += 1;
+			let i = locationIndex(nextLocation, GOLD)
+			removeEntityDiv(i);
+			LOCATIONS.splice(i, 1);
 			updateStats();
 		}
-		else if(getEntityAtLocation(nextLocation) == HEALTHPOTION){
-			removeEntity(nextLocation);
-			getPlayer().health = (getPlayer().health + 1) >= 10 ? 10 : getPlayer().health + 1;
+		else if(locationIndex(nextLocation, HEALTHPOTION) != null){
+			const currentHealth = getPlayer().health;
+			getPlayer().health = (currentHealth + 1) >= 10 ? 10 : currentHealth + 1;
+			let i = locationIndex(nextLocation, HEALTHPOTION)
+			removeEntityDiv(i);
+			LOCATIONS.splice(i, 1);
 			updateStats();
 		}
-		updateEntity(playerLocation, nextLocation);
-		displayAllEntities();
+
+		const char = document.getElementById('0');
+		char.style.left = CHARWIDTH * (nextLocation[1]+1) + 'px';
+		char.style.top = CHARHEIGHT * (nextLocation[0]+1) + 'px';
+		LOCATIONS[0].loc = nextLocation;
+
 		return true;
 	}
 
@@ -222,8 +247,8 @@ function moveCharacter(keyPress){
 }
 
 function enterStairs(){
-	const stairsLoc = getLocationOfEntity(STAIRS);
-	const charLoc = getLocationOfEntity(PLAYER);
+	const stairsLoc = LOCATIONS[2].loc;
+	const charLoc =  LOCATIONS[0].loc;
 	
 	if(oneSpaceAway(stairsLoc, charLoc) > 1){
 		logMsg('You are too far from the stairs', FADE);
@@ -247,7 +272,7 @@ function enterStairs(){
 }
 
 function train(key){
-	if(oneSpaceAway(getLocationOfEntity(PLAYER), getLocationOfEntity(TRAINER)) > 1){
+	if(oneSpaceAway(LOCATIONS[0].loc, LOCATIONS[1].loc) > 1){
 		logMsg("You are too far from the trainer", FADE);
 		return false;
 	}
@@ -269,22 +294,24 @@ const oneSpaceAway = function(loc1, loc2){
 };
 
 function attack(){	
-	const charLoc = getLocationOfEntity(PLAYER);
-	let i = 0;
+	const charLoc = LOCATIONS[0].loc;
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(oneSpaceAway(charLoc, LOCATIONS[i].loc) <= 1 && MOBTYPES.includes(LOCATIONS[i].ch)){
 			let dmg = Math.floor(((getPlayer().RNGSTAT[0] + getPlayer().getTrainStat()[0])) / 5);
-			dmg == 0 ? LOCATIONS[i].health -= (1 + Math.round(Math.random())) : LOCATIONS[i].health -= (dmg + Math.round(Math.random())); 
-			console.log(LOCATIONS[i].health);
+			const attackDamage = dmg == 0 ? 1 + (Math.round(Math.random() * 20) / 20) : (dmg + (Math.round(Math.random() * 20) / 20));
+			LOCATIONS[i].health -= attackDamage;
 			if(LOCATIONS[i].health <= 0){
 				logMsg('You killed ' + LOCATIONS[i].ch, FADE);
 				getPlayer().mobkilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
-				removeEntity(LOCATIONS[i].loc);
+				removeEntityDiv(i);
+				LOCATIONS.splice(i, 1);
 			}
 			else{
 				logMsg('You attacked ' + LOCATIONS[i].ch, FADE);
 			}
-			
+
+			displayDamage(attackDamage, true);
+
 			return true;
 		}
 	}
@@ -298,7 +325,6 @@ function keyHandler(keyPress){
 		function blockInput(event){
 			event.preventDefault();
 		}
-
 		document.removeEventListener('keydown', divKeyDownHandler)
 		document.addEventListener('keydown', blockInput);
 		await delay(25);
@@ -313,13 +339,14 @@ function keyHandler(keyPress){
 
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
 		moveCharacter(keyPress);
-		lockMoveWait();
-		mobAttack();
+		if(!mobAttack()){
+			lockMoveWait();
+		}
 	}
 	else if(keyPress == 'e'){
 		if(!gameOver){ 
+			mobAttack();
 			enterStairs();
-			//save(); 
 		}
 	}
 	else if(keyPress == 's' || keyPress == 'd'){
@@ -330,14 +357,13 @@ function keyHandler(keyPress){
 	}
 	else if(keyPress == 'a'){
 		attack(keyPress);
-		displayAllEntities();
 		mobAttack();
 	}
 
 	return;
 }
 
-function dungeonBackground(dungeonDimension){ //outputsFloor
+function dungeonBackground(dungeonDimension){
     let stringRepresentation = "";
 
     for(let j = 0; j < dungeonDimension[1]+2; j++){ 
@@ -358,7 +384,7 @@ function dungeonBackground(dungeonDimension){ //outputsFloor
     return stringRepresentation;
 }
 
-function generateFloor(floorNum){ //creates a floor
+function generateFloor(floorNum){
 	const ENTITY_LOCATIONS = [];
 	
 	function generateLocation(floorDimension){ 
@@ -383,20 +409,16 @@ function generateFloor(floorNum){ //creates a floor
 			objectLocation = generateLocation(floorDimension);
 		} while(entityLocationIncludes(objectLocation));
 		
-		const entity = {ch: object, loc: objectLocation};
-		if(target!==undefined){ 
-			entity.target = false; 
-		}
-		if(health!==undefined){ 
-			entity.health = health; 
-		}
-		
+		const entity = { ch: object, loc: objectLocation };
+		if (target !== undefined) entity.target = false;
+		if (health !== undefined) entity.health = health;
+			
 		ENTITY_LOCATIONS.push(entity);
 	}
 	
     const floorDimension = [Math.floor(Math.random()*15)+15, Math.floor(Math.random()*15)+15];
-    placeObject(floorDimension, TRAINER);
     placeObject(floorDimension, PLAYER);
+	placeObject(floorDimension, TRAINER);
     placeObject(floorDimension, STAIRS);
     for(let i = 0; i < Math.floor(Math.random()*5)+3; i++){
         placeObject(floorDimension, GOLD);
@@ -437,6 +459,7 @@ function displayGameOver(endCondition){
 	if(endCondition > 0){
 		stars();
 	}
+
 	return;
 }
 
@@ -463,7 +486,7 @@ function dungeonRefresh(floor){
 		return;
 	}
 	
-	displayAllEntities();
+	entitiesRefresh();
 	return;
 }
 
