@@ -18,3 +18,30 @@
   float:left;
   position: absolute;
 }
+
+h1:hover{
+  color: grey;
+  cursor: help;
+}
+
+#moon {
+  width: 15px;
+  height: 15px;
+  background-color: #f0f0f0; /* Sun color */
+  border-radius: 50%;
+  position: absolute;
+  top: 20px; /* Adjust top position as needed */
+  right: 20px; /* Adjust right position as needed */
+  box-shadow: 0 0 10px 10px rgba(240, 240, 240, 0.4); /* Sun glow effect */
+}
+
+#sun {
+  width: 15px;
+  height: 15px;
+  background-color: #fdbc4b; /* Sun color */
+  border-radius: 50%;
+  position: absolute;
+  top: 20px; /* Adjust top position as needed */
+  right: 20px; /* Adjust right position as needed */
+  box-shadow: 0 0 10px 10px rgba(253, 188, 75, 0.4); /* Sun glow effect */
+}

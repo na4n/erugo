@@ -11,9 +11,47 @@ const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
 
+function mobAttack(){
+	const playerLocation = getLocationOfEntity(PLAYER);
+	let playerDamage = 0;
+	for(let i = 0; i < LOCATIONS.length; i++){
+		if(MOBTYPES.includes(LOCATIONS[i].ch) && oneSpaceAway(LOCATIONS[i].loc, playerLocation) <= 1){
+			if(LOCATIONS[i].ch == '%'){ 
+				playerDamage += (1 + Math.round(Math.random())); 
+			}
+			else if(LOCATIONS[i].ch == '>'){ 
+				playerDamage += (2 + Math.round(Math.random())); 
+			}
+			else if(LOCATIONS[i].ch == '~'){ 
+				playerDamage += (3 + Math.round(Math.random())); 
+			}
+			else if(LOCATIONS[i].ch == '^'){ 
+				playerDamage += (4 + Math.round(Math.random()));
+			}
+			else if(LOCATIONS[i].ch == '&'){ 
+				playerDamage += (5 + Math.round(Math.random())); 
+			}	
+		}
+	}
+
+	playerDamage /= (getPlayer().RNGSTAT[1] + getPlayer().trainStat[1])/5;
+	if(playerDamage > 0){ 
+		getPlayer().health -= playerDamage; 
+	}
+
+	if(getPlayer().health <= 0){
+		gameOver = -1;
+		getPlayer().health = 0;
+		localStorage.setItem('gameOver', -1);
+		savePlayer();
+		displayGameOver(-1);
+	}
+
+	updateStats();  
+}
+
 function moveEntities(){
 	function totalDistance(loc1, loc2) { return Math.hypot(loc1[0] - loc2[0], loc1[1] - loc2[1]); }	
-
 	const withinBounds = (c) => c[0] >= 0 && c[0] < FLOORDIMENSION[0] && c[1] >= 0 && c[1] < FLOORDIMENSION[1];
 	function bfs(start, target) {
 		const done = new Map(), stack = [start];
@@ -38,7 +76,6 @@ function moveEntities(){
 			});
 		}
 	}
-	let playerDamage = 0;
 
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(MOBTYPES.includes(LOCATIONS[i].ch)){
@@ -50,17 +87,7 @@ function moveEntities(){
 				targetLoc = playerLoc;
 			}
 
-			if(totalDistance(targetLoc, LOCATIONS[i].loc) <= 1){
-				if(getEntityAtLocation(targetLoc) == PLAYER){
-					if(LOCATIONS[i].ch == '%'){ playerDamage += 1; }
-					else if(LOCATIONS[i].ch == '>'){ playerDamage += 2; }
-					else if(LOCATIONS[i].ch == '~'){ playerDamage += 3; }
-					else if(LOCATIONS[i].ch == '^'){ playerDamage += 4; }
-					else if(LOCATIONS[i].ch == '&'){ playerDamage += 5; }	
-				}
-
-				continue;
-			}
+			if(totalDistance(LOCATIONS[i].loc, targetLoc) <= 1){ continue; }
 
 			const moveDistances = [[LOCATIONS[i].loc[0]+1, LOCATIONS[i].loc[1]], [LOCATIONS[i].loc[0]-1, LOCATIONS[i].loc[1]], [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]+1], [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]-1]];
 			moveDistances.sort((a, b) => totalDistance(targetLoc, a) - totalDistance(targetLoc, b));
@@ -75,47 +102,35 @@ function moveEntities(){
 			}
 	 	}
 	}
-	playerDamage /= (getPlayer().RNGSTAT[2] + getPlayer().trainStat[2])/5;
-	if(playerDamage > 0){ getPlayer().trainStat[0] -= playerDamage; }
-	updateStats();
-
-	if(getPlayer().trainStat[0] <= 0){
-		getPlayer().trainStat[0] = 0;
-		updateStats();  
-		gameOver = true;
-		localStorage.setItem('gameOver', true);
-		savePlayer();
-		displayGameOver();
-		return;
-	}
 
 	displayAllEntities();
 }
 
-function displayAllEntities(locations){
+function displayAllEntities(){
 	function displayEntity(character, row, column){
-		const topPx = '' + CHARHEIGHT * (1+row) + 'px';
-		const leftPx = '' + CHARWIDTH * (1+column) + 'px';
+		const topPx = `${CHARHEIGHT * (1+row)}px`;
+		const leftPx = `${CHARWIDTH * (1+column)}px`;
 	
-		const d = document.getElementById('entity-layer');
-		const addDiv = '<div id="entity"style=float:left;position:absolute;left:' + leftPx + ';top:' + topPx + ';>' + character + '</div>';
+		const enttiyLayerDiv = document.getElementById('entity-layer');
+		const addDiv = `<div id="entity"style=float:left;position:absolute;left:${leftPx};top:${topPx};>${character}</div>`;
+		enttiyLayerDiv.insertAdjacentHTML('beforeend', addDiv);
 	
-		d.insertAdjacentHTML('beforeend', addDiv);
-	
-		return addDiv;
+		return true;
 	}
-	
-	if(locations == null){
-		locations = LOCATIONS;
+
+	if(gameOver){ 
+		return false; 
 	}
 
 
 	document.getElementById('entity-layer').innerHTML = '';
-	for(let i = 0; i < locations.length; i++){
-		displayEntity(locations[i].ch, locations[i].loc[0], locations[i].loc[1]);
+	for(let i = 0; i < LOCATIONS.length; i++){
+		if(!displayEntity(LOCATIONS[i].ch, LOCATIONS[i].loc[0], LOCATIONS[i].loc[1])){
+			console.log(`failed to display ${LOCATIONS[i].ch} at [${LOCATIONS[i].loc[0]}, ${LOCATIONS[i].loc[0]}]`);
+		}
 	}
 	
-	return;
+	return true;
 }
 
 function getLocationOfEntity(entityCharacter){
@@ -142,10 +157,11 @@ function updateEntity(loc, newLoc){
 		if(LOCATIONS[i].loc[0] == loc[0] && LOCATIONS[i].loc[1] == loc[1]){
 			LOCATIONS[i].loc[0] = newLoc[0];
 			LOCATIONS[i].loc[1] = newLoc[1];
+			return true;
 		}
 	}
 	
-	return null;
+	return false;
 }
 
 function removeEntity(loc){
@@ -158,44 +174,65 @@ function removeEntity(loc){
 	return false;
 }
 
-function moveCharacter(keyPress){ //moves character
-	function validLocation(loc){
-		return 0 <= loc[0] && loc[0] < FLOORDIMENSION[0] && 0 <= loc[1] && loc[1] < FLOORDIMENSION[1];
+function moveCharacter(keyPress){
+	function validLocation(loc){ 
+		return 0 <= loc[0] && loc[0] < FLOORDIMENSION[0] && 0 <= loc[1] && loc[1] < FLOORDIMENSION[1];  
 	}
 	
 	const playerLocation = getLocationOfEntity(PLAYER);
-	if(playerLocation == null){ return -1; }
+	if(playerLocation == null){ 
+		return false; 
+	}
 	
 	let nextLocation;
-	if(keyPress == 'ArrowUp'){ nextLocation = [playerLocation[0]-1, playerLocation[1]]; }
-	else if(keyPress == 'ArrowDown'){ nextLocation = [playerLocation[0]+1, playerLocation[1]]; }
-	else if(keyPress == 'ArrowLeft'){ nextLocation = [playerLocation[0], playerLocation[1]-1]; }
-	else if(keyPress == 'ArrowRight'){ nextLocation = [playerLocation[0], playerLocation[1]+1]; }
-	else{ return -1; }
+	if(keyPress == 'ArrowUp'){ 
+		nextLocation = [playerLocation[0]-1, playerLocation[1]]; 
+	}
+	else if(keyPress == 'ArrowDown'){ 
+		nextLocation = [playerLocation[0]+1, playerLocation[1]]; 
+	}
+	else if(keyPress == 'ArrowLeft'){ 
+		nextLocation = [playerLocation[0], playerLocation[1]-1]; 
+	}
+	else if(keyPress == 'ArrowRight'){ 
+		nextLocation = [playerLocation[0], playerLocation[1]+1]; 
+	}
+	else{ 
+		return false; 
+	}
 
-	if(validLocation(nextLocation) && getEntityAtLocation(nextLocation) == null || getEntityAtLocation(nextLocation) == GOLD){
-		let set = false;
+	if(validLocation(nextLocation) && [GOLD, HEALTHPOTION, null].includes(getEntityAtLocation(nextLocation))){
 		if(getEntityAtLocation(nextLocation) == GOLD){
 			removeEntity(nextLocation);
-			getPlayer().setGold(getPlayer().getGold()+1);
-			set = true;
+			getPlayer().gold += 1;
+			updateStats();
+		}
+		else if(getEntityAtLocation(nextLocation) == HEALTHPOTION){
+			removeEntity(nextLocation);
+			getPlayer().health = (getPlayer().health + 1) >= 10 ? 10 : getPlayer().health + 1;
+			updateStats();
 		}
 		updateEntity(playerLocation, nextLocation);
-		return set;
+		displayAllEntities();
+		return true;
 	}
+
+	logMsg('Cannot move there', FADE);
+	return false;
 }
 
 function enterStairs(){
 	const stairsLoc = getLocationOfEntity(STAIRS);
 	const charLoc = getLocationOfEntity(PLAYER);
 	
-	if((Math.abs(stairsLoc[0]-charLoc[0]) + Math.abs(stairsLoc[1]-charLoc[1])) > 1){
+	if(oneSpaceAway(stairsLoc, charLoc) > 1){
 		logMsg('You are too far from the stairs', FADE);
 		return false;
 	}
 	else if(getPlayer().getFloorNumber() == 10){
-		logMsg('You win', LOCK);
-		gameOver = true;
+		gameOver = 1;
+		localStorage.setItem('gameOver', 1);
+		displayGameOver(1);
 		return false;
 	}
 	else{
@@ -204,39 +241,41 @@ function enterStairs(){
 		localStorage.removeItem('loc');
 		dungeonRefresh(getPlayer().getFloorNumber());
 		updateStats();
+		save();
+		return true;
 	}
-
-	return true;
 }
 
 function train(key){
-	let p = getPlayer();
-	if(p.getGold() < 10){
-		logMsg('Not enough gold, need 10 to train 1 attribute', FADE);
+	if(oneSpaceAway(getLocationOfEntity(PLAYER), getLocationOfEntity(TRAINER)) > 1){
+		logMsg("You are too far from the trainer", FADE);
+		return false;
+	}
+
+	if(getPlayer().gold < 5){
+		logMsg('Not enough gold, need 5 to train', FADE);
+		return false;
 	}
 	else{
-		p.setTrainStat(parseInt(key)-1);
-		p.setGold(p.getGold()-10);
-		if(key == 's'){
-			logMsg('Trained Strength', FADE);
-		}
-		else{
-			logMsg('Trained Defense', FADE);
-		}
+		key == 's' ? getPlayer().trainStat[0]++ : getPlayer().trainStat[1]++;
+		getPlayer().gold -= 5;
+		key == 's' ? logMsg('Trained Strength', FADE) : logMsg('Trained Defense', FADE);
+		updateStats();
+		return true;
 	}
-
-	return;
 }
+const oneSpaceAway = function(loc1, loc2){ 
+	return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]); 
+};
 
-function attack(){
-	const oneSpaceAway = function(loc1, loc2){ return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]); };
-	
+function attack(){	
 	const charLoc = getLocationOfEntity(PLAYER);
 	let i = 0;
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(oneSpaceAway(charLoc, LOCATIONS[i].loc) <= 1 && MOBTYPES.includes(LOCATIONS[i].ch)){
-			const dmg = Math.floor(((getPlayer().RNGSTAT[1] + getPlayer().getTrainStat()[1])) / 5);
-			dmg == 0 ? LOCATIONS[i].health -= 1 : LOCATIONS[i].health -= dmg; 
+			let dmg = Math.floor(((getPlayer().RNGSTAT[0] + getPlayer().getTrainStat()[0])) / 5);
+			dmg == 0 ? LOCATIONS[i].health -= (1 + Math.round(Math.random())) : LOCATIONS[i].health -= (dmg + Math.round(Math.random())); 
+			console.log(LOCATIONS[i].health);
 			if(LOCATIONS[i].health <= 0){
 				logMsg('You killed ' + LOCATIONS[i].ch, FADE);
 				getPlayer().mobkilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
@@ -254,49 +293,45 @@ function attack(){
 	return false;
 }
 
-async function keyHandler(keyPress){//maps key presses to actions
-	function preventDefaultHandler(event){ event.preventDefault(); }
+function keyHandler(keyPress){
 	async function lockMoveWait(){
+		function blockInput(event){
+			event.preventDefault();
+		}
+
 		document.removeEventListener('keydown', divKeyDownHandler)
-		document.addEventListener('keydown', preventDefaultHandler);
+		document.addEventListener('keydown', blockInput);
 		await delay(25);
 		moveEntities();
-		document.removeEventListener('keydown', preventDefaultHandler);
+		document.removeEventListener('keydown', blockInput);
 		document.addEventListener('keydown', divKeyDownHandler);
 	}
 
-	if(gameOver){ return; }
+	if(gameOver){ 
+		return; 
+	}
 
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
-		const move = moveCharacter(keyPress);
-		move < 0 ? logMsg('Can\'t move there', FADE) : displayAllEntities();
-		if(move == 1){ updateStats(); }
+		moveCharacter(keyPress);
 		lockMoveWait();
+		mobAttack();
 	}
 	else if(keyPress == 'e'){
-		if(!gameOver){ enterStairs(); }
+		if(!gameOver){ 
+			enterStairs();
+			//save(); 
+		}
 	}
 	else if(keyPress == 's' || keyPress == 'd'){
-		const trainLoc = getLocationOfEntity(TRAINER);
-		const charLoc = getLocationOfEntity(PLAYER);
-		console.log('train');
-		if((Math.abs(trainLoc[0]-charLoc[0]) + Math.abs(trainLoc[1]-charLoc[1])) > 1){
-			logMsg("You are too far from the trainer", FADE);
+		if(train(keyPress)){
+			lockMoveWait();
 		}
-		else{
-			if(getPlayer().getGold() >= 5){
-				keyPress == 's' ? getPlayer().setTrainStat(1) : getPlayer().setTrainStat(2);
-				getPlayer().setGold(getPlayer().getGold()-5);
-				updateStats();
-			}
-			else{
-				logMsg("You need 5 gold to train an attribute", FADE);
-			}
-		}
+		mobAttack();
 	}
 	else if(keyPress == 'a'){
 		attack(keyPress);
 		displayAllEntities();
+		mobAttack();
 	}
 
 	return;
@@ -305,14 +340,20 @@ async function keyHandler(keyPress){//maps key presses to actions
 function dungeonBackground(dungeonDimension){ //outputsFloor
     let stringRepresentation = "";
 
-    for(let j = 0; j < dungeonDimension[1]+2; j++){ stringRepresentation += "-"; }
+    for(let j = 0; j < dungeonDimension[1]+2; j++){ 
+		stringRepresentation += "-"; 
+	}
     stringRepresentation += "<br>";
 	for(let i = 0; i < dungeonDimension[0]; i++){
         stringRepresentation += "|";
-        for(let j = 0; j < dungeonDimension[1]; j++){ stringRepresentation += "&nbsp;" }
+        for(let j = 0; j < dungeonDimension[1]; j++){ 
+			stringRepresentation += "&nbsp;" 
+		}
         stringRepresentation += "|<br>";
     }
-    for(let j = 0; j < dungeonDimension[1]+2; j++){ stringRepresentation += "-"; }
+    for(let j = 0; j < dungeonDimension[1]+2; j++){ 
+		stringRepresentation += "-"; 
+	}
 
     return stringRepresentation;
 }
@@ -320,8 +361,12 @@ function dungeonBackground(dungeonDimension){ //outputsFloor
 function generateFloor(floorNum){ //creates a floor
 	const ENTITY_LOCATIONS = [];
 	
-	function generateLocation(floorDimension){ return [Math.floor(Math.random()*floorDimension[0]), Math.floor(Math.random()*floorDimension[1])]; }
-	function randomMob(floorNum){ return Math.floor(Math.random()*(Math.floor(floorNum/2))) % 6; }
+	function generateLocation(floorDimension){ 
+		return [Math.floor(Math.random()*floorDimension[0]), Math.floor(Math.random()*floorDimension[1])]; 
+	}
+	function randomMob(floorNum){ 
+		return Math.floor(Math.random()*(Math.floor(floorNum/2))) % 6; 
+	}
 
 	function entityLocationIncludes(location){
 		for(let i = 0; i < ENTITY_LOCATIONS.length; i++){
@@ -339,8 +384,13 @@ function generateFloor(floorNum){ //creates a floor
 		} while(entityLocationIncludes(objectLocation));
 		
 		const entity = {ch: object, loc: objectLocation};
-		if(target!==undefined){ entity.target = false; }
-		if(health!==undefined){ entity.health = health; }
+		if(target!==undefined){ 
+			entity.target = false; 
+		}
+		if(health!==undefined){ 
+			entity.health = health; 
+		}
+		
 		ENTITY_LOCATIONS.push(entity);
 	}
 	
@@ -355,6 +405,9 @@ function generateFloor(floorNum){ //creates a floor
 		const mobIndex = randomMob(floorNum);
         placeObject(floorDimension, MOBTYPES[mobIndex], false, mobIndex+1);
     }
+	for(let i = 0; i < Math.floor(Math.random()*2); i++){
+		placeObject(floorDimension, HEALTHPOTION);
+	}
 
 	LOCATIONS = ENTITY_LOCATIONS;
 	FLOORDIMENSION = floorDimension;
@@ -370,20 +423,20 @@ function saveData(){
 	return;
 }
 
-function displayGameOver(){
-	document.body.style.backgroundColor = 'black';
-	document.body.style.color = 'white';
-
+function displayGameOver(endCondition){
+	let finalText = endCondition > 0 ? '&#x1F389YOU WON&#x1F389' : 'GAME OVER'; 
+	
 	const dungeonBackground = document.getElementById('dungeon-background');
 	const entityLayer = document.getElementById('entity-layer');
 	
-	const dungeon = document.getElementById('dungeon');
-	dungeon.style.color = 'white';
-	
 	entityLayer.style.textAlign = 'center';
-	entityLayer.innerHTML = `<b>GAME OVER</b><br><br>Strength: ${getPlayer().RNGSTAT[1]}<small>+${getPlayer().trainStat[1]}</small><br>Defense: ${getPlayer().RNGSTAT[2]}<small>+${getPlayer().trainStat[2]}</small><br><br>Killed<br>%: ${getPlayer().mobkilled[0]}<br>\>: ${getPlayer().mobkilled[1]}<br>~: ${getPlayer().mobkilled[2]}<br>^: ${getPlayer().mobkilled[3]}<br>&: ${getPlayer().mobkilled[4]}<br>`;
-	entityLayer.style.top = (dungeonBackground.clientHeight / 2) - (10 * CHARHEIGHT/2)+ 'px'; //- ( * CHARHEIGHT) + 'px';
-	entityLayer.style.left = ((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length)/2) * CHARWIDTH)) + 1 + 'px'
+	entityLayer.innerHTML = `<b>${finalText}</b><br><br>Strength: ${getPlayer().RNGSTAT[0]}<small>+${getPlayer().trainStat[0]}</small><br>Defense: ${getPlayer().RNGSTAT[1]}<small>+${getPlayer().trainStat[1]}</small><br><br>Killed<br>%: ${getPlayer().mobkilled[0]}<br>\>: ${getPlayer().mobkilled[1]}<br>~: ${getPlayer().mobkilled[2]}<br>^: ${getPlayer().mobkilled[3]}<br>&: ${getPlayer().mobkilled[4]}<br>`;
+	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - (10 * CHARHEIGHT/2)}px`;
+	entityLayer.style.left = `${((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length)/2) * CHARWIDTH)) + 1}px`;
+
+	if(endCondition > 0){
+		stars();
+	}
 	return;
 }
 
@@ -404,13 +457,43 @@ function dungeonRefresh(floor){
 		saveData();
 	}
 	const dungeonDiv = document.getElementById('dungeon-background');
-	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true); //insertAdjacentHTML('beforeend', dungeonBackground(FLOORDIMENSION, true));
-	if(gameOver){
-		displayGameOver();
+	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
+	if(gameOver != 0){
+		displayGameOver(gameOver);
 		return;
 	}
 	
 	displayAllEntities();
-
 	return;
+}
+
+function stars(){
+	var defaults = {
+		spread: 360,
+		ticks: 50,
+		gravity: 0,
+		decay: 0.94,
+		startVelocity: 30,
+		colors: ['FFE400', 'FFBD00', 'E89400', 'FFCA6C', 'FDFFB8']
+	  };
+	  
+	  function shoot() {
+		confetti({
+		  ...defaults,
+		  particleCount: 40,
+		  scalar: 1.2,
+		  shapes: ['star']
+		});
+	  
+		confetti({
+		  ...defaults,
+		  particleCount: 10,
+		  scalar: 0.75,
+		  shapes: ['circle']
+		});
+	  }
+	  
+	  setTimeout(shoot, 0);
+	  setTimeout(shoot, 100);
+	  setTimeout(shoot, 200);
 }
