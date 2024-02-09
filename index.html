@@ -25,6 +25,13 @@
 				document.getElementById('dungeon').click();
 				
 				setTheme();
+
+				const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+				if (isMobileDevice) {
+					const buttonDiv = document.getElementById('arrow');
+					buttonDiv.innerHTML = '<button id="input" onclick="keyHandler(`ArrowUp`);">Up</button><br><button id="input" onclick="keyHandler(`ArrowLeft`);">Left</button><button id="input" onclick="keyHandler(`ArrowRight`);">Right</button><br><button id="input" onclick="keyHandler(`ArrowDown`);">Down</button><br><br>';
+					buttonDiv.innerHTML += '<button id="input" onclick="keyHandler(`e`)">E</button><a>&emsp;</a><button id="input" onclick="keyHandler(`s`)">S</button><button id="input" onclick="keyHandler(`d`);"">D</button><a>&emsp;</a><button id="input" onclick="keyHandler(`a`);">A</button><br><br>'
+				}
 			});
 		</script>
 	</head>
@@ -50,6 +57,7 @@
 		</div>
 		<div id="msg" style="text-align:center;overflow:hidden;"></div>
 		<br>
+		<div id="arrow" style="align-items:center;justify-content:center;text-align:center;"></div>
 		<div id="buttons" style="align-items:center;justify-content:center;text-align:center;">
 			<button onclick="reset()">Reset Game</button>
 			<button onclick="save()">Save Game</button>

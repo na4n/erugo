@@ -24,7 +24,7 @@ async function displayDamage(amount, attack){
 
 	const div = document.createElement('div');
 	div.id = 'dmg';
-	div.innerHTML = `<b>${attack ? '+' : '-'}${amount.toFixed(2)}</b>`;
+	div.innerHTML = `<b>-${amount.toFixed(2)}</b>`;
 	Object.assign(div.style, {
 		opacity: '1',
 		color: (attack ? 'green' : 'red'),

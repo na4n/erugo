@@ -45,3 +45,9 @@ h1:hover{
   right: 20px; /* Adjust right position as needed */
   box-shadow: 0 0 10px 10px rgba(253, 188, 75, 0.4); /* Sun glow effect */
 }
+
+#input{
+  padding: 5px 8px;
+  !font-size: large;
+  text-align: center;
+}
