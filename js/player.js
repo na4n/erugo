@@ -1,10 +1,11 @@
 class Player {
 	constructor(jsonPlayer){
 		if(jsonPlayer == null || jsonPlayer === undefined){
-			this.RNGSTAT = [Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1, Math.floor(Math.random()*10)+1];
-			this.trainStat = [10.00, 0, 0];	
+			this.RNGSTAT = [Math.floor(Math.random()*5)+5, Math.floor(Math.random()*5)+5];
+			this.trainStat = [0, 0];	
 			this.currentFloor = 1;
 			this.gold = 0;
+			this.health = 10.0;
 			this.mobkilled = [0, 0, 0, 0, 0];
 		}
 		else{
@@ -13,6 +14,7 @@ class Player {
 			this.trainStat = jsonObject.trainStat;
 			this.currentFloor = jsonObject.currentFloor;
 			this.gold = jsonObject.gold;
+			this.health = jsonObject.health;
 			this.mobkilled = jsonObject.mobkilled;
 		}
 	}
@@ -66,11 +68,11 @@ function updateStats(){
 		return;
 	}
 	
-	LEVEL.innerHTML = "<b>Level:</b> " + getPlayer().getFloorNumber();
-	GOLD.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Gold:</b> ' + getPlayer().getGold();
-	STRENGTH.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Strength: </b>' + getPlayer().getTrainStat()[1];
-	HEALTH.innerHTML = '<b>Health: </b>' + getPlayer().getTrainStat()[0].toFixed(2);
-	DEFENSE.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Defense: </b>' + getPlayer().getTrainStat()[2];
+	LEVEL.innerHTML = "<b>Level:</b> " + getPlayer().currentFloor;
+	GOLD.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Gold:</b> ' + getPlayer().gold;
+	STRENGTH.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Strength: </b>' + getPlayer().trainStat[0];
+	HEALTH.innerHTML = '<b>Health: </b>' + getPlayer().health.toFixed(2);
+	DEFENSE.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;<b>Defense: </b>' + getPlayer().trainStat[1];
 
 	return;
 }

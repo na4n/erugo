@@ -1,6 +1,6 @@
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd'];
 
-let gameOver = localStorage.getItem('gameOver') === null || localStorage.getItem('gameOver') == 'false' ? false : true;
+let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
 function divKeyDownHandler(event) {
 	function ctrlSecond(event){
 		if(event.key == 's'){
@@ -48,18 +48,18 @@ function delay(milliseconds){
 const FADE = 'FADE';
 const LOCK = 'LOCK';
 let interval;
-function fade(msgDiv) {
-	let opacity = 1;
-	msgDisplay = true;
-	interval = setInterval(() => {
-		msgDiv.style.opacity = (opacity -= 0.075) > 0 ? opacity : (clearInterval(interval), msgDiv.innerHTML = '', 0);
-	}, 75);
-}
 let backlog = [];
 async function logMsg(message, option){
 	const msgDiv = document.getElementById('msg');
 	
-
+	function fade(msgDiv) {
+		let opacity = 1;
+		msgDisplay = true;
+		interval = setInterval(() => {
+			msgDiv.style.opacity = (opacity -= 0.075) > 0 ? opacity : (clearInterval(interval), msgDiv.innerHTML = '', 0);
+		}, 75);
+	}
+	
 	if(msgDiv == null){
 		return;
 	}
@@ -79,15 +79,10 @@ function reset(){
 	d.style.top = '0px';
 	d.style.left = '0px';
 
-	const dungeon = document.getElementById('dungeon');
-	dungeon.style.color = 'black';
-	document.body.style.backgroundColor = 'white';
-	document.body.style.color = 'black';
-
 	localStorage.clear();
-	gameOver = false;
+	gameOver = 0;
 
-	USER = null;
+	USER = null, LOCATIONS = null, FLOORDIMENSION = null;
 
 	dungeonRefresh();
 	updateStats();
@@ -112,6 +107,32 @@ function getCharacterDimensions(fontType, character, fontSize) { // LLM Generate
 	document.body.removeChild(hiddenElement);
 
 	return { height: rect.height, width: rect.width };
+}
+
+function setTheme(){
+	const theme = document.getElementById('theme');
+	if(getCookie('theme') == null){
+		setCookie('theme', 'sun', 400);
+	}
+	theme.innerHTML = `<div id='${getCookie('theme')}'></div>`;
+	if(getCookie('theme') == 'sun'){
+		document.body.style.backgroundColor = 'white';
+		document.body.style.color = 'black';
+	}
+	else{
+		document.body.style.backgroundColor = 'black';
+		document.body.style.color = 'white';
+	}
+}
+
+function toggleTheme(){
+	if(getCookie('theme') == 'sun'){
+		setCookie('theme', 'moon', 400);
+	}
+	else{
+		setCookie('theme', 'sun', 400);
+	}
+	setTheme();
 }
 
 const setCookie = (name, value, days) => { document.cookie = `${name}=${value}; expires=${new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString()}; path=/`; };
