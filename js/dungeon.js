@@ -11,10 +11,10 @@ const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
 
-async function displayDamage(amount, attack){
+async function dungeonMessage(msg, col){
 	let loc = structuredClone(LOCATIONS[0].loc);
 	while(getEntityAtLocation(loc) !== null){
-		attack ? loc[0]++ : loc[0]--;
+		loc[0]--;
 	}
 
 	const entityLayerDiv = document.getElementById('entity-layer');
@@ -24,10 +24,10 @@ async function displayDamage(amount, attack){
 
 	const div = document.createElement('div');
 	div.id = 'dmg';
-	div.innerHTML = `<b>-${amount.toFixed(2)}</b>`;
+	div.innerHTML = `<b>${msg}</b>`;
 	Object.assign(div.style, {
 		opacity: '1',
-		color: (attack ? 'green' : 'red'),
+		color: col,
 		float: 'left',
 		position: 'absolute',
 		left: `${CHARWIDTH * (1 + loc[1])}px`,
@@ -75,7 +75,7 @@ function mobAttack(){
 			displayGameOver(gameOver);
 		}
 		else{
-			displayDamage(playerDamage, false);
+			dungeonMessage('-'+playerDamage.toFixed(2), 'red');
 		}
 		updateStats();  
 		return getPlayer().health <= 0;
@@ -220,6 +220,7 @@ function moveCharacter(keyPress){
 	if(validLocation(nextLocation) && [GOLD, HEALTHPOTION, null].includes(getEntityAtLocation(nextLocation))){
 		if(locationIndex(nextLocation, GOLD) != null){
 			getPlayer().gold += 1;
+			dungeonMessage('+1', 'gold');
 			let i = locationIndex(nextLocation, GOLD)
 			removeEntityDiv(i);
 			LOCATIONS.splice(i, 1);
@@ -228,6 +229,7 @@ function moveCharacter(keyPress){
 		else if(locationIndex(nextLocation, HEALTHPOTION) != null){
 			const currentHealth = getPlayer().health;
 			getPlayer().health = (currentHealth + 1) >= 10 ? 10 : currentHealth + 1;
+			dungeonMessage('+1', 'pink');
 			let i = locationIndex(nextLocation, HEALTHPOTION)
 			removeEntityDiv(i);
 			LOCATIONS.splice(i, 1);
@@ -311,7 +313,7 @@ function attack(){
 				logMsg('You attacked ' + LOCATIONS[i].ch, FADE);
 			}
 
-			displayDamage(attackDamage, true);
+			dungeonMessage('-' + attackDamage.toFixed(2), 'green');
 
 			return true;
 		}
@@ -339,10 +341,12 @@ function keyHandler(keyPress){
 	}
 
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
-		moveCharacter(keyPress);
-		if(!mobAttack()){
+		const validMove = moveCharacter(keyPress);
+		const playerNotDead = !mobAttack();
+		if(validMove && playerNotDead){
 			lockMoveWait();
 		}
+		
 	}
 	else if(keyPress == 'e'){
 		if(!gameOver){ 
