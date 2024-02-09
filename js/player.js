@@ -54,6 +54,7 @@ function getPlayer(){
 }
 
 function updateStats(){
+	console.log(getPlayer().currentFloor);
 	const STATS = document.getElementById('stats');
 	const LEVEL = document.getElementById('level');
 	const GOLD =  document.getElementById('gold');

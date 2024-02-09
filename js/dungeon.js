@@ -261,10 +261,11 @@ function enterStairs(){
 		return false;
 	}
 	else{
-		getPlayer().increaseFloorNumber();
+		getPlayer().currentFloor++;
+		updateStats();
 		localStorage.removeItem('fd');
 		localStorage.removeItem('loc');
-		dungeonRefresh(getPlayer().getFloorNumber());
+		dungeonRefresh(getPlayer().currentFloor);
 		updateStats();
 		save();
 		return true;
@@ -478,7 +479,6 @@ function dungeonRefresh(floor){
 	if(!getData() || localStorage.getItem('version') === null || Number(localStorage.getItem('version')) != VERSION){
 		let floorNumber = floor === undefined ? 1 : floor;
 		generateFloor(floorNumber);
-		USER = new Player();
 		saveData();
 		savePlayer();
 	}
