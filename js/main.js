@@ -1,4 +1,4 @@
-const VERSION = 1;
+const VERSION = 2;
 
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd'];
 
@@ -53,20 +53,22 @@ async function fade(msgDiv, rm) {
         } else {
             msgDiv.style.opacity -= 0.075;
         }
-    }, 100);
+    }, 50);
 }
+
 async function logMsg(message, option){
 	const msgDiv = document.getElementById('msg');
 	
 	if(msgDiv == null){
 		return;
 	}
+	
 	clearInterval(interval);
 	msgDiv.style.opacity = 1;
 	msgDiv.innerHTML = message;
 
 	if(option == FADE){ 
-		fade(msgDiv); 
+		await fade(msgDiv); 
 	}
 	else if(option == LOCK){ 
 		msgDiv.setAttribute('id', 'msg_lock'); 
@@ -82,9 +84,8 @@ function reset(){
 	d.style.left = '0px';
 
 	localStorage.clear();
+	USER = null, FLOORDIMENSION = null, LOCATIONS = null;
 	gameOver = 0;
-
-	USER = null, LOCATIONS = null, FLOORDIMENSION = null;
 
 	dungeonRefresh();
 	updateStats();
@@ -99,7 +100,7 @@ function save(){
 	logMsg('Saved Game', FADE);
 }
 
-function getCharacterDimensions(fontType, character, fontSize) { // LLM Generated
+function getCharacterDimensions(fontType, character, fontSize) {
 	const hiddenElement = document.createElement('div');
 	hiddenElement.style.cssText = `font-size: ${fontSize}; font-family: ${fontType}; position: absolute; left: -9999px;`;
 	hiddenElement.textContent = character;
@@ -117,7 +118,7 @@ function setTheme(){
 		setCookie('theme', 'sun', 400);
 	}
 	theme.innerHTML = `<div id='${getCookie('theme')}'></div>`;
-	if(getCookie('theme') == 'sun'){
+	if(getCookie('theme') == 'sun' || getCookie('theme') === null){
 		document.body.style.backgroundColor = 'white';
 		document.body.style.color = 'black';
 	}
