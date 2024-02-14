@@ -2,10 +2,6 @@
   font-family: monospace;
 }
 
-[data-text]::after {
-  content: attr(data-text);
-}
-
 @font-face {
   font-family: 'Barbarian';
   font-style: normal;
@@ -20,6 +16,15 @@
 	width: fit-content;
 	cursor: pointer;
 }
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  user-select: none; 
+}
+
 
 #entity-layer {
   float:left;

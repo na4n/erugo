@@ -6,14 +6,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
 		<link rel="icon" type="image/x-icon" href="images/favicon.png">
-		<link rel="stylesheet" href="css/style.css?v=1">
+		<link rel="stylesheet" href="css/style.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
-		<script src="js/main.js?v=1"></script>
-		<script src="js/player.js?v=1"></script>
-		<script src="js/dungeon.js?v=1"></script>
+		<script src="js/main.js"></script>
+		<script src="js/player.js"></script>
+		<script src="js/dungeon.js"></script>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
 				({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '16'));
@@ -38,10 +38,10 @@
 
 	<body>
 		<div id="theme" onclick="toggleTheme();"></div>
-		<h1 style="font-weight:normal;font-size:40pt;text-align:center;font-family:Barbarian;height:fit-content;width:fit-content;margin:auto;"><span style="font-family:Barbarian;content: attr(data-text);" data-text="Erugo)"></span></h1>
+		<h1 style="font-weight:normal;font-size:40pt;text-align:center;font-family:Barbarian;height:fit-content;width:fit-content;margin:auto;" class="unselectable">Erugo)</h1>
 		
-		<br>
-		<div id="abc" style="display:flex;flex-wrap:wrap;">
+		<br class="unselectable">
+		<div class="unselectable" id="stats" style="display:flex;flex-wrap:wrap;">
 			<div id="level" style="display:inline-block;">Level: </div>
 			<div id="gold" style="display:inline-block;"></div>
 			<div id="contain" style="display:inline-block;margin-left:auto">
@@ -51,15 +51,15 @@
 			</div>
 		</div>
 
-        <br>
-		<div id="dungeon">
+        <br class="unselectable">
+		<div id="dungeon" class="unselectable">
             <div id="dungeon-background"></div>
 			<div id="entity-layer" style="position:absolute;left:0px;top:0px"></div>
 		</div>
-		<div id="msg" style="text-align:center;overflow:hidden;"></div>
-		<br>
-		<div id="arrow" style="align-items:center;justify-content:center;text-align:center;"></div>
-		<div id="buttons" style="align-items:center;justify-content:center;text-align:center;">
+		<div id="msg" class="unselectable" style="text-align:center;overflow:hidden;"></div>
+		<br class="unselectable">
+		<div id="arrow" class="unselectable" style="align-items:center;justify-content:center;text-align:center;"></div>
+		<div id="buttons" class="unselectable" style="align-items:center;justify-content:center;text-align:center;">
 			<button onclick="reset()">Reset Game</button>
 			<button onclick="save()">Save Game</button>
 		</div>
