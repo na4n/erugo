@@ -2,16 +2,18 @@
   font-family: monospace;
 }
 
-@font-face {
-    font-family: 'Luminari';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Luminari'), url('Barbarian.ttf') format('truetype');
+[data-text]::after {
+  content: attr(data-text);
 }
-/* Luminari-Regular.woff */
+
+@font-face {
+  font-family: 'Barbarian';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Barbarian'), url('Barbarian.ttf') format('truetype');
+}
 
 #dungeon {
-	font-family: monospace; 
 	position: relative;
 	margin: auto;
 	height: fit-content; 
