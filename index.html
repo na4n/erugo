@@ -38,7 +38,8 @@
 
 	<body>
 		<div id="theme" onclick="toggleTheme();"></div>
-		<h1 style="text-align:center;font-family:Luminari;height:fit-content;width:fit-content;margin:auto;">Erugo</h1>
+		<h1 style="font-weight:normal;font-size:40pt;text-align:center;font-family:Luminari;height:fit-content;width:fit-content;margin:auto;">Erugo)</h1>
+		
 		<br>
 		<div id="abc" style="display:flex;flex-wrap:wrap;">
 			<div id="level" style="display:inline-block;">Level: </div>
@@ -61,6 +62,23 @@
 		<div id="buttons" style="align-items:center;justify-content:center;text-align:center;">
 			<button onclick="reset()">Reset Game</button>
 			<button onclick="save()">Save Game</button>
+		</div>
+
+		<div id="legend">
+<pre>
+<h2>Legend</h2>'@': Character, use arrow keys to move
+'\\': Stairs, use e to enter
+'+': Trainer, use s/d to train strength or defense for 5 gold
+
+'%': Enemy,  1 health 1 attack damage
+'>': Enemy,  2 health 2 attack damage
+'~': Enemy,  3 health 3 attack damage
+'^': Enemy,  4 health 4 attack damage
+'&': Enemy,  5 health 5 attack damage
+
+'o': Health Potion, +1 hp
+'*': Gold, +1 gold
+<pre>
 		</div>
 	</body>
 

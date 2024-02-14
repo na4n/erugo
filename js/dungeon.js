@@ -424,7 +424,7 @@ function generateFloor(floorNum){
 		ENTITY_LOCATIONS.push(entity);
 	}
 	
-    const floorDimension = [Math.floor(Math.random()*15)+15, Math.floor(Math.random()*15)+15];
+    const floorDimension = [Math.floor(Math.random()*10)+15, Math.floor(Math.random()*10)+15];
     placeObject(floorDimension, PLAYER);
 	placeObject(floorDimension, TRAINER);
     placeObject(floorDimension, STAIRS);
@@ -457,12 +457,20 @@ function saveData(){
 function displayGameOver(endCondition){
 	let finalText = endCondition > 0 ? '&#x1F389YOU WON&#x1F389' : 'GAME OVER'; 
 	
+	let score = 0;
+	for(let i = 0; i < getPlayer().mobkilled.length; i++){
+		score += getPlayer().mobkilled[i] * (i * 5)
+	}
+	score += getPlayer().gold * 2;
+	score += (getPlayer().trainStat[0] + getPlayer().trainStat[1])
+
+
 	const dungeonBackground = document.getElementById('dungeon-background');
 	const entityLayer = document.getElementById('entity-layer');
 	
 	entityLayer.style.textAlign = 'center';
-	entityLayer.innerHTML = `<b>${finalText}</b><br><br>Strength: ${getPlayer().RNGSTAT[0]}<small>+${getPlayer().trainStat[0]}</small><br>Defense: ${getPlayer().RNGSTAT[1]}<small>+${getPlayer().trainStat[1]}</small><br><br>Killed<br>%: ${getPlayer().mobkilled[0]}<br>\>: ${getPlayer().mobkilled[1]}<br>~: ${getPlayer().mobkilled[2]}<br>^: ${getPlayer().mobkilled[3]}<br>&: ${getPlayer().mobkilled[4]}<br>`;
-	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - (10 * CHARHEIGHT/2)}px`;
+	entityLayer.innerHTML = `<b>${finalText}</b><br>Score: ${score}<br><br>Strength: ${getPlayer().RNGSTAT[0]}<small>+${getPlayer().trainStat[0]}</small><br>Defense: ${getPlayer().RNGSTAT[1]}<small>+${getPlayer().trainStat[1]}</small><br><br>Killed<br>%: ${getPlayer().mobkilled[0]}<br>\>: ${getPlayer().mobkilled[1]}<br>~: ${getPlayer().mobkilled[2]}<br>^: ${getPlayer().mobkilled[3]}<br>&: ${getPlayer().mobkilled[4]}<br>`;
+	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - (11 * CHARHEIGHT/2)}px`;
 	entityLayer.style.left = `${((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length)/2) * CHARWIDTH)) + 1}px`;
 
 	if(endCondition > 0){

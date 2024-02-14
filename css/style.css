@@ -1,9 +1,14 @@
+*{
+  font-family: monospace;
+}
+
 @font-face {
     font-family: 'Luminari';
     font-style: normal;
     font-weight: normal;
-    src: local('Luminari'), url('Luminari-Regular.woff') format('woff');
+    src: local('Luminari'), url('Barbarian.ttf') format('truetype');
 }
+/* Luminari-Regular.woff */
 
 #dungeon {
 	font-family: monospace; 
@@ -17,11 +22,6 @@
 #entity-layer {
   float:left;
   position: absolute;
-}
-
-h1:hover{
-  color: grey;
-  cursor: help;
 }
 
 #moon {
@@ -51,5 +51,4 @@ h1:hover{
   font-size: large;
   text-align: center;
   border-radius: 0px;
-
 }
