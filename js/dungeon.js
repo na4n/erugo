@@ -225,8 +225,12 @@ function moveCharacter(keyPress){
 		return false; 
 	}
 
-	if(validLocation(nextLocation) && [GOLD, HEALTHPOTION, null].includes(getEntityAtLocation(nextLocation))){
-		if(locationIndex(nextLocation, GOLD) != null){
+	if(validLocation(nextLocation) && [GOLD, HEALTHPOTION, STAIRS, null].includes(getEntityAtLocation(nextLocation))){
+		if(locationIndex(nextLocation, STAIRS) != null){
+			enterStairs();
+			return false;
+		}
+		else if(locationIndex(nextLocation, GOLD) != null){
 			getPlayer().gold += 1;
 			dungeonMessage('+1', 'goldenrod', true);
 			let i = locationIndex(nextLocation, GOLD)
@@ -264,7 +268,7 @@ function enterStairs(){
 		logMsg('You are too far from the stairs', FADE);
 		return false;
 	}
-	else if(getPlayer().floorNumber == 10){
+	else if(getPlayer().currentFloor >= 10){
 		gameOver = 1;
 		localStorage.setItem('gameOver', 1);
 		displayGameOver(1);
