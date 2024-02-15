@@ -113,18 +113,20 @@ function getCharacterDimensions(fontType, character, fontSize) {
 }
 
 function setTheme(){
-	const theme = document.getElementById('theme');
 	if(getCookie('theme') == null){
 		setCookie('theme', 'sun', 400);
 	}
-	theme.innerHTML = `<div id='${getCookie('theme')}'></div>`;
+	const titleDiv = document.getElementById('title');
+	
 	if(getCookie('theme') == 'sun' || getCookie('theme') === null){
 		document.body.style.backgroundColor = 'white';
 		document.body.style.color = 'black';
+		titleDiv.style.textShadow = '0px 0px 4px #fdbc4b';
 	}
 	else{
 		document.body.style.backgroundColor = 'black';
 		document.body.style.color = 'white';
+		titleDiv.style.textShadow = '0px 0px 4px rgba(255, 0, 0, 1)';
 	}
 }
 
