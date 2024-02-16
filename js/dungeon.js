@@ -102,14 +102,19 @@ function moveEntities(){
 			
 			const playerLoc = LOCATIONS[0].loc;
 			const trainerLoc = LOCATIONS[1].loc;
-			const stairsLoc = LOCATIONS[2].loc;
+			let stairsLoc;
+			if(LOCATIONS.length > 2){
+				stairsLoc = LOCATIONS[2].loc;
+			}
 			
 			if(totalDistance(playerLoc, LOCATIONS[i].loc) <= 5){
 				targetLoc = playerLoc;
 			}
 			else{
 				const arrLocs = [playerLoc, trainerLoc];
-				getEntityAtLocation(stairsLoc) === STAIRS && arrLocs.push(stairsLoc);
+				if(stairsLoc != null){
+					getEntityAtLocation(stairsLoc) === STAIRS && arrLocs.push(stairsLoc);
+				}
 				arrLocs.sort((a, b) => totalDistance(LOCATIONS[i].loc, a) - totalDistance(LOCATIONS[i].loc, b));
 				targetLoc = arrLocs[0];
 			}
@@ -244,7 +249,13 @@ function moveCharacter(keyPress){
 }
 
 function enterStairs(){
-	const stairsLoc = getEntityAtLocation(LOCATIONS[2].loc) !== STAIRS ? LOCATIONS[1].loc : LOCATIONS[2].loc;
+	let stairsLoc;
+	if(LOCATIONS.length > 2){
+		stairsLoc = getEntityAtLocation(LOCATIONS[2].loc) !== STAIRS ? LOCATIONS[1].loc : LOCATIONS[2].loc;
+	}
+	else{
+		stairsLoc = LOCATIONS[1].loc;
+	}
 	const charLoc =  LOCATIONS[0].loc;
 	
 	if(oneSpaceAway(stairsLoc, charLoc) > 1){
