@@ -6,12 +6,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
 		<link rel="icon" type="image/x-icon" href="images/favicon.png">
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/style.css?v=2">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
-		<script src="js/main.js?v=1"></script>
+		<script src="js/main.js?v=3"></script>
 		<script src="js/player.js"></script>
 		<script src="js/dungeon.js"></script>
 		<script>
@@ -37,11 +37,9 @@
 	</head>
 
 	<body>
-		<div id="theme" onclick="toggleTheme();"></div>
-		<h1 id='title' onclick='toggleTheme();' style="font-weight:normal;font-size:40pt;text-align:center;font-family:Barbarian;height:fit-content;width:fit-content;margin:auto;" class="unselectable">Erugo)</h1>
-		
+		<h1 id='title' class="unselectable" onclick='toggleTheme();' >Erugo)</h1>
 		<br class="unselectable">
-		<div class="unselectable" id="stats" style="display:flex;flex-wrap:wrap;">
+		<div id="stats" class="unselectable" style="display:flex;flex-wrap:wrap;">
 			<div id="level" style="display:inline-block;">Level: </div>
 			<div id="gold" style="display:inline-block;"></div>
 			<div id="contain" style="display:inline-block;margin-left:auto">
@@ -68,7 +66,8 @@
 <pre>
 <h2>Legend</h2>'@': Character      &rarr; Use arrow keys to move and 'a' to attack enemies
 '\': Stairs         &rarr; Use 'e' or move into stairs to enter the next floor
-'+': Trainer        &rarr; Use 's' or 'd' to train strength or defense for 5 gold
+'+': Trainer        &rarr; Use 's', 'd' to train strength or defense for 5 gold
+                      Use '1' to '9' to pay 1-9 gold to regain 1-9 HP (max 10)
 
 '%': Goblin         &rarr; 1 base attack and 1 base health
 '>': Archer         &rarr; 2 base attack and 2 base health
@@ -76,7 +75,7 @@
 '^': Bat            &rarr; 4 base attack and 4 base health
 '&': Dragon         &rarr; 5 base attack and 5 base health
 
-'o': Health Potion  &rarr; Walk over to gain +1 hp (max 10 HP)
+'o': Health Potion  &rarr; Walk over to gain +1 hp (max 10)
 '*': Gold           &rarr; Walk over to gain +1 gold
 <pre></div>
 	</body>

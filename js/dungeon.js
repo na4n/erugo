@@ -93,47 +93,30 @@ function mobAttack(){
 
 function totalDistance(loc1, loc2) { return Math.hypot(loc1[0] - loc2[0], loc1[1] - loc2[1]); }	
 
-function moveEntities(){
-	
+function moveEntities(){	
 	const withinBounds = (c) => c[0] >= 0 && c[0] < FLOORDIMENSION[0] && c[1] >= 0 && c[1] < FLOORDIMENSION[1];
 	
-	function bfs(start, target) {
-		const done = new Map(), stack = [start];
-		const addToDone = (c) => done.set(c.toString(), true);
-		target = new Set(target);
-	
-		while (stack.length) {
-			const cur = stack.shift();
-			addToDone(cur);
-	
-			const entityAtLoc = getEntityAtLocation(cur);
-			if (entityAtLoc && target.has(entityAtLoc)){
-				return cur;
-			}
-			
-			const neighbors = [[cur[0]+1,cur[1]], [cur[0]-1,cur[1]], [cur[0],cur[1]+1], [cur[0],cur[1]-1]];
-	
-			neighbors.forEach(n => {
-				const nStr = n.toString();
-				if (!done.has(nStr) && withinBounds(n)){ 
-					stack.push(n);
-					addToDone(n);
-				}
-			});
-		}
-	}
-
 	for(let i = 0; i < LOCATIONS.length; i++){
-		if(MOBTYPES.includes(LOCATIONS[i].ch)){
-			let targetLoc = (LOCATIONS[i].target == false ? bfs(LOCATIONS[i].loc, [STAIRS, TRAINER]) : LOCATIONS[i].target);
-			LOCATIONS[i].target = targetLoc;
+		if(MOBTYPES.includes(LOCATIONS[i].ch)){			
+			let targetLoc;
+			
 			const playerLoc = LOCATIONS[0].loc;
+			const trainerLoc = LOCATIONS[1].loc;
+			const stairsLoc = LOCATIONS[2].loc;
 			
 			if(totalDistance(playerLoc, LOCATIONS[i].loc) <= 5){
 				targetLoc = playerLoc;
 			}
+			else{
+				const arrLocs = [playerLoc, trainerLoc];
+				getEntityAtLocation(stairsLoc) === STAIRS && arrLocs.push(stairsLoc);
+				arrLocs.sort((a, b) => totalDistance(LOCATIONS[i].loc, a) - totalDistance(LOCATIONS[i].loc, b));
+				targetLoc = arrLocs[0];
+			}
 
-			if(totalDistance(LOCATIONS[i].loc, targetLoc) <= 1){ continue; }
+			if(totalDistance(LOCATIONS[i].loc, targetLoc) <= 1){ 
+				continue; 
+			}
 
 			const moveDistances = [[LOCATIONS[i].loc[0]+1, LOCATIONS[i].loc[1]], [LOCATIONS[i].loc[0]-1, LOCATIONS[i].loc[1]], [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]+1], [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]-1]];
 			moveDistances.sort((a, b) => totalDistance(targetLoc, a) - totalDistance(targetLoc, b));
@@ -261,7 +244,7 @@ function moveCharacter(keyPress){
 }
 
 function enterStairs(){
-	const stairsLoc = LOCATIONS[2].loc;
+	const stairsLoc = getEntityAtLocation(LOCATIONS[2].loc) !== STAIRS ? LOCATIONS[1].loc : LOCATIONS[2].loc;
 	const charLoc =  LOCATIONS[0].loc;
 	
 	if(oneSpaceAway(stairsLoc, charLoc) > 1){
@@ -287,21 +270,41 @@ function enterStairs(){
 }
 
 function train(key){
+	if(getEntityAtLocation(LOCATIONS[1].loc) !== TRAINER){
+		logMsg('No trainer, stay weak kid', FADE);
+		return false;
+	}
 	if(oneSpaceAway(LOCATIONS[0].loc, LOCATIONS[1].loc) > 1){
 		logMsg("You are too far from the trainer", FADE);
 		return false;
 	}
 
-	if(getPlayer().gold < 5){
-		logMsg('Not enough gold, need 5 to train', FADE);
-		return false;
+	if(key == 's' || key == 'd'){
+		if(getPlayer().gold < 5){
+			logMsg('Not enough gold, need 5 to train', FADE);
+			return false;
+		}
+		else{
+			key == 's' ? getPlayer().trainStat[0]++ : getPlayer().trainStat[1]++;
+			getPlayer().gold -= 5;
+			key == 's' ? logMsg('Trained Strength', FADE) : logMsg('Trained Defense', FADE);
+			updateStats();
+			return true;
+		}
 	}
 	else{
-		key == 's' ? getPlayer().trainStat[0]++ : getPlayer().trainStat[1]++;
-		getPlayer().gold -= 5;
-		key == 's' ? logMsg('Trained Strength', FADE) : logMsg('Trained Defense', FADE);
-		updateStats();
-		return true;
+		const numInput = Number(key);
+		if(getPlayer().gold < numInput){
+			logMsg(`Not enough gold, need ${numInput} to gain ${numInput} health`, FADE);
+			return false;
+		}
+		else{
+			getPlayer().gold -= numInput;
+			getPlayer().health = getPlayer().health + numInput > 10 ? 10 : getPlayer().health + numInput;
+			logMsg(`Gained ${numInput} health`, FADE);
+			updateStats();
+		}
+
 	}
 }
 const oneSpaceAway = function(loc1, loc2){ 
@@ -361,7 +364,7 @@ function keyHandler(keyPress){
 			enterStairs();
 		}
 	}
-	else if(keyPress == 's' || keyPress == 'd'){
+	else if (keyPress === 's' || keyPress === 'd' || (keyPress >= '1' && keyPress <= '9')) {
 		mobAttack();
 		if(train(keyPress)){
 			lockMoveWait();
@@ -415,14 +418,13 @@ function generateFloor(floorNum){
 		return false;
 	}
 
-	function placeObject(floorDimension, object, target, health){
+	function placeObject(floorDimension, object, health){
 		let objectLocation;
 		do{
 			objectLocation = generateLocation(floorDimension);
 		} while(entityLocationIncludes(objectLocation));
 		
 		const entity = { ch: object, loc: objectLocation };
-		if (target !== undefined) entity.target = false;
 		if (health !== undefined) entity.health = health;
 			
 		ENTITY_LOCATIONS.push(entity);
@@ -430,14 +432,16 @@ function generateFloor(floorNum){
 	
     const floorDimension = [Math.floor(Math.random()*10)+15, Math.floor(Math.random()*10)+15];
     placeObject(floorDimension, PLAYER);
-	placeObject(floorDimension, TRAINER);
-    placeObject(floorDimension, STAIRS);
+    if(Math.random() <= 0.5){
+		placeObject(floorDimension, TRAINER);
+	}
+	placeObject(floorDimension, STAIRS);
     for(let i = 0; i < Math.floor(Math.random()*5)+3; i++){
         placeObject(floorDimension, GOLD);
     }
     for(let i = 0; i < Math.floor((floorNum*3)/2); i++){
 		const mobIndex = randomMob(floorNum);
-        placeObject(floorDimension, MOBTYPES[mobIndex], false, mobIndex+1);
+        placeObject(floorDimension, MOBTYPES[mobIndex], mobIndex+1);
     }
 	for(let i = 0; i < Math.floor(Math.random()*2); i++){
 		placeObject(floorDimension, HEALTHPOTION);

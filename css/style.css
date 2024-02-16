@@ -40,4 +40,11 @@
 
 #title{
   color: black;
+  font-weight: normal;
+  font-size: 40pt;
+  text-align: center;
+  font-family: Barbarian;
+  height:fit-content;
+  width: fit-content;
+  margin:auto;
 }

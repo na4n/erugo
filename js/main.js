@@ -1,6 +1,6 @@
 const VERSION = 2;
 
-const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd'];
+const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
 function divKeyDownHandler(event) {
@@ -126,7 +126,7 @@ function setTheme(){
 	else{
 		document.body.style.backgroundColor = 'black';
 		document.body.style.color = 'white';
-		titleDiv.style.textShadow = '0px 0px 4px rgba(255, 0, 0, 1)';
+		titleDiv.style.textShadow = '0px 0px 4px #ffffff';
 	}
 }
 
