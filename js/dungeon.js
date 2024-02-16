@@ -282,7 +282,7 @@ function enterStairs(){
 
 function train(key){
 	if(getEntityAtLocation(LOCATIONS[1].loc) !== TRAINER){
-		logMsg('No trainer, stay weak kid', FADE);
+		logMsg('No trainer, stay weak chump', FADE);
 		return false;
 	}
 	if(oneSpaceAway(LOCATIONS[0].loc, LOCATIONS[1].loc) > 1){
