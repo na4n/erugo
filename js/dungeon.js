@@ -1,4 +1,4 @@
-let LOCATIONS; //0: PLAYER, 1: TRAINER, 2: STAIRS
+let LOCATIONS; // 0: PLAYER, 1: TRAINER, 2: STAIRS
 let FLOORDIMENSION;
 
 let CHARHEIGHT;
@@ -118,8 +118,8 @@ function moveEntities(){
 				targetLoc = arrLocs[0];
 			}
 
-			if(totalDistance(LOCATIONS[i].loc, targetLoc) <= 1){ 
-				continue; 
+			if(totalDistance(targetLoc, LOCATIONS[i].loc) < 1.42){
+			 	continue;
 			}
 
 			const moveDistances = [[LOCATIONS[i].loc[0]+1, LOCATIONS[i].loc[1]], [LOCATIONS[i].loc[0]-1, LOCATIONS[i].loc[1]], [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]+1], [LOCATIONS[i].loc[0], LOCATIONS[i].loc[1]-1]];
@@ -379,8 +379,11 @@ function keyHandler(keyPress){
 		}
 	}
 	else if(keyPress == 'a'){
-		attack(keyPress);
-		mobAttack();
+		const attacked = attack(keyPress);
+		const dead = mobAttack();
+		if(attacked && !dead){
+			lockMoveWait();
+		}
 	}
 
 	return;
