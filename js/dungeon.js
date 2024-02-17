@@ -73,7 +73,6 @@ function mobAttack(){
 	playerDamage /= (getPlayer().RNGSTAT[1] + getPlayer().trainStat[1])/5;
 	if(playerDamage > 0){	
 		getPlayer().health -= playerDamage; 
-
 		if(getPlayer().health <= 0){
 			getPlayer().health = 0;
 			gameOver = -1;
@@ -363,11 +362,9 @@ function keyHandler(keyPress){
 
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
 		const validMove = moveCharacter(keyPress);
-		const playerNotDead = !mobAttack();
-		if(validMove && playerNotDead){
+		if(validMove && !mobAttack()){
 			lockMoveWait();
 		}
-		
 	}
 	else if(keyPress == 'e'){
 		if(!gameOver){ 
