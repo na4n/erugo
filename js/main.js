@@ -40,20 +40,15 @@ const LOCK = 'LOCK';
 let interval;
 let backlog = [];
 
-async function fade(msgDiv, rm) {
+async function fade(msgDiv, limit) {
     msgDiv.style.opacity = 1;
     let interval = setInterval(() => {
         if (msgDiv.style.opacity <= 0) {
             clearInterval(interval);
-            if (rm === 'rm') {
-                setTimeout(() => {
-                    msgDiv.remove();
-                }, 1000);
-            }
         } else {
             msgDiv.style.opacity -= 0.075;
         }
-    }, 50);
+    }, limit || 50); // Using the provided limit if available, otherwise defaulting to 50
 }
 
 async function logMsg(message, option){
