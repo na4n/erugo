@@ -21,13 +21,8 @@ function multChar(char, amt){
 
 async function dungeonMessage(msg, col, up){
 	let loc = structuredClone(LOCATIONS[0].loc);
-	// while(getEntityAtLocation(loc) !== null){
-	// 	up ? loc[0]-- : loc[0]++;
-	// }
 
-	if(up){
-		up ? loc[0]-- : loc[0]++;
-	}
+	up || up === undefined ? loc[0]-- : loc[0]++;
 	
 	const entityLayerDiv = document.getElementById('entity-layer');
 	if(document.getElementById('dmg') !== null){
@@ -37,7 +32,11 @@ async function dungeonMessage(msg, col, up){
 	const div = document.createElement('div');
 	let divId;
 	let i;
-	if(up){
+	if(up === undefined){
+		divId = 'temp';
+		i = 1;
+	}
+	else if(up){
 		for(i = 1; i < 10; i++){
 			if(document.getElementById(multChar(',', i)) == null){
 				divId = multChar(',', i);
@@ -53,32 +52,24 @@ async function dungeonMessage(msg, col, up){
 			}
 		}
 	}
-	else{
-		const divId = 'temp';
-		i = 1;
-	}
 	
 	div.id = divId;
 	div.innerHTML = `<b>${msg}</b>`;
-	if(up){
-		console.log(`up: ${i}`);
-	}	
-	else{
-		console.log(`down: ${i}`);
-	}
+
+	const topVal = up ? `${CHARHEIGHT * (1 + loc[0] - (i-1))}px` : `${CHARHEIGHT * (1 + loc[0] + (i-1))}px`;
 	Object.assign(div.style, {
 		opacity: '1',
 		color: col,
 		float: 'left',
 		position: 'absolute',
 		left: `${CHARWIDTH * (1 + loc[1])}px`,
-		top: `${CHARHEIGHT * (1 + loc[0] - (i-1))}px`,
+		top: topVal,
 		backgroundColor: document.body.style.backgroundColor
 	});
 
 	entityLayerDiv.appendChild(div);		
-	fade(div, 50);
-	await delay(1000);
+	fade(div, 30);
+	await delay(500);
 	div.remove();
 	
 	return;
