@@ -83,33 +83,26 @@ function mobAttack(){
 		if(MOBTYPES.includes(LOCATIONS[i].ch) && totalDistance(LOCATIONS[i].loc, playerLocation) <= 1.42){
 			if(LOCATIONS[i].ch == '%'){ 
 				amt = (1 + Math.round(Math.random()))
-				playerDamage += amt;
-				dungeonMessage('-'+amt.toFixed(2), 'red', true);	 
 			}
 			else if(LOCATIONS[i].ch == '>'){ 
 				amt = (2 + Math.round(Math.random()))
-				playerDamage += amt; 
-				dungeonMessage('-'+amt.toFixed(2), 'red', true);	 
 			}
 			else if(LOCATIONS[i].ch == '~'){ 
 				amt = (3 + Math.round(Math.random()))
-				playerDamage += amt; 
-				dungeonMessage('-'+amt.toFixed(2), 'red', true);	 
 			}
 			else if(LOCATIONS[i].ch == '^'){ 
 				amt = (4 + Math.round(Math.random()))
-				playerDamage += amt; 
-				dungeonMessage('-'+amt.toFixed(2), 'red', true);	 
 			}
 			else if(LOCATIONS[i].ch == '&'){ 
 				amt = (5 + Math.round(Math.random()))
-				playerDamage += amt; 
-				dungeonMessage('-'+amt.toFixed(2), 'red', true);	 
-			}	
+			}
+			amt /= ((getPlayer().RNGSTAT[1] + getPlayer().trainStat[1]) / 4);
+			playerDamage += amt;
+			dungeonMessage('-'+amt.toFixed(2), 'red', true);	 
+
 		}
 	}
 
-	playerDamage /= (getPlayer().RNGSTAT[1] + getPlayer().trainStat[1])/5;
 	if(playerDamage > 0){	
 		getPlayer().health -= playerDamage; 
 		if(getPlayer().health <= 0){
@@ -263,8 +256,14 @@ function moveCharacter(keyPress){
 		}
 		else if(locationIndex(nextLocation, HEALTHPOTION) != null){
 			const currentHealth = getPlayer().health;
-			getPlayer().health = (currentHealth + 1) >= 10 ? 10 : currentHealth + 1;
-			dungeonMessage('+1', 'deeppink');
+			if(currentHealth == 10){
+				getPlayer().gold += 10;
+				dungeonMessage('+10', 'goldenrod');
+			}
+			else{
+				getPlayer().health = (currentHealth + 1) >= 10 ? 10 : currentHealth + 1;
+				dungeonMessage('+1', 'deeppink');
+			}
 			let i = locationIndex(nextLocation, HEALTHPOTION)
 			removeEntityDiv(i);
 			LOCATIONS.splice(i, 1);
@@ -278,9 +277,14 @@ function moveCharacter(keyPress){
 
 		return true;
 	}
-
-	logMsg('Cannot move there', FADE);
-	return false;
+	else if(MOBTYPES.includes(getEntityAtLocation(nextLocation))){
+		logMsg('Cannot move there', FADE);
+		return true;
+	}
+	else{
+		logMsg('Cannot move there', FADE);
+		return true;
+	}
 }
 
 function enterStairs(){
