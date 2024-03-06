@@ -255,16 +255,9 @@ function moveCharacter(keyPress){
 			updateStats();
 		}
 		else if(locationIndex(nextLocation, HEALTHPOTION) != null){
-			const currentHealth = getPlayer().health;
-			if(currentHealth == 10){
-				getPlayer().gold += 10;
-				dungeonMessage('+10', 'goldenrod');
-			}
-			else{
-				getPlayer().health = (currentHealth + 1) >= 10 ? 10 : currentHealth + 1;
-				dungeonMessage('+1', 'deeppink');
-			}
-			let i = locationIndex(nextLocation, HEALTHPOTION)
+			dungeonMessage(`+${(10-getPlayer().health).toFixed(2)}`, 'deeppink');
+			getPlayer().health = 10;
+			let i = locationIndex(nextLocation, HEALTHPOTION);
 			removeEntityDiv(i);
 			LOCATIONS.splice(i, 1);
 			updateStats();
@@ -279,22 +272,16 @@ function moveCharacter(keyPress){
 	}
 	else if(MOBTYPES.includes(getEntityAtLocation(nextLocation))){
 		logMsg('Cannot move there', FADE);
-		return true;
+		return false;
 	}
 	else{
 		logMsg('Cannot move there', FADE);
-		return true;
+		return false;
 	}
 }
 
 function enterStairs(){
-	let stairsLoc;
-	if(LOCATIONS.length > 2){
-		stairsLoc = getEntityAtLocation(LOCATIONS[2].loc) !== STAIRS ? LOCATIONS[1].loc : LOCATIONS[2].loc;
-	}
-	else{
-		stairsLoc = LOCATIONS[1].loc;
-	}
+	const stairsLoc = LOCATIONS.length > 2 && getEntityAtLocation(LOCATIONS[2].loc) === STAIRS ? LOCATIONS[2].loc : LOCATIONS[1].loc;
 	const charLoc =  LOCATIONS[0].loc;
 	
 	if(oneSpaceAway(stairsLoc, charLoc) > 1){
@@ -308,11 +295,9 @@ function enterStairs(){
 		return false;
 	}
 	else{
-		getPlayer().currentFloor++;
-		updateStats();
 		localStorage.removeItem('fd');
 		localStorage.removeItem('loc');
-		dungeonRefresh(getPlayer().currentFloor);
+		dungeonRefresh(++getPlayer().currentFloor);
 		updateStats();
 		save();
 		return true;
