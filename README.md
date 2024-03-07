@@ -1,8 +1,8 @@
 # [Erugo](https://na4n.github.io/erugo) 
-Erugo is a rogue-like game made in JS that ~~runs in modern web browsers~~ works locally.
+Erugo is a rogue-like game made in JS that runs in modern web browsers.
 
 # To Do
-This is a list of things I need to do, or _we_ need to do if you want to fork and add additions.
+This is a list of things that need to be done
 1. message backlog
 2. different algo for later enemies
 3. enemy spawn in radius of target entities
