@@ -106,7 +106,7 @@ function mobAttack(){
 	}
 
 	if(playerDamage > 0){	
-		getPlayer().health -= playerDamage; 
+		getPlayer().health -= playerDamage;
 		if(getPlayer().health <= 0){
 			getPlayer().health = 0;
 			gameOver = -1;
@@ -329,7 +329,7 @@ function train(key){
 		else{
 			key == 's' ? getPlayer().trainStat[0]++ : getPlayer().trainStat[1]++;
 			getPlayer().gold -= 5;
-			key == 's' ? logMsg('Trained Strength', FADE) : logMsg('Trained Defense', FADE);
+			key == 's' ? logMsg('Paid 5 gold for Strength', FADE) : logMsg('Paid 5 gold for Defense', FADE);
 			updateStats();
 			return true;
 		}
@@ -341,9 +341,11 @@ function train(key){
 			return false;
 		}
 		else{
-			getPlayer().gold -= numInput;
-			getPlayer().health = getPlayer().health + numInput > 10 ? 10 : getPlayer().health + numInput;
-			logMsg(`Gained ${numInput} health`, FADE);
+			getPlayer().gold -= numInput; 
+			const amtAdded = ((getPlayer().health + numInput) > 10 ? 10 - getPlayer().health : numInput);
+			dungeonMessage(`+${amtAdded.toFixed(2)}`, 'deeppink');
+			getPlayer().health += amtAdded;
+			logMsg(`Paid ${numInput} gold`, FADE);
 			updateStats();
 			return true;
 		}
