@@ -485,7 +485,7 @@ function generateFloor(floorNum){
 		const mobIndex = randomMob(floorNum);
         placeObject(floorDimension, MOBTYPES[mobIndex], mobIndex+1);
     }
-	if(Math.random() <= (0.1 * floorNum)){
+	if(Math.random() <= (0.5 * floorNum)){
 		placeObject(floorDimension, HEALTHPOTION);
 	}
 
