@@ -21,17 +21,22 @@ function multChar(char, amt){
 
 async function dungeonMessage(msg, col, up){
 	let loc = structuredClone(LOCATIONS[0].loc);
+	if(up === undefined){
+		loc[0]--;
+	}
+	else{
+		up ? loc[0]-- : loc[0]++;
+	}
 
-	up || up === undefined ? loc[0]-- : loc[0]++;
-	
 	const entityLayerDiv = document.getElementById('entity-layer');
 	if(document.getElementById('dmg') !== null){
 		document.getElementById('dmg').remove();
 	}
 
 	const div = document.createElement('div');
-	let divId;
-	let i;
+	div.innerHTML = `<b>${msg}</b>`;
+
+	let i, divId;
 	if(up === undefined){
 		divId = 'temp';
 		i = 1;
@@ -51,12 +56,10 @@ async function dungeonMessage(msg, col, up){
 				break;
 			}
 		}
-	}
-	
+	}	
 	div.id = divId;
-	div.innerHTML = `<b>${msg}</b>`;
 
-	const topVal = up ? `${CHARHEIGHT * (1 + loc[0] - (i-1))}px` : `${CHARHEIGHT * (1 + loc[0] + (i-1))}px`;
+	const topVal = up || up === undefined ? `${CHARHEIGHT * (1 + loc[0] - (i-1))}px` : `${CHARHEIGHT * (1 + loc[0] + (i-1))}px`;
 	Object.assign(div.style, {
 		opacity: '1',
 		color: col,
@@ -77,8 +80,7 @@ async function dungeonMessage(msg, col, up){
 
 function mobAttack(){
 	const playerLocation = LOCATIONS[0].loc;
-	let playerDamage = 0;
-	let amt;
+	let playerDamage = 0, amt = 0;
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(MOBTYPES.includes(LOCATIONS[i].ch) && totalDistance(LOCATIONS[i].loc, playerLocation) <= 1.42){
 			if(LOCATIONS[i].ch == '%'){ 
@@ -126,11 +128,10 @@ function moveEntities(){
 	
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(MOBTYPES.includes(LOCATIONS[i].ch)){			
-			let targetLoc;
+			let targetLoc, stairsLoc;
 			
 			const playerLoc = LOCATIONS[0].loc;
 			const trainerLoc = LOCATIONS[1].loc;
-			let stairsLoc;
 			if(LOCATIONS.length > 2){
 				stairsLoc = LOCATIONS[2].loc;
 			}
@@ -246,29 +247,35 @@ function moveCharacter(keyPress){
 			enterStairs();
 			return false;
 		}
-		else if(locationIndex(nextLocation, GOLD) != null){
-			getPlayer().gold += 1;
-			dungeonMessage('+1', 'goldenrod');
-			let i = locationIndex(nextLocation, GOLD)
-			removeEntityDiv(i);
-			LOCATIONS.splice(i, 1);
-			updateStats();
-		}
-		else if(locationIndex(nextLocation, HEALTHPOTION) != null){
-			dungeonMessage(`+${(10-getPlayer().health).toFixed(2)}`, 'deeppink');
-			getPlayer().health = 10;
-			let i = locationIndex(nextLocation, HEALTHPOTION);
-			removeEntityDiv(i);
-			LOCATIONS.splice(i, 1);
-			updateStats();
-		}
+		else{
+			LOCATIONS[0].loc = nextLocation;
 
-		const char = document.getElementById('0');
-		char.style.left = CHARWIDTH * (nextLocation[1]+1) + 'px';
-		char.style.top = CHARHEIGHT * (nextLocation[0]+1) + 'px';
-		LOCATIONS[0].loc = nextLocation;
+			let i, set;
+			if(locationIndex(nextLocation, GOLD) != null){
+				dungeonMessage('+1', 'goldenrod');
+				getPlayer().gold += 1;
+				i = locationIndex(nextLocation, GOLD)
+				set = true;
+			}
+			else if(locationIndex(nextLocation, HEALTHPOTION) != null){							
+				dungeonMessage(`+${(10-getPlayer().health).toFixed(2)}`, 'deeppink');
+				getPlayer().health = 10;
+				i = locationIndex(nextLocation, HEALTHPOTION);
+				set = true;
+			}
 
-		return true;
+			if(set){
+				removeEntityDiv(i);
+				LOCATIONS.splice(i, 1);
+				updateStats();
+			}
+
+			const char = document.getElementById('0');
+			char.style.left = CHARWIDTH * (nextLocation[1]+1) + 'px';
+			char.style.top = CHARHEIGHT * (nextLocation[0]+1) + 'px';
+	
+			return true;
+		}
 	}
 	else if(MOBTYPES.includes(getEntityAtLocation(nextLocation))){
 		logMsg('Cannot move there', FADE);
