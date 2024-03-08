@@ -312,32 +312,33 @@ function enterStairs(){
 }
 
 function train(key){
-	if(getEntityAtLocation(LOCATIONS[1].loc) !== TRAINER){
-		logMsg('No trainer, stay weak chump', FADE);
-		return false;
-	}
 	if(oneSpaceAway(LOCATIONS[0].loc, LOCATIONS[1].loc) > 1){
-		logMsg("You are too far from the trainer", FADE);
+		logMsg("Stand next to Trainer", FADE);
 		return false;
 	}
 
 	if(key == 's' || key == 'd'){
 		if(getPlayer().gold < 5){
-			logMsg('Not enough gold, need 5 to train', FADE);
+			logMsg('Need 5 gold to train', FADE);
 			return false;
 		}
 		else{
-			key == 's' ? getPlayer().trainStat[0]++ : getPlayer().trainStat[1]++;
+			const [attrVal, attrIdx] = key == 's' ? ['Strength', 0] : ['Defense', 1];
+
+			getPlayer().trainStat[attrIdx]++;
+			logMsg(`Paid 5 gold`, FADE);
+			dungeonMessage(`+${attrVal}`, 'grey', true);
+
 			getPlayer().gold -= 5;
-			key == 's' ? logMsg('Paid 5 gold for Strength', FADE) : logMsg('Paid 5 gold for Defense', FADE);
 			updateStats();
+			
 			return true;
 		}
 	}
 	else{
 		const numInput = Number(key);
 		if(getPlayer().gold < numInput){
-			logMsg(`Not enough gold, need ${numInput} to gain ${numInput} health`, FADE);
+			logMsg(`Need ${numInput} gold`, FADE);
 			return false;
 		}
 		else{
@@ -365,7 +366,7 @@ function attack(){
 			const attackDamage = dmg == 0 ? 1 + (Math.round(Math.random() * 20) / 20) : (dmg + (Math.round(Math.random() * 20) / 20));
 			LOCATIONS[i].health -= attackDamage;
 			if(LOCATIONS[i].health <= 0){
-				logMsg('You killed ' + LOCATIONS[i].ch, FADE);
+				logMsg('Killed ' + LOCATIONS[i].ch, FADE);
 				getPlayer().mobkilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
 				removeEntityDiv(i);
 				LOCATIONS.splice(i, 1);
