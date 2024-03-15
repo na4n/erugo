@@ -534,10 +534,6 @@ function displayGameOver(endCondition){
 	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - (11 * CHARHEIGHT/2)}px`;
 	entityLayer.style.left = `${((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length)/2) * CHARWIDTH)) + 1}px`;
 
-	if(endCondition > 0){
-		stars();
-	}
-
 	return;
 }
 
