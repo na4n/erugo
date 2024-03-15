@@ -525,7 +525,6 @@ function displayGameOver(endCondition){
 	score += getPlayer().gold * 2;
 	score += (getPlayer().trainStat[0] + getPlayer().trainStat[1])
 
-
 	const dungeonBackground = document.getElementById('dungeon-background');
 	const entityLayer = document.getElementById('entity-layer');
 	
