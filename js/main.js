@@ -135,6 +135,14 @@ function toggleTheme(){
 	setTheme();
 }
 
+function collapseToggle(){
+	const textDiv = document.getElementById('collapse');
+	const legendDiv = document.getElementById('legend');
+	textDiv.innerText =	legendDiv.style.display == 'none' ? ' <collapse>' : ' <expand>';
+	legendDiv.style.display = legendDiv.style.display == 'none' ? 'block' : 'none';
+
+}
+
 const setCookie = (name, value, days) => { document.cookie = `${name}=${value}; expires=${new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString()}; path=/`; };
 const getCookie = (name) => { const decodedCookie = decodeURIComponent(document.cookie); const cookies = decodedCookie.split(';'); return cookies.find(cookie => cookie.trim().startsWith(name + '='))?.split('=')[1] || null; };
 const deleteCookie = (name) => { document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`; };

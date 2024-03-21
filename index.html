@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="css/style.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<script src="js/main.js"></script>
+		<script src="js/main.js?v=1"></script>
 		<script src="js/player.js"></script>
 		<script src="js/dungeon.js"></script>
 		<script>
@@ -60,9 +60,10 @@
 			<button onclick="save()">Save Game</button>
 		</div>
 
-		<div id="legend">
-<pre>
-<h2>Legend</h2>'@': Character      &rarr; Use arrow keys to move and 'a' to attack enemies
+<br>
+<div style="font-size:1.5em;font-weight:bold;cursor:pointer;width:fit-content;" onclick="collapseToggle();">Legend<a style="font-size:1rem;font-weight:normal;cursor:pointer;" id="collapse"> &lt;expand&gt;</a></div>
+		<div id="legend" style="display:none">
+<pre>'@': Character      &rarr; Use arrow keys to move and 'a' to attack enemies
 '\': Stairs         &rarr; Use 'e' or move into stairs to enter the next floor
 '+': Trainer        &rarr; Use 's', 'd' to train strength or defense for 5 gold
                       Use '1' to '9' to pay 1-9 gold to regain 1-9 HP (max 10)
