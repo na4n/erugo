@@ -21,12 +21,7 @@ function multChar(char, amt){
 
 async function dungeonMessage(msg, col, up){
 	let loc = structuredClone(LOCATIONS[0].loc);
-	if(up === undefined){
-		loc[0]--;
-	}
-	else{
-		up ? loc[0]-- : loc[0]++;
-	}
+	!up ? loc[0]++ : loc[0]--;
 
 	const entityLayerDiv = document.getElementById('entity-layer');
 	if(document.getElementById('dmg') !== null){
