@@ -54,7 +54,7 @@ async function dungeonMessage(msg, col, up){
 	}	
 	div.id = divId;
 
-	const lsz = Math.floor(msg.length / 2) == 1 ? 0 : Math.floor(msg.length / 2);
+	const lsz = Math.floor(msg.length / 2) == 1 ? 0 : msg.length / 2;
 	const topVal = up || up === undefined ? `${CHARHEIGHT * (1 + loc[0] - (i-1))}px` : `${CHARHEIGHT * (1 + loc[0] + (i-1))}px`;
 	Object.assign(div.style, {
 		opacity: '1',

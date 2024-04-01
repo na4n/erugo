@@ -14,7 +14,7 @@
 		<script src="js/dungeon.js"></script>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
-				({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '16'));
+				({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '15.5px'));
 				document.getElementById('msg').style.height = `${getCharacterDimensions('times', 'H', '16').height}` + 'px';
 				enableDungeonEventListener();
 
