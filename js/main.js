@@ -1,7 +1,7 @@
-const VERSION = 2;
+const VERSION = 3;
 
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
+version
 let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
 function divKeyDownHandler(event) {
 	if (VALID_KEYS.includes(event.key)) {
@@ -107,34 +107,6 @@ function getCharacterDimensions(fontType, character, fontSize) {
 	return { height: rect.height, width: rect.width };
 }
 
-function setTheme(){
-	if(getCookie('theme') == null){
-		setCookie('theme', 'sun', 400);
-	}
-	const titleDiv = document.getElementById('title');
-	
-	if(getCookie('theme') == 'sun' || getCookie('theme') === null){
-		document.body.style.backgroundColor = 'white';
-		document.body.style.color = 'black';
-		titleDiv.style.textShadow = '0px 0px 4px #fdbc4b';
-	}
-	else{
-		document.body.style.backgroundColor = 'black';
-		document.body.style.color = 'white';
-		titleDiv.style.textShadow = '0px 0px 4px #ffffff';
-	}
-}
-
-function toggleTheme(){
-	if(getCookie('theme') == 'sun'){
-		setCookie('theme', 'moon', 400);
-	}
-	else{
-		setCookie('theme', 'sun', 400);
-	}
-	setTheme();
-}
-
 function collapseToggle(){
 	const textDiv = document.getElementById('collapse');
 	const legendDiv = document.getElementById('legend');
@@ -142,7 +114,3 @@ function collapseToggle(){
 	legendDiv.style.display = legendDiv.style.display == 'none' ? 'block' : 'none';
 
 }
-
-const setCookie = (name, value, days) => { document.cookie = `${name}=${value}; expires=${new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString()}; path=/`; };
-const getCookie = (name) => { const decodedCookie = decodeURIComponent(document.cookie); const cookies = decodedCookie.split(';'); return cookies.find(cookie => cookie.trim().startsWith(name + '='))?.split('=')[1] || null; };
-const deleteCookie = (name) => { document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`; };
