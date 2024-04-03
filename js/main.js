@@ -1,7 +1,7 @@
 const VERSION = 3;
 
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-version
+
 let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
 function divKeyDownHandler(event) {
 	if (VALID_KEYS.includes(event.key)) {
