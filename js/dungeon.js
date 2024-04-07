@@ -11,6 +11,12 @@ const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
 
+const attackGreen = 'green';
+const damageRed = '#b30000';
+const gold = '#B8860B';
+const blueHealth = '#66CCFF';
+const grey = 'grey';
+
 function multChar(char, amt){
 	const c = char;
 	for(let i = 0; i < amt-1; i++){
@@ -96,7 +102,7 @@ function mobAttack(){
 			}
 			amt /= ((getPlayer().RNGSTAT[1] + getPlayer().trainStat[1]) / 4);
 			playerDamage += amt;
-			dungeonMessage('-'+amt.toFixed(2), 'red', true);	 
+			dungeonMessage('-'+amt.toFixed(2), damageRed, true);	 
 
 		}
 	}
@@ -248,13 +254,13 @@ function moveCharacter(keyPress){
 
 			let i, set;
 			if(locationIndex(nextLocation, GOLD) != null){
-				dungeonMessage('+1', 'goldenrod');
+				dungeonMessage('+1', gold);
 				getPlayer().gold += 1;
 				i = locationIndex(nextLocation, GOLD)
 				set = true;
 			}
 			else if(locationIndex(nextLocation, HEALTHPOTION) != null){							
-				dungeonMessage(`+${(10-getPlayer().health).toFixed(2)}`, 'deeppink');
+				dungeonMessage(`+${(10-getPlayer().health).toFixed(2)}`, blueHealth);
 				getPlayer().health = 10;
 				i = locationIndex(nextLocation, HEALTHPOTION);
 				set = true;
@@ -323,7 +329,7 @@ function train(key){
 
 			getPlayer().trainStat[attrIdx]++;
 			logMsg(`Paid 5 gold`, FADE);
-			dungeonMessage(`+${attrVal}`, 'grey', true);
+			dungeonMessage(`+${attrVal}`, grey, true);
 
 			getPlayer().gold -= 5;
 			updateStats();
@@ -340,7 +346,7 @@ function train(key){
 		else{
 			getPlayer().gold -= numInput; 
 			const amtAdded = ((getPlayer().health + numInput) > 10 ? 10 - getPlayer().health : numInput);
-			dungeonMessage(`+${amtAdded.toFixed(2)}`, 'deeppink');
+			dungeonMessage(`+${amtAdded.toFixed(2)}`, blueHealth);
 			getPlayer().health += amtAdded;
 			logMsg(`Paid ${numInput} gold`, FADE);
 			updateStats();
@@ -368,7 +374,7 @@ function attack(){
 				LOCATIONS.splice(i, 1);
 				i -= 1;
 			}
-			dungeonMessage('-' + attackDamage.toFixed(2), 'green', false);
+			dungeonMessage('-' + attackDamage.toFixed(2), attackGreen, false);
 			attacked = true;
 		}
 	}
