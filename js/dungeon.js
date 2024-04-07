@@ -12,8 +12,8 @@ const GOLD = '*';
 const HEALTHPOTION = 'o';
 
 const attackGreen = 'green';
-const damageRed = '#b30000';
-const gold = '#B8860B';
+const damageRed = 'red';
+const gold = 'goldenrod';
 const blueHealth = '#66CCFF';
 const grey = 'grey';
 
