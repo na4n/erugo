@@ -20,13 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		buttonDiv.innerHTML = '<button id="input" onclick="keyHandler(`ArrowUp`);">Up</button><br><button id="input" onclick="keyHandler(`ArrowLeft`);">Left</button><button id="input" onclick="keyHandler(`ArrowRight`);">Right</button><br><button id="input" onclick="keyHandler(`ArrowDown`);">Down</button><br><br>';
 		buttonDiv.innerHTML += '<button id="input" onclick="keyHandler(`e`)">E</button><a>&emsp;</a><button id="input" onclick="keyHandler(`s`)">S</button><button id="input" onclick="keyHandler(`d`);"">D</button><a>&emsp;</a><button id="input" onclick="keyHandler(`a`);">A</button><br><br>'
 	}
-
-	if(window.matchMedia('(prefers-color-scheme: dark)').matches === true){
-		document.getElementById('title').style.color = 'white';
-		document.body.style.color = 'white';
-		document.body.style.backgroundColor = 'black';
-	}
-
 });
 
 function divKeyDownHandler(event) {
