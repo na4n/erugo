@@ -5,7 +5,7 @@ const THEMES = {
 	LIGHT: 'light'
 }
 
-const osTheme = window.matchMedia('(prefers-color-scheme: THEMES.DARK)');
+const osTheme = window.matchMedia('(prefers-color-scheme: dark)');
 
 // simple function to change theme to OS, event listeners require references
 function changeTheme(){
