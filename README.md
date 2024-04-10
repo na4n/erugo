@@ -9,14 +9,13 @@ I grew up (mostly) without modern consoles and the earliest gaming experience I 
 
 # To Do
 ## Code Quality
-1. modules (Entity Manager)
-2. separate concerns in dungeon.js
-3. comments
+1. modules (Entity Manager) + separating concerns in *dungeon.js*
+3. comments in *dungeon.js*, *main.js*, *player.js*
 4. reduce DOM manipulation
-5. lint 
+5. lint (meh) 
 
 ## Features
-1. reimplement themes
+~~1. reimplement themes~~
 2. randomize stair locations on last levels
 3. increase mob awareness radius based on level
 4. fix defense (game winnable 5% of the time?)

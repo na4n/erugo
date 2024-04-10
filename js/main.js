@@ -1,4 +1,4 @@
-const VERSION = 3;
+const VERSION = 4;
 
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 

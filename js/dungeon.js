@@ -540,13 +540,15 @@ function displayGameOver(endCondition){
 
 function dungeonRefresh(floor){
 	function getData(){
-		if(Number(localStorage.getItem('version')) != VERSION){
+		const isVersionValid = Number(localStorage.getItem('version')) === VERSION;
+		const isLocValid = localStorage.getItem('loc') !== null;
+		const isFdValid = localStorage.getItem('fd') !== null;
+		
+		if (!isVersionValid || !isLocValid || !isFdValid) {
+			localStorage.clear();
 			return false;
 		}
-		else if(localStorage.getItem('loc')  === null || localStorage.getItem('fd') === null){
-			return false;
-		}
-
+		
 		LOCATIONS = JSON.parse(localStorage.getItem('loc'));
 		FLOORDIMENSION = JSON.parse(localStorage.getItem('fd'));
 		return true;
