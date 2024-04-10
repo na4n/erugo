@@ -1,9 +1,11 @@
-const WHITE = 'white';
-const BLACK = 'black';
-const DARK = 'dark';
-const LIGHT = 'light';
+const THEMES = {
+	WHITE: 'white',
+	BLACK: 'black',
+	DARK: 'dark',
+	LIGHT: 'light'
+}
 
-const osTheme = window.matchMedia('(prefers-color-scheme: dark)');
+const osTheme = window.matchMedia('(prefers-color-scheme: THEMES.DARK)');
 
 // simple function to change theme to OS, event listeners require references
 function changeTheme(){
@@ -12,27 +14,22 @@ function changeTheme(){
 
 // Set specific DOM elements to dark if parameter isDark is true (light otherwise)
 function setTheme(isDark){
-	document.body.style.backgroundColor = isDark ? BLACK : WHITE;
-	document.body.style.color = isDark ? WHITE : BLACK;
-	document.getElementById('title').style.color = isDark ? WHITE : BLACK;
+	document.body.style.backgroundColor = isDark ? THEMES.BLACK : THEMES.WHITE;
+	document.body.style.color = isDark ? THEMES.WHITE : THEMES.BLACK;
+	document.getElementById('title').style.color = isDark ? THEMES.WHITE : THEMES.BLACK;
 }
 
 // Toggles theme based on clicking title element
 function toggleTheme(){
-	let currentTheme = localStorage.getItem('theme') ?? (osTheme.matches ? DARK : LIGHT); // gets saved theme or os theme if none saved
-	console.log('storage: ' + localStorage.getItem('theme'));
-	console.log('current theme: ' + currentTheme);
+	let currentTheme = localStorage.getItem('theme') ?? (osTheme.matches ? THEMES.DARK : THEMES.LIGHT); // gets saved theme or os theme if none saved
+	currentTheme === THEMES.DARK ? setTheme(false) : setTheme(true); // apply appropriate theme to DOM
 
-	currentTheme === DARK ? setTheme(false) : setTheme(true); // apply appropriate theme to DOM
-
-
-	if((currentTheme === DARK && !osTheme.matches) || (currentTheme === LIGHT && osTheme.matches)){ // if applied theme matches OS, set to default state (remove storage add change event listener)
+	if((currentTheme === THEMES.DARK && !osTheme.matches) || (currentTheme === THEMES.LIGHT && osTheme.matches)){ // if applied theme matches OS, set to default state (remove storage add change event listener)
 		localStorage.removeItem('theme');
-		osTheme.addEventListener('change', changeTheme);
+		osTheme.addEventListener('change', changeTheme); // for reference this will never repeat event listeners since switching on default will not be default
 	}
 	else{ // if applied theme != OS theme, then user prefers specific theme so add theme to storage and remove event listener
-		const next = (currentTheme === DARK ? LIGHT : DARK);
-		localStorage.setItem('theme', next);
+		localStorage.setItem('theme', (currentTheme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK));
 		osTheme.removeEventListener('change', changeTheme);
 	}
 
@@ -44,9 +41,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	let theme = localStorage.getItem('theme');
 	if(theme == undefined){
 		osTheme.addEventListener('change', changeTheme);	
+		theme = (osTheme.matches ? THEMES.DARK : THEMES.LIGHT);
 	}
 
-	theme = theme ?? (osTheme.matches ? DARK : LIGHT);
-	theme === DARK ? setTheme(true) : setTheme(false);  
+	theme === THEMES.DARK ? setTheme(true) : setTheme(false);  
 });
 
