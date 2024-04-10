@@ -15,8 +15,7 @@ I grew up (mostly) without modern consoles and the earliest gaming experience I 
 5. lint (meh) 
 
 ## Features
-~~1. reimplement themes~~
-2. randomize stair locations on last levels
-3. increase mob awareness radius based on level
-4. fix defense (game winnable 5% of the time?)
+1. randomize stair locations on last levels
+2. increase mob awareness radius based on level
+3. fix defense (game winnable 5% of the time?)
 
