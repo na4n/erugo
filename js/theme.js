@@ -19,16 +19,20 @@ function setTheme(isDark){
 
 // Toggles theme based on clicking title element
 function toggleTheme(){
-	let currentTheme = localStorage.getItem('theme') ?? osTheme.matches ? DARK : LIGHT; // gets saved theme or os theme if none saved
-	
+	let currentTheme = localStorage.getItem('theme') ?? (osTheme.matches ? DARK : LIGHT); // gets saved theme or os theme if none saved
+	console.log('storage: ' + localStorage.getItem('theme'));
+	console.log('current theme: ' + currentTheme);
+
 	currentTheme === DARK ? setTheme(false) : setTheme(true); // apply appropriate theme to DOM
-	
+
+
 	if((currentTheme === DARK && !osTheme.matches) || (currentTheme === LIGHT && osTheme.matches)){ // if applied theme matches OS, set to default state (remove storage add change event listener)
 		localStorage.removeItem('theme');
 		osTheme.addEventListener('change', changeTheme);
 	}
 	else{ // if applied theme != OS theme, then user prefers specific theme so add theme to storage and remove event listener
-		localStorage.setItem('theme', currentTheme === DARK ? LIGHT : DARK);
+		const next = (currentTheme === DARK ? LIGHT : DARK);
+		localStorage.setItem('theme', next);
 		osTheme.removeEventListener('change', changeTheme);
 	}
 
@@ -42,8 +46,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		osTheme.addEventListener('change', changeTheme);	
 	}
 
-	theme = theme ?? osTheme.matches ? DARK : LIGHT;
+	theme = theme ?? (osTheme.matches ? DARK : LIGHT);
 	theme === DARK ? setTheme(true) : setTheme(false);  
-
 });
 
