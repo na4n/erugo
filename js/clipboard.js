@@ -23,7 +23,7 @@ function boardBaby(){
 addEventListener('copy', (event) => {
     event.preventDefault();
     
-    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${getPlayer().currentFloor} Gold: ${getPlayer().gold}\nHealth: ${getPlayer().health} Strength: ${getPlayer().trainStat[0]} Defense: ${getPlayer().trainStat[1]}`;
+    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${getPlayer().currentFloor} Gold: ${getPlayer().gold}\nHealth: ${(getPlayer().health).toFixed(2)} Strength: ${getPlayer().trainStat[0]} Defense: ${getPlayer().trainStat[1]}`;
     
     if (gameOver == 0) {
       event.clipboardData.setData("text/plain", `${head}\n${boardBaby()}`);
