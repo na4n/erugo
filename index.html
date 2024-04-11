@@ -13,12 +13,14 @@
 		<script src="js/player.js"></script>
 		<script src="js/dungeon.js"></script>
 		<script src="js/theme.js"></script>
+		<script src="js/clipboard.js"></script>
 	</head>
 
 	<body>
-		<h1 id='title' class="unselectable" onclick='toggleTheme();' >Erugo)</h1>
+		<h1 id='title' onclick='toggleTheme();' >Erugo)</h1>
+	
 		<br class="unselectable">
-		<div id="stats" class="unselectable" style="display:flex;flex-wrap:wrap;font-size:13px;">
+		<div id="stats" style="display:flex;flex-wrap:wrap;font-size:13px;">
 			<div id="level" style="display:inline-block;">Level: </div>
 			<div id="gold" style="display:inline-block;"></div>
 			<div id="contain" style="display:inline-block;margin-left:auto">
@@ -29,11 +31,11 @@
 		</div>
 
         <br class="unselectable">
-		<div id="dungeon" class="unselectable">
+		<div id="dungeon">
             <div id="dungeon-background"></div>
 			<div id="entity-layer" style="position:absolute;left:0px;top:0px"></div>
 		</div>
-		<div id="msg" class="unselectable" style="text-align:center;overflow:hidden;"></div>
+		<div id="msg" style="text-align:center;overflow:hidden;"></div>
 		<br class="unselectable">
 		<div id="arrow" class="unselectable" style="align-items:center;justify-content:center;text-align:center;"></div>
 		<div id="buttons" class="unselectable" style="align-items:center;justify-content:center;text-align:center;">
@@ -41,9 +43,9 @@
 			<button onclick="save()">Save Game</button>
 		</div>
 
-<br>
+<br class="unselectable">
 <div class="unselectable" style="font-size:1.5em;font-weight:bold;cursor:pointer;width:fit-content;" onclick="collapseToggle();">Legend<a style="font-size:1rem;font-weight:normal;cursor:pointer;" id="collapse"> &lt;expand&gt;</a></div>
-		<div id="legend" style="display:none;font-size:13px;">
+		<div class="unselectable" id="legend" style="display:none;font-size:13px;">
 <pre>'@': Character      &rarr; Use arrow keys to move and 'a' to attack enemies
 '\': Stairs         &rarr; Use 'e' or move into stairs to enter the next floor
 '+': Trainer        &rarr; Use 's', 'd' to train strength or defense for 5 gold

@@ -516,16 +516,22 @@ function saveData(){
 	return;
 }
 
-function displayGameOver(endCondition){
-	const arr = ['&#x1F389', '&#x1F973', '&#x1F483', '&#x1F57A', '&#x1F37E', '&#x1F37B', '&#129321', '&#127880', '&#x1F9A9']
-	let finalText = endCondition > 0 ? `${arr[Math.floor(Math.random()*(arr.length-1))]}YOU WON${arr[Math.floor(Math.random()*(arr.length-1))]}` : 'GAME OVER'; 
-	
+function getScore(){
 	let score = 0;
 	for(let i = 0; i < getPlayer().mobkilled.length; i++){
 		score += getPlayer().mobkilled[i] * (i * 5)
 	}
 	score += getPlayer().gold * 2;
 	score += (getPlayer().trainStat[0] + getPlayer().trainStat[1])
+
+	return score;
+}
+
+function displayGameOver(endCondition){
+	const arr = ['&#x1F389', '&#x1F973', '&#x1F483', '&#x1F57A', '&#x1F37E', '&#x1F37B', '&#129321', '&#127880', '&#x1F9A9']
+	let finalText = endCondition > 0 ? `${arr[Math.floor(Math.random()*(arr.length-1))]}YOU WON${arr[Math.floor(Math.random()*(arr.length-1))]}` : 'GAME OVER'; 
+	
+	let score = getScore();
 
 	const dungeonBackground = document.getElementById('dungeon-background');
 	const entityLayer = document.getElementById('entity-layer');
