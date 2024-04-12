@@ -41,10 +41,10 @@ function updateStats(){
 	const HEALTH =  document.getElementById('health');
 	const DEFENSE =  document.getElementById('defense');	
 	
-	LEVEL.innerHTML = `<b>Level:</b> ${getPlayer().currentFloor}&nbsp;<span style="font-weight:bold;color:darkgoldenrod">-:-</span>&nbsp;`;
+	LEVEL.innerHTML = `<b>Level:</b> ${getPlayer().currentFloor}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>&nbsp;`;
 	GOLD.innerHTML = `<b>Gold:</b> ${getPlayer().gold}`;
-	STRENGTH.innerHTML = `<b>Strength: </b>${getPlayer().trainStat[0]}&nbsp;<span style="font-weight:bold;color:darkgoldenrod">-:-</span>`;
-	HEALTH.innerHTML = `<b>Health: </b>${(getPlayer().health).toFixed(2)}&nbsp;<span style="font-weight:bold;color:darkgoldenrod">-:-</span>`;
+	STRENGTH.innerHTML = `<b>Strength: </b>${getPlayer().trainStat[0]}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>`;
+	HEALTH.innerHTML = `<b>Health: </b>${(getPlayer().health).toFixed(2)}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>`;
 	DEFENSE.innerHTML = `<b>Defense: </b>${getPlayer().trainStat[1]}`;
 	
 	return;
