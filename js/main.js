@@ -37,6 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	const titleDiv = document.getElementById('title').addEventListener('click', toggleTheme);
+
+	const a = document.getElementsByClassName('lazy');
+	for(let i = 0; i < a.length; i++){
+		document.getElementsByClassName('lazy')[i].style.display = 'initial';
+	}
+	
 });
 
 

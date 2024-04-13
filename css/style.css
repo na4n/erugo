@@ -2,6 +2,10 @@
   font-family: monospace;
 }
 
+.lazy{
+  display: none;
+}
+
 #stats{
 	margin-left: 10%;
 	margin-right: 10%;

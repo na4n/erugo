@@ -20,12 +20,16 @@
 		<h1 id='title'>Erugo)</h1>
 	
 		<div id="stats" style="display:flex;flex-wrap:wrap;font-size:13px;">
-			<div id="level" style="display:inline-block;">Level: </div>
-			<div id="gold" style="display:inline-block;"></div>
+			<div   style="display:inline-block;"><b>Level: </b><a id="level"></a></div>
+			<span >&nbsp<span  style="font-weight:bold;color:goldenrod">-:-</span>&nbsp</span>
+			<div  style="display:inline-block;"><b>Gold: </b><a id="gold"></a></div>
+			
 			<div id="contain" style="display:inline-block;margin-left:auto">
-				<div id="health" style="display:inline-block;margin-left:auto;"></div>
-				<div id="strength" style="display:inline-block;margin-left:auto;"></div>
-				<div id="defense" style="display:inline-block;margin-left:auto;"></div>	
+				<div  style="display:inline-block;margin-left:auto;"><b>Health: </b><a id="health"></a></div>
+				<span  style="font-weight:bold;color:goldenrod">-:-</span>
+				<div   style="display:inline-block;margin-left:auto;"><b>Strength: </b><a id="strength"></a></div>
+				<span  style="font-weight:bold;color:goldenrod">-:-</span>
+				<div  style="display:inline-block;margin-left:auto;"><b>Defense: </b><a id="defense"></a></div>	
 			</div>
 		</div>
 
@@ -37,12 +41,12 @@
 		<br class="unselectable">
 		<div id="arrow" class="unselectable" style="align-items:center;justify-content:center;text-align:center;"></div>
 		<div id="buttons" class="unselectable" style="align-items:center;justify-content:center;text-align:center;">
-			<button onclick="reset()">Reset Game</button>
-			<button onclick="save()">Save Game</button>
+			<button class="lazy unselectable" onclick="reset()">Reset Game</button>
+			<button class="lazy unselectable" onclick="save()">Save Game</button>
 		</div>
 
 <br class="unselectable">
-<div class="unselectable" style="font-size:1.5em;font-weight:bold;cursor:pointer;width:fit-content;" onclick="collapseToggle();">Legend<a style="font-size:1rem;font-weight:normal;cursor:pointer;" id="collapse"> &lt;expand&gt;</a></div>
+<div class="lazy unselectable" style="font-size:1.5em;font-weight:bold;cursor:pointer;width:fit-content;" onclick="collapseToggle();">Legend<a style="font-size:1rem;font-weight:normal;cursor:pointer;" id="collapse"> &lt;expand&gt;</a></div>
 		<div class="unselectable" id="legend" style="display:none;font-size:13px;">
 <pre>'@': Character      &rarr; Use arrow keys to move and 'a' to attack enemies
 '\': Stairs         &rarr; Use 'e' or move into stairs to enter the next floor
