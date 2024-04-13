@@ -1,22 +1,31 @@
-const VERSION = 1.1;
+// imports from dungeon.js
+	// CHARHEIGHT, CHARWIDTH
+	// displayGameOver()
+	// entitiesRefresh()
+
+// imports from player.js
+	// updateStats()
+	// 
+
+const VERSION = 5;
 
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
 
 document.addEventListener('DOMContentLoaded', function() {
-	({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '15.5px'));
+	({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '15.5px'));		//from dungeon.js
 	
 	window.onresize = function(){
-		({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '15.5px'));
+		({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '15.5px'));	//from dungeon.js
 		gameOver == 0 ? entitiesRefresh() : displayGameOver(gameOver);
 	};
 	
 	document.getElementById('msg').style.height = `${getCharacterDimensions('times', 'H', '16').height}` + 'px';
 	enableDungeonEventListener();
 
-	dungeonRefresh();
-	updateStats();
+	dungeonRefresh();	//from dungeon.js
+	updateStats();	//from player.js
 	document.getElementById('dungeon').click();
 
 	const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -108,18 +117,18 @@ function reset(){
 	d.style.left = '0px';
 
 	localStorage.clear();
-	PLAYER = createNewPlayer(), FLOORDIMENSION = null, LOCATIONS = null;
+	PLAYER = createNewPlayer(), FLOORDIMENSION = null, LOCATIONS = null;	//from dungeon.js, player.js
 	gameOver = 0;
 
-	dungeonRefresh();
-	updateStats();
+	dungeonRefresh();	//from dungeon.js
+	updateStats();		//from player.js
 	
 	document.getElementById('dungeon').click();
 }
 
 function save(){
-	saveData();
-	savePlayer();
+	saveData();										//from dungeon.js
+	savePlayer();									//from player.js
 	localStorage.setItem('gameOver', gameOver);
 	logMsg('Saved Game', FADE);
 }
@@ -141,5 +150,4 @@ function collapseToggle(){
 	const legendDiv = document.getElementById('legend');
 	textDiv.innerText =	legendDiv.style.display == 'none' ? ' <collapse>' : ' <expand>';
 	legendDiv.style.display = legendDiv.style.display == 'none' ? 'block' : 'none';
-
 }
