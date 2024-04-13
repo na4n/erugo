@@ -1,4 +1,4 @@
-let LOCATIONS; // 0: PLAYER, 1: TRAINER, 2: STAIRS
+let LOCATIONS;
 let FLOORDIMENSION;
 
 let CHARHEIGHT;
@@ -202,7 +202,7 @@ function removeEntityDiv(id){
 	}
 }
 
-function movePLAYER(keyPress){
+function movePlayer(keyPress){
 	function validLocation(loc){ 
 		return 0 <= loc[0] && loc[0] < FLOORDIMENSION[0] && 0 <= loc[1] && loc[1] < FLOORDIMENSION[1];  
 	}
@@ -219,44 +219,37 @@ function movePLAYER(keyPress){
 		return null;
 	}
 
-	const playerLocation = LOCATIONS[0].loc;
+	const playerLocation = structuredClone(LOCATIONS[0].loc);
 	
-	let nextLocation;
-	if(keyPress == 'ArrowUp'){ 
-		nextLocation = [playerLocation[0]-1, playerLocation[1]]; 
-	}
-	else if(keyPress == 'ArrowDown'){ 
-		nextLocation = [playerLocation[0]+1, playerLocation[1]]; 
-	}
-	else if(keyPress == 'ArrowLeft'){ 
-		nextLocation = [playerLocation[0], playerLocation[1]-1]; 
-	}
-	else if(keyPress == 'ArrowRight'){ 
-		nextLocation = [playerLocation[0], playerLocation[1]+1]; 
-	}
-	else{ 
-		return false; 
-	}
-
-	if(validLocation(nextLocation) && [GOLD, HEALTHPOTION, STAIRS, null].includes(getEntityAtLocation(nextLocation))){
-		if(locationIndex(nextLocation, STAIRS) != null){
+	let pressMap = new Map([
+		['ArrowUp', [-1, 0]],
+		['ArrowDown', [1, 0]],
+		['ArrowLeft', [0, -1]],
+		['ArrowRight', [0, 1]]
+	]);
+	const delta = pressMap.get(keyPress);
+	playerLocation[0] += delta[0];
+	playerLocation[1] += delta[1];
+	
+	if(validLocation(playerLocation) && [GOLD, HEALTHPOTION, STAIRS, null].includes(getEntityAtLocation(playerLocation))){
+		if(locationIndex(playerLocation, STAIRS) != null){
 			enterStairs();
 			return false;
 		}
 		else{
-			LOCATIONS[0].loc = nextLocation;
+			LOCATIONS[0].loc = playerLocation;
 
 			let i, set;
-			if(locationIndex(nextLocation, GOLD) != null){
+			if(locationIndex(playerLocation, GOLD) != null){
 				dungeonMessage('+1', GOLD_MSG_COL);
 				PLAYER.gold += 1;
-				i = locationIndex(nextLocation, GOLD)
+				i = locationIndex(playerLocation, GOLD)
 				set = true;
 			}
-			else if(locationIndex(nextLocation, HEALTHPOTION) != null){							
+			else if(locationIndex(playerLocation, HEALTHPOTION) != null){							
 				dungeonMessage(`+${(10-PLAYER.health).toFixed(2)}`, HEALTH_MSG_COL);
 				PLAYER.health = 10;
-				i = locationIndex(nextLocation, HEALTHPOTION);
+				i = locationIndex(playerLocation, HEALTHPOTION);
 				set = true;
 			}
 
@@ -267,18 +260,18 @@ function movePLAYER(keyPress){
 			}
 
 			const char = document.getElementById('0');
-			char.style.left = CHARWIDTH * (nextLocation[1]+1) + 'px';
-			char.style.top = CHARHEIGHT * (nextLocation[0]+1) + 'px';
+			char.style.left = CHARWIDTH * (playerLocation[1]+1) + 'px';
+			char.style.top = CHARHEIGHT * (playerLocation[0]+1) + 'px';
 	
 			return true;
 		}
 	}
-	else if(MOBTYPES.includes(getEntityAtLocation(nextLocation))){
-		logMsg('Cannot move there', FADE);
+	else if(MOBTYPES.includes(getEntityAtLocation(playerLocation))){
+		logMsg('Walking into the enemy is an odd approach...', FADE);
 		return false;
 	}
 	else{
-		logMsg('Cannot move there', FADE);
+		logMsg('Shove off punk', FADE);
 		return false;
 	}
 }
@@ -288,7 +281,7 @@ function enterStairs(){
 	const charLoc =  LOCATIONS[0].loc;
 	
 	if(totalDistance(stairsLoc, charLoc) >= ONE_SPACE_AWAY){
-		logMsg('You are too far from the stairs', FADE);
+		logMsg('Too far, try inventing a teleporter', FADE);
 		return false;
 	}
 	else if(PLAYER.currentFloor >= 10){
@@ -309,7 +302,7 @@ function enterStairs(){
 
 function train(key){
 	if(totalDistance(LOCATIONS[0].loc, LOCATIONS[1].loc) > ONE_SPACE_AWAY){
-		logMsg("Stand next to Trainer", FADE);
+		logMsg("Get closer he doesn't bite", FADE);
 		return false;
 	}
 
@@ -379,13 +372,13 @@ function attack(){
 
 function keyHandler(keyPress){
 	async function lockMoveWait(){
-		function blockInput(event){
-			event.preventDefault();
-		}
+		const blockInput = (event) => event.preventDefault();
+		
 		document.removeEventListener('keydown', divKeyDownHandler)
 		document.addEventListener('keydown', blockInput);
-		await delay(25);
+
 		moveEntities();
+
 		document.removeEventListener('keydown', blockInput);
 		document.addEventListener('keydown', divKeyDownHandler);
 	}
@@ -395,7 +388,7 @@ function keyHandler(keyPress){
 	}
 
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
-		const validMove = movePLAYER(keyPress);
+		const validMove = movePlayer(keyPress);
 		if(validMove && !mobAttack()){
 			lockMoveWait();
 		}

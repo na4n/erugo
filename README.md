@@ -9,10 +9,11 @@ I grew up (mostly) without modern consoles and the earliest gaming experience I 
 
 # To Do
 ## Code Quality
-1. modules (Entity Manager) + separating concerns in *dungeon.js*
+1. implement async request queue to handle messages
+2. separate entities in *dungeon.js*
+2. modules (Entity Manager) + separating concerns in *dungeon.js* -- identify bottlenecks
 3. comments in *dungeon.js*, *main.js*, *player.js*
 4. reduce DOM manipulation
-5. lint (meh) 
 
 ## Features
 1. randomize stair locations on last levels

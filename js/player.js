@@ -24,18 +24,15 @@ function updateStats() {
     }
 
     const LEVEL = document.getElementById("level");
-    LEVEL.innerHTML = `${PLAYER.currentFloor}`;
-
     const GOLD = document.getElementById("gold");
-    GOLD.innerHTML = `${PLAYER.gold}`;
-
     const HEALTH = document.getElementById("health");
-    HEALTH.innerHTML = `${(PLAYER.health).toFixed(2)}`;
-
     const STRENGTH = document.getElementById("strength");
-    STRENGTH.innerHTML = `${PLAYER.trainStats[0]}`;
-
     const DEFENSE = document.getElementById("defense");
+
+    LEVEL.innerHTML = `${PLAYER.currentFloor}`;
+    GOLD.innerHTML = `${PLAYER.gold}`;
+    HEALTH.innerHTML = `${(PLAYER.health).toFixed(2)}`;
+    STRENGTH.innerHTML = `${PLAYER.trainStats[0]}`;
     DEFENSE.innerHTML = `${PLAYER.trainStats[1]}`;
 
     return;
