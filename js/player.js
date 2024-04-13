@@ -1,51 +1,38 @@
-class Player {
-	constructor(jsonObject) {
-		this.RNGSTAT = jsonObject?.RNGSTAT ?? [Math.floor(Math.random() * 5) + 5, Math.floor(Math.random() * 5) + 5];
-		this.trainStat = jsonObject?.trainStat ?? [0, 0];
-		this.currentFloor = jsonObject?.currentFloor ?? 1;
-		this.gold = jsonObject?.gold ?? 0;
-		this.health = jsonObject?.health ?? 10.0;
-		this.mobkilled = jsonObject?.mobkilled ?? [0, 0, 0, 0, 0];
-	}
-	  
+let PLAYER = JSON.parse(localStorage.getItem('player')) ?? createNewPlayer();
+
+function createNewPlayer(){
+	return {
+		baseStats: [Math.floor(Math.random()*5)+5, Math.floor(Math.random()*5)+5],
+		trainStats: [0,0],
+		currentFloor: 1,
+		gold: 0,
+		health: 10.0,
+		mobKilled: [0,0,0,0,0]
+	};
 }
 
-const TRAINMAX = 10;
-let USER;
-
 function savePlayer(){
-	if(USER != null){
-		localStorage.setItem('player', JSON.stringify(USER));
-	}
+	localStorage.setItem('player', JSON.stringify(PLAYER));
 	return;
 }
 
-function getPlayer(){
-	if(USER == null){
-		USER = new Player(JSON.parse(localStorage.getItem('player')));
-		savePlayer();
-	}
-
-	return USER;
-}
-
 function updateStats(){
-	if(getPlayer() == null){
+	if(PLAYER == null){
 		document.getElementById('stats').style.display = 'none';
 		return;
 	}
 	
 	const LEVEL = document.getElementById('level');
 	const GOLD =  document.getElementById('gold');
-	const STRENGTH =  document.getElementById('strength');
 	const HEALTH =  document.getElementById('health');
+	const STRENGTH =  document.getElementById('strength');
 	const DEFENSE =  document.getElementById('defense');	
-	
-	LEVEL.innerHTML = `<b>Level:</b> ${getPlayer().currentFloor}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>&nbsp;`;
-	GOLD.innerHTML = `<b>Gold:</b> ${getPlayer().gold}`;
-	STRENGTH.innerHTML = `<b>Strength: </b>${getPlayer().trainStat[0]}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>`;
-	HEALTH.innerHTML = `<b>Health: </b>${(getPlayer().health).toFixed(2)}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>`;
-	DEFENSE.innerHTML = `<b>Defense: </b>${getPlayer().trainStat[1]}`;
-	
+
+	LEVEL.innerHTML = `<b>Level:</b> ${PLAYER.currentFloor}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>&nbsp;`;
+	GOLD.innerHTML = `<b>Gold:</b> ${PLAYER.gold}`;
+	HEALTH.innerHTML = `<b>Health: </b>${(PLAYER.health).toFixed(2)}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>`;
+	STRENGTH.innerHTML = `<b>Strength: </b>${PLAYER.trainStats[0]}&nbsp;<span style="font-weight:bold;color:goldenrod">-:-</span>`;
+	DEFENSE.innerHTML = `<b>Defense: </b>${PLAYER.trainStats[1]}`;
+		
 	return;
 }

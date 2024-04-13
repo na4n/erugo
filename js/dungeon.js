@@ -5,27 +5,21 @@ let CHARHEIGHT;
 let CHARWIDTH;
 
 const MOBTYPES = ['%', '>', '~', '^', '&'];
-const PLAYER = '@';
+const CHARACTER = '@';
 const STAIRS = '\\';
 const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
 
-const attackGreen = 'green';
-const damageRed = 'red';
-const gold = 'goldenrod';
-const blueHealth = '#66CCFF';
-const grey = 'grey';
+const ATTACK_MSG_COL = 'green';
+const DAMAGE_MSG_COL = 'red';
+const GOLD_MSG_COL = 'goldenrod';
+const HEALTH_MSG_COL = '#66CCFF';
+const DEFAULT_MSG_COL = 'grey';
 
-function multChar(char, amt){
-	const c = char;
-	for(let i = 0; i < amt-1; i++){
-		char += c;
-	}
-	return char;
-}
+const ONE_SPACE_AWAY = 1.42;
 
-async function dungeonMessage(msg, col, up){
+async function dungeonMessage(message, color, up){
 	let loc = structuredClone(LOCATIONS[0].loc);
 	!up ? loc[0]++ : loc[0]--;
 
@@ -35,7 +29,7 @@ async function dungeonMessage(msg, col, up){
 	}
 
 	const div = document.createElement('div');
-	div.innerHTML = `<b>${msg}</b>`;
+	div.innerHTML = `<b>${message}</b>`;
 
 	let i, divId;
 	if(up === undefined){
@@ -44,27 +38,27 @@ async function dungeonMessage(msg, col, up){
 	}
 	else if(up){
 		for(i = 1; i < 10; i++){
-			if(document.getElementById(multChar(',', i)) == null){
-				divId = multChar(',', i);
+			if(document.getElementById(','.repeat(i)) == null){
+				divId = ','.repeat(i);
 				break;
 			}
 		}
 	}
 	else if(!up){
 		for(i = 1; i < 10; i++){
-			if(document.getElementById(multChar('.', i)) == null){
-				divId = multChar('.', i);
+			if(document.getElementById('.'.repeat(i)) == null){
+				divId = '.'.repeat(i);
 				break;
 			}
 		}
 	}	
 	div.id = divId;
 
-	const lsz = Math.floor(msg.length / 2) == 1 ? 0 : msg.length / 2;
+	const lsz = Math.floor(message.length / 2) == 1 ? 0 : message.length / 2;
 	const topVal = up || up === undefined ? `${CHARHEIGHT * (1 + loc[0] - (i-1))}px` : `${CHARHEIGHT * (1 + loc[0] + (i-1))}px`;
 	Object.assign(div.style, {
 		opacity: '1',
-		color: col,
+		color: color,
 		float: 'left',
 		position: 'absolute',
 		left: `${CHARWIDTH * (-lsz + 1 + loc[1])}px`,
@@ -84,7 +78,7 @@ function mobAttack(){
 	const playerLocation = LOCATIONS[0].loc;
 	let playerDamage = 0, amt = 0;
 	for(let i = 0; i < LOCATIONS.length; i++){
-		if(MOBTYPES.includes(LOCATIONS[i].ch) && totalDistance(LOCATIONS[i].loc, playerLocation) <= 1.42){
+		if(MOBTYPES.includes(LOCATIONS[i].ch) && totalDistance(LOCATIONS[i].loc, playerLocation) <= ONE_SPACE_AWAY){
 			if(LOCATIONS[i].ch == '%'){ 
 				amt = (1 + Math.round(Math.random()))
 			}
@@ -100,24 +94,24 @@ function mobAttack(){
 			else if(LOCATIONS[i].ch == '&'){ 
 				amt = (5 + Math.round(Math.random()))
 			}
-			amt /= ((getPlayer().RNGSTAT[1] + getPlayer().trainStat[1]) / 4);
+			amt /= ((PLAYER.baseStats[1] + PLAYER.trainStats[1]) / 4);
 			playerDamage += amt;
-			dungeonMessage('-'+amt.toFixed(2), damageRed, true);	 
+			dungeonMessage('-'+amt.toFixed(2), DAMAGE_MSG_COL, true);	 
 
 		}
 	}
 
 	if(playerDamage > 0){	
-		getPlayer().health -= playerDamage;
-		if(getPlayer().health <= 0){
-			getPlayer().health = 0;
+		PLAYER.health -= playerDamage;
+		if(PLAYER.health <= 0){
+			PLAYER.health = 0;
 			gameOver = -1;
 			localStorage.setItem('gameOver', gameOver);
 			savePlayer();
 			displayGameOver(gameOver);
 		}
 		updateStats();  
-		return getPlayer().health <= 0;
+		return PLAYER.health <= 0;
 	}
 
 	return false;
@@ -150,7 +144,7 @@ function moveEntities(){
 				targetLoc = arrLocs[0];
 			}
 
-			if(totalDistance(targetLoc, LOCATIONS[i].loc) < 1.42){
+			if(totalDistance(targetLoc, LOCATIONS[i].loc) < ONE_SPACE_AWAY){
 			 	continue;
 			}
 
@@ -208,7 +202,7 @@ function removeEntityDiv(id){
 	}
 }
 
-function moveCharacter(keyPress){
+function movePLAYER(keyPress){
 	function validLocation(loc){ 
 		return 0 <= loc[0] && loc[0] < FLOORDIMENSION[0] && 0 <= loc[1] && loc[1] < FLOORDIMENSION[1];  
 	}
@@ -254,14 +248,14 @@ function moveCharacter(keyPress){
 
 			let i, set;
 			if(locationIndex(nextLocation, GOLD) != null){
-				dungeonMessage('+1', gold);
-				getPlayer().gold += 1;
+				dungeonMessage('+1', GOLD_MSG_COL);
+				PLAYER.gold += 1;
 				i = locationIndex(nextLocation, GOLD)
 				set = true;
 			}
 			else if(locationIndex(nextLocation, HEALTHPOTION) != null){							
-				dungeonMessage(`+${(10-getPlayer().health).toFixed(2)}`, blueHealth);
-				getPlayer().health = 10;
+				dungeonMessage(`+${(10-PLAYER.health).toFixed(2)}`, HEALTH_MSG_COL);
+				PLAYER.health = 10;
 				i = locationIndex(nextLocation, HEALTHPOTION);
 				set = true;
 			}
@@ -293,11 +287,11 @@ function enterStairs(){
 	const stairsLoc = LOCATIONS.length > 2 && getEntityAtLocation(LOCATIONS[2].loc) === STAIRS ? LOCATIONS[2].loc : LOCATIONS[1].loc;
 	const charLoc =  LOCATIONS[0].loc;
 	
-	if(oneSpaceAway(stairsLoc, charLoc) > 1){
+	if(totalDistance(stairsLoc, charLoc) >= ONE_SPACE_AWAY){
 		logMsg('You are too far from the stairs', FADE);
 		return false;
 	}
-	else if(getPlayer().currentFloor >= 10){
+	else if(PLAYER.currentFloor >= 10){
 		gameOver = 1;
 		localStorage.setItem('gameOver', 1);
 		displayGameOver(1);
@@ -306,7 +300,7 @@ function enterStairs(){
 	else{
 		localStorage.removeItem('fd');
 		localStorage.removeItem('loc');
-		dungeonRefresh(++getPlayer().currentFloor);
+		dungeonRefresh(++PLAYER.currentFloor);
 		updateStats();
 		save();
 		return true;
@@ -314,24 +308,24 @@ function enterStairs(){
 }
 
 function train(key){
-	if(oneSpaceAway(LOCATIONS[0].loc, LOCATIONS[1].loc) > 1){
+	if(totalDistance(LOCATIONS[0].loc, LOCATIONS[1].loc) > ONE_SPACE_AWAY){
 		logMsg("Stand next to Trainer", FADE);
 		return false;
 	}
 
 	if(key == 's' || key == 'd'){
-		if(getPlayer().gold < 5){
+		if(PLAYER.gold < 5){
 			logMsg('Need 5 gold to train', FADE);
 			return false;
 		}
 		else{
 			const [attrVal, attrIdx] = key == 's' ? ['Strength', 0] : ['Defense', 1];
 
-			getPlayer().trainStat[attrIdx]++;
+			PLAYER.trainStats[attrIdx]++;
 			logMsg(`Paid 5 gold`, FADE);
-			dungeonMessage(`+${attrVal}`, grey, true);
+			dungeonMessage(`+${attrVal}`, DEFAULT_MSG_COL, true);
 
-			getPlayer().gold -= 5;
+			PLAYER.gold -= 5;
 			updateStats();
 			
 			return true;
@@ -339,15 +333,15 @@ function train(key){
 	}
 	else{
 		const numInput = Number(key);
-		if(getPlayer().gold < numInput){
+		if(PLAYER.gold < numInput){
 			logMsg(`Need ${numInput} gold`, FADE);
 			return false;
 		}
 		else{
-			getPlayer().gold -= numInput; 
-			const amtAdded = ((getPlayer().health + numInput) > 10 ? 10 - getPlayer().health : numInput);
-			dungeonMessage(`+${amtAdded.toFixed(2)}`, blueHealth);
-			getPlayer().health += amtAdded;
+			PLAYER.gold -= numInput; 
+			const amtAdded = ((PLAYER.health + numInput) > 10 ? 10 - PLAYER.health : numInput);
+			dungeonMessage(`+${amtAdded.toFixed(2)}`, HEALTH_MSG_COL);
+			PLAYER.health += amtAdded;
 			logMsg(`Paid ${numInput} gold`, FADE);
 			updateStats();
 			return true;
@@ -355,26 +349,23 @@ function train(key){
 
 	}
 }
-const oneSpaceAway = function(loc1, loc2){ 
-	return Math.abs(loc1[0]-loc2[0])+Math.abs(loc1[1]-loc2[1]); 
-};
 
 function attack(){	
 	const charLoc = LOCATIONS[0].loc;
 	let attacked = false;
 	for(let i = 0; i < LOCATIONS.length; i++){
-		if(totalDistance(charLoc, LOCATIONS[i].loc) <= 1.42 && MOBTYPES.includes(LOCATIONS[i].ch)){
-			let dmg = Math.floor(((getPlayer().RNGSTAT[0] + getPlayer().trainStat[0])) / 5);
+		if(totalDistance(charLoc, LOCATIONS[i].loc) <= ONE_SPACE_AWAY && MOBTYPES.includes(LOCATIONS[i].ch)){
+			let dmg = Math.floor(((PLAYER.baseStats[0] + PLAYER.trainStats[0])) / 5);
 			const attackDamage = dmg == 0 ? 1 + (Math.round(Math.random() * 20) / 20) : (dmg + (Math.round(Math.random() * 20) / 20));
 			LOCATIONS[i].health -= attackDamage;
 			if(LOCATIONS[i].health <= 0){
 				logMsg('Killed ' + LOCATIONS[i].ch, FADE);
-				getPlayer().mobkilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
+				PLAYER.mobKilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
 				removeEntityDiv(i);
 				LOCATIONS.splice(i, 1);
 				i -= 1;
 			}
-			dungeonMessage('-' + attackDamage.toFixed(2), attackGreen, false);
+			dungeonMessage('-' + attackDamage.toFixed(2), ATTACK_MSG_COL, false);
 			attacked = true;
 		}
 	}
@@ -404,7 +395,7 @@ function keyHandler(keyPress){
 	}
 
 	if(keyPress == 'ArrowUp' || keyPress == 'ArrowDown' || keyPress == 'ArrowLeft' || keyPress == 'ArrowRight'){
-		const validMove = moveCharacter(keyPress);
+		const validMove = movePLAYER(keyPress);
 		if(validMove && !mobAttack()){
 			lockMoveWait();
 		}
@@ -485,7 +476,7 @@ function generateFloor(floorNum){
 	}
 	
     const floorDimension = [Math.floor(Math.random()*10)+15, Math.floor(Math.random()*10)+15];
-    placeObject(floorDimension, PLAYER);
+    placeObject(floorDimension, CHARACTER);
     if(Math.random() <= 0.5){
 		placeObject(floorDimension, TRAINER);
 	}
@@ -518,11 +509,11 @@ function saveData(){
 
 function getScore(){
 	let score = 0;
-	for(let i = 0; i < getPlayer().mobkilled.length; i++){
-		score += getPlayer().mobkilled[i] * (i * 5)
+	for(let i = 0; i < PLAYER.mobKilled.length; i++){
+		score += PLAYER.mobKilled[i] * (i * 5)
 	}
-	score += getPlayer().gold * 2;
-	score += (getPlayer().trainStat[0] + getPlayer().trainStat[1])
+	score += PLAYER.gold * 2;
+	score += (PLAYER.trainStats[0] + PLAYER.trainStats[1])
 
 	return score;
 }
@@ -537,7 +528,7 @@ function displayGameOver(endCondition){
 	const entityLayer = document.getElementById('entity-layer');
 	
 	entityLayer.style.textAlign = 'center';
-	entityLayer.innerHTML = `<b>${finalText}</b><br>Score: ${score}<br><br>Strength: ${getPlayer().RNGSTAT[0]}<small>+${getPlayer().trainStat[0]}</small><br>Defense: ${getPlayer().RNGSTAT[1]}<small>+${getPlayer().trainStat[1]}</small><br><br>Killed<br>%: ${getPlayer().mobkilled[0]}<br>\>: ${getPlayer().mobkilled[1]}<br>~: ${getPlayer().mobkilled[2]}<br>^: ${getPlayer().mobkilled[3]}<br>&: ${getPlayer().mobkilled[4]}<br>`;
+	entityLayer.innerHTML = `<b>${finalText}</b><br>Score: ${score}<br><br>Strength: ${PLAYER.baseStats[0]}<small>+${PLAYER.trainStats[0]}</small><br>Defense: ${PLAYER.baseStats[1]}<small>+${PLAYER.trainStats[1]}</small><br><br>Killed<br>%: ${PLAYER.mobKilled[0]}<br>\>: ${PLAYER.mobKilled[1]}<br>~: ${PLAYER.mobKilled[2]}<br>^: ${PLAYER.mobKilled[3]}<br>&: ${PLAYER.mobKilled[4]}<br>`;
 	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - (11 * CHARHEIGHT/2)}px`;
 	entityLayer.style.left = `${((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length)/2) * CHARWIDTH)) + 1}px`;
 

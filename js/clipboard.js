@@ -1,4 +1,4 @@
-function boardBaby(){
+function boardTextRepresentation(){
     const s = dungeonBackground(FLOORDIMENSION).replaceAll("<br>", "\n").replaceAll("&nbsp;", " ");
 
     let a = s.split("\n");
@@ -15,7 +15,6 @@ function boardBaby(){
     }
 
     a = a.join("\n");
-
     return a;
 }
 
@@ -23,12 +22,12 @@ function boardBaby(){
 addEventListener('copy', (event) => {
     event.preventDefault();
     
-    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${getPlayer().currentFloor} Gold: ${getPlayer().gold}\nHealth: ${(getPlayer().health).toFixed(2)} Strength: ${getPlayer().trainStat[0]} Defense: ${getPlayer().trainStat[1]}`;
+    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${USER.currentFloor} Gold: ${USER.gold}\nHealth: ${(USER.health).toFixed(2)} Strength: ${USER.trainStat[0]} Defense: ${USER.trainStat[1]}`;
     
     if (gameOver == 0) {
-      event.clipboardData.setData("text/plain", `${head}\n${boardBaby()}`);
+      event.clipboardData.setData("text/plain", `${head}\n${boardTextRepresentation()}`);
     } 
     else {
-      event.clipboardData.setData("text/plain", `${head}\n\nGAME OVER\nKilled:\n%: ${getPlayer().mobkilled[0]}\n>: ${getPlayer().mobkilled[1]}\n~: ${getPlayer().mobkilled[2]}\n^: ${getPlayer().mobkilled[3]}\n&: ${getPlayer().mobkilled[4]}`);
+      event.clipboardData.setData("text/plain", `${head}\n\nGAME OVER\nKilled:\n%: ${USER.mobkilled[0]}\n>: ${USER.mobkilled[1]}\n~: ${USER.mobkilled[2]}\n^: ${USER.mobkilled[3]}\n&: ${USER.mobkilled[4]}`);
     }
-  })
+});
