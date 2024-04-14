@@ -538,9 +538,9 @@ function dungeonRefresh(floor){
 		return true;
 	}
 	
-	if(!getData()){
+	if(!getData()){		// this is handled really poorly (conditions: new game, load previous game, next floor)
 		generateFloor(floor ?? 1);
-		PLAYER = createNewPlayer();
+		PLAYER = (floor ?? 1) == 1 ? createNewPlayer() : PLAYER;
 		save();
 	}
 
