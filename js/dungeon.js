@@ -470,7 +470,7 @@ function generateFloor(floorNum){
     for(let i = 0; i < Math.floor(Math.random()*5)+3; i++){
         placeObject(floorDimension, GOLD);
     }
-	const numMobs = Math.floor(Math.random()*10)+3;
+	const numMobs = Math.floor(Math.random()*7)+3;
     for(let i = 0; i < numMobs; i++){
 		const mobIndex = randomMob(floorNum);
         placeObject(floorDimension, MOBTYPES[mobIndex], mobIndex+1);
@@ -540,17 +540,18 @@ function dungeonRefresh(floor){
 	
 	if(!getData()){
 		generateFloor(floor ?? 1);
-		saveData();
-		savePlayer();
+		PLAYER = createNewPlayer();
+		save();
 	}
 
 	const dungeonDiv = document.getElementById('dungeon-background');
 	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
 	if(gameOver != 0){
 		displayGameOver(gameOver);
-		return;
+	}
+	else{
+		entitiesRefresh();
 	}
 	
-	entitiesRefresh();
 	return;
 }
