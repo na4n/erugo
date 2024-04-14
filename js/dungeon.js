@@ -11,11 +11,11 @@ const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
 
-const ATTACK_MSG_COL = 'green';
-const DAMAGE_MSG_COL = 'red';
-const GOLD_MSG_COL = 'goldenrod';
-const HEALTH_MSG_COL = '#66CCFF';
-const DEFAULT_MSG_COL = 'grey';
+const ATTACK_MSG_COLOR = 'green';
+const DAMAGE_MSG_COLOR = 'red';
+const GOLD_MSG_COLOR = 'goldenrod';
+const HEALTH_MSG_COLOR = '#66CCFF';
+const DEFAULT_MSG_COLOR = 'grey';
 
 const ONE_SPACE_AWAY = 1.42;
 
@@ -79,25 +79,18 @@ function mobAttack(){
 	let playerDamage = 0, amt = 0;
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(MOBTYPES.includes(LOCATIONS[i].ch) && totalDistance(LOCATIONS[i].loc, playerLocation) <= ONE_SPACE_AWAY){
-			if(LOCATIONS[i].ch == '%'){ 
-				amt = (1 + Math.round(Math.random()))
-			}
-			else if(LOCATIONS[i].ch == '>'){ 
-				amt = (2 + Math.round(Math.random()))
-			}
-			else if(LOCATIONS[i].ch == '~'){ 
-				amt = (3 + Math.round(Math.random()))
-			}
-			else if(LOCATIONS[i].ch == '^'){ 
-				amt = (4 + Math.round(Math.random()))
-			}
-			else if(LOCATIONS[i].ch == '&'){ 
-				amt = (5 + Math.round(Math.random()))
-			}
+			let damageMap = new Map([
+				['%', 1],
+				['>', 2],
+				['~', 3],
+				['^', 4],
+				['&', 5]
+			]);
+
+			amt = damageMap.get(LOCATIONS[i].ch) + Math.round(Math.random());
 			amt /= ((PLAYER.baseStats[1] + PLAYER.trainStats[1]) / 4);
 			playerDamage += amt;
-			dungeonMessage('-'+amt.toFixed(2), DAMAGE_MSG_COL, true);	 
-
+			dungeonMessage('-'+amt.toFixed(2), DAMAGE_MSG_COLOR, true);
 		}
 	}
 
@@ -220,7 +213,7 @@ function movePlayer(keyPress){
 	}
 
 	const playerLocation = structuredClone(LOCATIONS[0].loc);
-	
+
 	let pressMap = new Map([
 		['ArrowUp', [-1, 0]],
 		['ArrowDown', [1, 0]],
@@ -241,13 +234,13 @@ function movePlayer(keyPress){
 
 			let i, set;
 			if(locationIndex(playerLocation, GOLD) != null){
-				dungeonMessage('+1', GOLD_MSG_COL);
+				dungeonMessage('+1', GOLD_MSG_COLOR);
 				PLAYER.gold += 1;
 				i = locationIndex(playerLocation, GOLD)
 				set = true;
 			}
 			else if(locationIndex(playerLocation, HEALTHPOTION) != null){							
-				dungeonMessage(`+${(10-PLAYER.health).toFixed(2)}`, HEALTH_MSG_COL);
+				dungeonMessage(`+${(10-PLAYER.health).toFixed(2)}`, HEALTH_MSG_COLOR);
 				PLAYER.health = 10;
 				i = locationIndex(playerLocation, HEALTHPOTION);
 				set = true;
@@ -316,7 +309,7 @@ function train(key){
 
 			PLAYER.trainStats[attrIdx]++;
 			logMsg(`Paid 5 gold`, FADE);
-			dungeonMessage(`+${attrVal}`, DEFAULT_MSG_COL, true);
+			dungeonMessage(`+${attrVal}`, DEFAULT_MSG_COLOR, true);
 
 			PLAYER.gold -= 5;
 			updateStats();
@@ -333,7 +326,7 @@ function train(key){
 		else{
 			PLAYER.gold -= numInput; 
 			const amtAdded = ((PLAYER.health + numInput) > 10 ? 10 - PLAYER.health : numInput);
-			dungeonMessage(`+${amtAdded.toFixed(2)}`, HEALTH_MSG_COL);
+			dungeonMessage(`+${amtAdded.toFixed(2)}`, HEALTH_MSG_COLOR);
 			PLAYER.health += amtAdded;
 			logMsg(`Paid ${numInput} gold`, FADE);
 			updateStats();
@@ -358,7 +351,7 @@ function attack(){
 				LOCATIONS.splice(i, 1);
 				i -= 1;
 			}
-			dungeonMessage('-' + attackDamage.toFixed(2), ATTACK_MSG_COL, false);
+			dungeonMessage('-' + attackDamage.toFixed(2), ATTACK_MSG_COLOR, false);
 			attacked = true;
 		}
 	}
