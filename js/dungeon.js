@@ -470,7 +470,8 @@ function generateFloor(floorNum){
     for(let i = 0; i < Math.floor(Math.random()*5)+3; i++){
         placeObject(floorDimension, GOLD);
     }
-    for(let i = 0; i < Math.floor((floorNum*3)/2); i++){
+	const numMobs = Math.floor(Math.random()*10)+3;
+    for(let i = 0; i < numMobs; i++){
 		const mobIndex = randomMob(floorNum);
         placeObject(floorDimension, MOBTYPES[mobIndex], mobIndex+1);
     }
