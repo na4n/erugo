@@ -347,6 +347,9 @@ function attack(){
 			if(LOCATIONS[i].health <= 0){
 				logMsg('Killed ' + LOCATIONS[i].ch, FADE);
 				PLAYER.mobKilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
+				const goldAmt = new Map([['%', 1], ['>', 2], ['~', 2], ['^', 3], ['&', 3]]);
+				PLAYER.gold += goldAmt.get(LOCATIONS[i].ch);
+				updateStats();
 				removeEntityDiv(i);
 				LOCATIONS.splice(i, 1);
 				i -= 1;
