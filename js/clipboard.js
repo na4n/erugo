@@ -22,7 +22,7 @@ function boardTextRepresentation(){
 addEventListener('copy', (event) => {
     event.preventDefault();
     
-    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${PLAYER.currentFloor} Gold: ${PLAYER.gold}\nHealth: ${(PLAYER.health).toFixed(2)} Strength: ${PLAYER.trainStat[0]} Defense: ${PLAYER.trainStat[1]}`;
+    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${PLAYER.currentFloor} Gold: ${PLAYER.gold}\nHealth: ${(PLAYER.health).toFixed(2)} Strength: ${PLAYER.trainStats[0]} Defense: ${PLAYER.trainStats[1]}`;
     
     if (gameOver == 0) {
       event.clipboardData.setData("text/plain", `${head}\n${boardTextRepresentation()}`);
