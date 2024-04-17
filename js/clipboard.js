@@ -21,13 +21,16 @@ function boardTextRepresentation(){
 
 addEventListener('copy', (event) => {
     event.preventDefault();
-    
-    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${PLAYER.currentFloor} Gold: ${PLAYER.gold}\nHealth: ${(PLAYER.health).toFixed(2)} Strength: ${PLAYER.trainStats[0]} Defense: ${PLAYER.trainStats[1]}`;
+
+	const attackStat = gameOver === 0 ? PLAYER.trainStats[0] : `${PLAYER.trainStats[0]}+${PLAYER.baseStats[0]}`
+	const defenseStat = gameOver === 0 ? PLAYER.trainStats[1] : `${PLAYER.trainStats[1]}+${PLAYER.baseStats[1]}`
+
+    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${PLAYER.currentFloor} Gold: ${PLAYER.gold}\nHealth: ${(PLAYER.health).toFixed(2)} Strength: ${attackStat} Defense: ${defenseStat}`;
     
     if (gameOver == 0) {
       event.clipboardData.setData("text/plain", `${head}\n${boardTextRepresentation()}`);
     } 
     else {
-      event.clipboardData.setData("text/plain", `${head}\n\nGAME OVER\nKilled:\n%: ${PLAYER.mobkilled[0]}\n>: ${PLAYER.mobkilled[1]}\n~: ${PLAYER.mobkilled[2]}\n^: ${PLAYER.mobkilled[3]}\n&: ${PLAYER.mobkilled[4]}`);
+      event.clipboardData.setData("text/plain", `${head}\n\nGAME OVER\nKilled:\n%: ${PLAYER.mobKilled[0]}\n>: ${PLAYER.mobKilled[1]}\n~: ${PLAYER.mobKilled[2]}\n^: ${PLAYER.mobKilled[3]}\n&: ${PLAYER.mobKilled[4]}`);
     }
 });
