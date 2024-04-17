@@ -347,7 +347,7 @@ function attack(){
 			if(LOCATIONS[i].health <= 0){
 				logMsg('Killed ' + LOCATIONS[i].ch, FADE);
 				PLAYER.mobKilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
-				const goldAmt = new Map([['%', 1], ['>', 2], ['~', 2], ['^', 3], ['&', 3]]);
+				const goldAmt = new Map([['%', 1], ['>', 1], ['~', 2], ['^', 2], ['&', 3]]);
 				PLAYER.gold += goldAmt.get(LOCATIONS[i].ch);
 				updateStats();
 				removeEntityDiv(i);
@@ -473,8 +473,7 @@ function generateFloor(floorNum){
     for(let i = 0; i < Math.floor(Math.random()*5)+3; i++){
         placeObject(floorDimension, GOLD);
     }
-	const numMobs = Math.floor(Math.random()*7)+3;
-    for(let i = 0; i < numMobs; i++){
+	for(let i = 0; i < Math.floor((floorNum*3)/2) + Math.floor((Math.random()*5)); i++){
 		const mobIndex = randomMob(floorNum);
         placeObject(floorDimension, MOBTYPES[mobIndex], mobIndex+1);
     }
