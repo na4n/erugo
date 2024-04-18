@@ -1,10 +1,29 @@
-const VERSION = 5;
+const VERSION = 6;
 
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
 
 document.addEventListener('DOMContentLoaded', function() {
+	function getCharacterDimensions(fontType, character, fontSize) {
+		const hiddenElement = document.createElement('div');
+		hiddenElement.style.cssText = `font-size: ${fontSize}; font-family: ${fontType}; position: absolute; left: -9999px;`;
+		hiddenElement.textContent = character;
+	
+		document.body.appendChild(hiddenElement);
+		const rect = hiddenElement.getBoundingClientRect();
+		document.body.removeChild(hiddenElement);
+	
+		return { height: rect.height, width: rect.width };
+	}
+
+	function enableMobileButtons(){
+		const buttonDiv = document.getElementById('arrow');
+		buttonDiv.style.touchAction = 'none';
+		buttonDiv.innerHTML = '<button id="input" onclick="keyHandler(`ArrowUp`);">Up</button><br><button id="input" onclick="keyHandler(`ArrowLeft`);">Left</button><button id="input" onclick="keyHandler(`ArrowRight`);">Right</button><br><button id="input" onclick="keyHandler(`ArrowDown`);">Down</button><br><br>';
+		buttonDiv.innerHTML += '<button id="input" onclick="keyHandler(`e`)">E</button><a>&emsp;</a><button id="input" onclick="keyHandler(`s`)">S</button><button id="input" onclick="keyHandler(`d`);"">D</button><a>&emsp;</a><button id="input" onclick="keyHandler(`a`);">A</button><br><br>'
+	}
+
 	({ width: CHARWIDTH, height: CHARHEIGHT } = getCharacterDimensions('monospace', '@', '15.5px'));		
 	
 	window.onresize = function(){
@@ -12,28 +31,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		gameOver == 0 ? entitiesRefresh() : displayGameOver(gameOver);
 	};
 	
-	document.getElementById('msg').style.height = `${getCharacterDimensions('times', 'H', '16').height}` + 'px';
-	enableDungeonEventListener();
-
-	dungeonRefresh();	
-	updateStats();	
-	document.getElementById('dungeon').click();
-
 	const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 	if (isMobileDevice) {
-		const buttonDiv = document.getElementById('arrow');
-		buttonDiv.style.touchAction = 'none';
-		buttonDiv.innerHTML = '<button id="input" onclick="keyHandler(`ArrowUp`);">Up</button><br><button id="input" onclick="keyHandler(`ArrowLeft`);">Left</button><button id="input" onclick="keyHandler(`ArrowRight`);">Right</button><br><button id="input" onclick="keyHandler(`ArrowDown`);">Down</button><br><br>';
-		buttonDiv.innerHTML += '<button id="input" onclick="keyHandler(`e`)">E</button><a>&emsp;</a><button id="input" onclick="keyHandler(`s`)">S</button><button id="input" onclick="keyHandler(`d`);"">D</button><a>&emsp;</a><button id="input" onclick="keyHandler(`a`);">A</button><br><br>'
+		enableMobileButtons();
 	}
 
-	const titleDiv = document.getElementById('title').addEventListener('click', toggleTheme);
-
-	const a = document.getElementsByClassName('lazy');
-	for(let i = 0; i < a.length; i++){
-		document.getElementsByClassName('lazy')[i].style.display = 'initial';
-	}
-	
+	dungeonRefresh();
+	enableDungeonEventListener();
+	document.getElementById('dungeon').click();
 });
 
 
@@ -117,9 +122,8 @@ function reset(){
 	PLAYER = createNewPlayer(), FLOORDIMENSION = null, LOCATIONS = null;
 	gameOver = 0;
 
-	dungeonRefresh();	
-	updateStats();		
-	
+	dungeonRefresh();
+
 	document.getElementById('dungeon').click();
 }
 
@@ -130,17 +134,7 @@ function save(){
 	logMsg('Saved Game', FADE);
 }
 
-function getCharacterDimensions(fontType, character, fontSize) {
-	const hiddenElement = document.createElement('div');
-	hiddenElement.style.cssText = `font-size: ${fontSize}; font-family: ${fontType}; position: absolute; left: -9999px;`;
-	hiddenElement.textContent = character;
 
-	document.body.appendChild(hiddenElement);
-	const rect = hiddenElement.getBoundingClientRect();
-	document.body.removeChild(hiddenElement);
-
-	return { height: rect.height, width: rect.width };
-}
 
 function collapseToggle(){
 	const textDiv = document.getElementById('collapse');

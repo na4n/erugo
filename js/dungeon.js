@@ -88,7 +88,7 @@ function mobAttack(){
 			]);
 
 			amt = damageMap.get(LOCATIONS[i].ch) + Math.round(Math.random());
-			amt /= ((PLAYER.baseStats[1] + PLAYER.trainStats[1]) / 4);
+			amt /= ((PLAYER.baseStats[1] + PLAYER.defense) / 4);
 			playerDamage += amt;
 			dungeonMessage('-'+amt.toFixed(2), DAMAGE_MSG_COLOR, true);
 		}
@@ -103,7 +103,6 @@ function mobAttack(){
 			savePlayer();
 			displayGameOver(gameOver);
 		}
-		updateStats();  
 		return PLAYER.health <= 0;
 	}
 
@@ -249,7 +248,6 @@ function movePlayer(keyPress){
 			if(set){
 				removeEntityDiv(i);
 				LOCATIONS.splice(i, 1);
-				updateStats();
 			}
 
 			const char = document.getElementById('0');
@@ -277,7 +275,7 @@ function enterStairs(){
 		logMsg('Too far, try inventing a teleporter', FADE);
 		return false;
 	}
-	else if(PLAYER.currentFloor >= 10){
+	else if(PLAYER.level >= 10){
 		gameOver = 1;
 		localStorage.setItem('gameOver', 1);
 		displayGameOver(1);
@@ -286,8 +284,7 @@ function enterStairs(){
 	else{
 		localStorage.removeItem('fd');
 		localStorage.removeItem('loc');
-		dungeonRefresh(++PLAYER.currentFloor);
-		updateStats();
+		dungeonRefresh(++PLAYER.level);
 		save();
 		return true;
 	}
@@ -305,15 +302,14 @@ function train(key){
 			return false;
 		}
 		else{
-			const [attrVal, attrIdx] = key == 's' ? ['Strength', 0] : ['Defense', 1];
+			
+			key === 's' ? PLAYER.strength++ : PLAYER.defense++;
+			const attribute = key === 's' ? 'Strength' : 'Defense'
 
-			PLAYER.trainStats[attrIdx]++;
 			logMsg(`Paid 5 gold`, FADE);
-			dungeonMessage(`+${attrVal}`, DEFAULT_MSG_COLOR, true);
+			dungeonMessage(`+${attribute}`, DEFAULT_MSG_COLOR, true);
 
 			PLAYER.gold -= 5;
-			updateStats();
-			
 			return true;
 		}
 	}
@@ -329,7 +325,6 @@ function train(key){
 			dungeonMessage(`+${amtAdded.toFixed(2)}`, HEALTH_MSG_COLOR);
 			PLAYER.health += amtAdded;
 			logMsg(`Paid ${numInput} gold`, FADE);
-			updateStats();
 			return true;
 		}
 
@@ -341,7 +336,7 @@ function attack(){
 	let attacked = false;
 	for(let i = 0; i < LOCATIONS.length; i++){
 		if(totalDistance(charLoc, LOCATIONS[i].loc) <= ONE_SPACE_AWAY && MOBTYPES.includes(LOCATIONS[i].ch)){
-			let dmg = Math.floor(((PLAYER.baseStats[0] + PLAYER.trainStats[0])) / 5);
+			let dmg = Math.floor(((PLAYER.baseStats[0] + PLAYER.strength)) / 5);
 			const attackDamage = dmg == 0 ? 1 + (Math.round(Math.random() * 20) / 20) : (dmg + (Math.round(Math.random() * 20) / 20));
 			LOCATIONS[i].health -= attackDamage;
 			if(LOCATIONS[i].health <= 0){
@@ -349,7 +344,6 @@ function attack(){
 				PLAYER.mobKilled[MOBTYPES.indexOf(LOCATIONS[i].ch)]++;
 				const goldAmt = new Map([['%', 1], ['>', 1], ['~', 2], ['^', 2], ['&', 3]]);
 				PLAYER.gold += goldAmt.get(LOCATIONS[i].ch);
-				updateStats();
 				removeEntityDiv(i);
 				LOCATIONS.splice(i, 1);
 				i -= 1;
@@ -498,11 +492,11 @@ function saveData(){
 
 function getScore(){
 	let score = 0;
-	for(let i = 0; i < PLAYER.mobKilled.length; i++){
-		score += PLAYER.mobKilled[i] * (i * 5)
+	for(let i = 0; i < storedPlayer.mobKilled.length; i++){
+		score += storedPlayer.mobKilled[i] * (i * 5)
 	}
-	score += PLAYER.gold * 2;
-	score += (PLAYER.trainStats[0] + PLAYER.trainStats[1])
+	score += storedPlayer.gold * 2;
+	score += (storedPlayer.strength + storedPlayer.defense)
 
 	return score;
 }
@@ -517,7 +511,7 @@ function displayGameOver(endCondition){
 	const entityLayer = document.getElementById('entity-layer');
 	
 	entityLayer.style.textAlign = 'center';
-	entityLayer.innerHTML = `<b>${finalText}</b><br>Score: ${score}<br><br>Strength: ${PLAYER.baseStats[0]}<small>+${PLAYER.trainStats[0]}</small><br>Defense: ${PLAYER.baseStats[1]}<small>+${PLAYER.trainStats[1]}</small><br><br>Killed<br>%: ${PLAYER.mobKilled[0]}<br>\>: ${PLAYER.mobKilled[1]}<br>~: ${PLAYER.mobKilled[2]}<br>^: ${PLAYER.mobKilled[3]}<br>&: ${PLAYER.mobKilled[4]}<br>`;
+	entityLayer.innerHTML = `<b>${finalText}</b><br>Score: ${score}<br><br>Strength: ${storedPlayer.baseStats[0]}<small>+${storedPlayer.strength}</small><br>Defense: ${storedPlayer.baseStats[1]}<small>+${storedPlayer.defense}</small><br><br>Killed<br>%: ${storedPlayer.mobKilled[0]}<br>\>: ${storedPlayer.mobKilled[1]}<br>~: ${storedPlayer.mobKilled[2]}<br>^: ${storedPlayer.mobKilled[3]}<br>&: ${storedPlayer.mobKilled[4]}<br>`;
 	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - (11 * CHARHEIGHT/2)}px`;
 	entityLayer.style.left = `${((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length)/2) * CHARWIDTH)) + 1}px`;
 
@@ -549,6 +543,7 @@ function dungeonRefresh(floor){
 	const dungeonDiv = document.getElementById('dungeon-background');
 	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
 	if(gameOver != 0){
+		console.log(PLAYER);
 		displayGameOver(gameOver);
 	}
 	else{

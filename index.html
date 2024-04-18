@@ -18,6 +18,9 @@
 
 	<body>
 		<h1 id='title'>Erugo)</h1>
+		<script>
+			document.getElementById('title').addEventListener('click', toggleTheme);
+		</script>
 	
 		<div id="stats" style="display:flex;flex-wrap:wrap;font-size:13px;">
 			<div id="n" style="display:inline-flex;column-gap:20px;margin-right:auto">
@@ -25,17 +28,26 @@
 				<div style="display:inline-block;"><b>Gold: </b><a id="gold"></a></div>
 			</div>
 			<div id="contain" style="display:inline-flex;column-gap:20px;margin-left:auto">
-				<div  style="display:inline-block;margin-left:auto;"><b>Health: </b><a id="health"></a></div>
-				<div   style="display:inline-block;margin-left:auto;"><b>Strength: </b><a id="strength"></a></div>
-				<div  style="display:inline-block;margin-left:auto;"><b>Defense: </b><a id="defense"></a></div>	
+				<div style="display:inline-block;margin-left:auto;"><b>Health: </b><a id="health"></a></div>
+				<div style="display:inline-block;margin-left:auto;"><b>Strength: </b><a id="strength"></a></div>
+				<div style="display:inline-block;margin-left:auto;"><b>Defense: </b><a id="defense"></a></div>	
 			</div>
 		</div>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				document.getElementById("level").innerText = `${PLAYER.level}`;
+				document.getElementById("gold").innerText = `${PLAYER.gold}`;
+				document.getElementById("health").innerText = `${PLAYER.health.toFixed(2)}`;
+				document.getElementById("strength").innerText = `${PLAYER.strength}`;
+				document.getElementById("defense").innerText = `${PLAYER.defense}`;
+			});
+		</script>
 
 		<div id="dungeon">
             <div id="dungeon-background"></div>
 			<div id="entity-layer" style="position:absolute;left:0px;top:0px"></div>
 		</div>
-		<div id="msg" class="unselectable" style="text-align:center;overflow:hidden;"></div>
+		<div id="msg" class="unselectable" style="text-align:center;overflow:hidden;height:1em;"></div>
 		<br class="unselectable">
 		<div id="arrow" class="unselectable" style="align-items:center;justify-content:center;text-align:center;"></div>
 		<div id="buttons" class="unselectable" style="align-items:center;justify-content:center;text-align:center;">
@@ -60,6 +72,14 @@
 'o': Health Potion  &rarr; Walk over to reset to max HP
 '*': Gold           &rarr; Walk over to gain +1 gold
 <pre></div>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const lazyElements = document.getElementsByClassName('lazy');
+			for(let i = 0; i < lazyElements.length; i++){
+				lazyElements[i].style.display = 'initial';
+			}
+		})
+	</script>
 	</body>
 
 </html>
