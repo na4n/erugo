@@ -543,7 +543,6 @@ function dungeonRefresh(floor){
 	const dungeonDiv = document.getElementById('dungeon-background');
 	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
 	if(gameOver != 0){
-		console.log(PLAYER);
 		displayGameOver(gameOver);
 	}
 	else{
