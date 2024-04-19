@@ -1,9 +1,3 @@
-const VERSION = 2;
-
-const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
-let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
-
 document.addEventListener('DOMContentLoaded', function() {
 	function getCharacterDimensions(fontType, character, fontSize) {
 		const hiddenElement = document.createElement('div');
@@ -41,6 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('dungeon').click();
 });
 
+let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStorage.getItem('gameOver'));
+
+const VERSION = 2;
+
+const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 function divKeyDownHandler(event) {
 	if (VALID_KEYS.includes(event.key)) {

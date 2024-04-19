@@ -1,6 +1,3 @@
-let storedPlayer = JSON.parse(localStorage.getItem("player")) ?? createNewPlayer();
-let PLAYER;
-
 document.addEventListener('DOMContentLoaded', ()=>{
 	PLAYER = new Proxy(storedPlayer, {
         set(target, property, value, receiver){
@@ -12,6 +9,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
         }
     });
 });
+
+let storedPlayer = JSON.parse(localStorage.getItem("player")) ?? createNewPlayer();
+let PLAYER;
 
 function createNewPlayer() {
     return {

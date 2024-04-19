@@ -1,3 +1,19 @@
+addEventListener('copy', (event) => {
+    event.preventDefault();
+
+	const attackStat = gameOver === 0 ? PLAYER.strength : `${PLAYER.baseStats[0]}+${PLAYER.strength}`
+	const defenseStat = gameOver === 0 ? PLAYER.defense : `${PLAYER.baseStats[1]}+${PLAYER.defense}`
+
+    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${PLAYER.level}; Gold: ${PLAYER.gold}\nHealth: ${(PLAYER.health).toFixed(2)} Strength: ${attackStat} Defense: ${defenseStat}`;
+    
+    if (gameOver == 0) {
+      event.clipboardData.setData("text/plain", `${head}\n${boardTextRepresentation()}`);
+    } 
+    else {
+      event.clipboardData.setData("text/plain", `${head}\n\nGAME OVER\nKilled:\n%: ${PLAYER.mobKilled[0]}\n>: ${PLAYER.mobKilled[1]}\n~: ${PLAYER.mobKilled[2]}\n^: ${PLAYER.mobKilled[3]}\n&: ${PLAYER.mobKilled[4]}`);
+    }
+});
+
 function boardTextRepresentation(){
     const s = dungeonBackground(FLOORDIMENSION).replaceAll("<br>", "\n").replaceAll("&nbsp;", " ");
 
@@ -17,20 +33,3 @@ function boardTextRepresentation(){
     a = a.join("\n");
     return a;
 }
-
-
-addEventListener('copy', (event) => {
-    event.preventDefault();
-
-	const attackStat = gameOver === 0 ? PLAYER.strength : `${PLAYER.baseStats[0]}+${PLAYER.strength}`
-	const defenseStat = gameOver === 0 ? PLAYER.defense : `${PLAYER.baseStats[1]}+${PLAYER.defense}`
-
-    const head = `Erugo @ na4n.github.io/erugo/\nScore: ${getScore()}\n\nLevel: ${PLAYER.level}; Gold: ${PLAYER.gold}\nHealth: ${(PLAYER.health).toFixed(2)} Strength: ${attackStat} Defense: ${defenseStat}`;
-    
-    if (gameOver == 0) {
-      event.clipboardData.setData("text/plain", `${head}\n${boardTextRepresentation()}`);
-    } 
-    else {
-      event.clipboardData.setData("text/plain", `${head}\n\nGAME OVER\nKilled:\n%: ${PLAYER.mobKilled[0]}\n>: ${PLAYER.mobKilled[1]}\n~: ${PLAYER.mobKilled[2]}\n^: ${PLAYER.mobKilled[3]}\n&: ${PLAYER.mobKilled[4]}`);
-    }
-});

@@ -1,6 +1,14 @@
+document.addEventListener('DOMContentLoaded', () => {
+	if(VERSION != null && VERSION != localStorage.getItem('version')){
+		reset();
+	}
+});
 
 let CHARHEIGHT;
 let CHARWIDTH;
+
+let FLOORDIMENSION = JSON.parse(localStorage.getItem('floorDimension')) ?? createFloorDimension();
+let LOCATIONS = JSON.parse(localStorage.getItem('locations')) ?? generateFloor(null, FLOORDIMENSION);
 
 const MOBTYPES = ['%', '>', '~', '^', '&'];
 const CHARACTER = '@';
@@ -9,22 +17,15 @@ const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
 
-let FLOORDIMENSION = JSON.parse(localStorage.getItem('floorDimension')) ?? createFloorDimension();
-let LOCATIONS = JSON.parse(localStorage.getItem('locations')) ?? generateFloor(null, FLOORDIMENSION);
-
-const ATTACK_MSG_COLOR = 'green';
-const DAMAGE_MSG_COLOR = 'red';
-const GOLD_MSG_COLOR = 'goldenrod';
-const HEALTH_MSG_COLOR = '#66CCFF';
-const DEFAULT_MSG_COLOR = 'grey';
-
+const messageColors = {
+	attack: 'green',
+	damage: 'red',
+	gold: 'goldenrod',
+	health: '#66CCFF',
+	default: 'grey',
+};
+  
 const ONE_SPACE_AWAY = 1.42;
-
-document.addEventListener('DOMContentLoaded', () => {
-	if(VERSION != null && VERSION != localStorage.getItem('version')){
-		reset();
-	}
-});
 
 function createFloorDimension() {
 	return [Math.floor(Math.random() * 10) + 15, Math.floor(Math.random() * 10) + 15];   
@@ -101,7 +102,7 @@ function mobAttack(){
 			amt = damageMap.get(LOCATIONS[i].ch) + Math.round(Math.random());
 			amt /= ((PLAYER.baseStats[1] + PLAYER.defense) / 4);
 			playerDamage += amt;
-			dungeonMessage('-'+amt.toFixed(2), DAMAGE_MSG_COLOR, true);
+			dungeonMessage('-'+amt.toFixed(2), messageColors.damage, true);
 		}
 	}
 
@@ -195,7 +196,6 @@ function getEntityAtLocation(loc){
 	return null;
 }
 
-
 function removeEntityDiv(id){
 	const rdiv = document.getElementById(id);
 	rdiv.remove();
@@ -242,23 +242,22 @@ function movePlayer(keyPress){
 		else{
 			LOCATIONS[0].loc = playerLocation;
 
-			let i, set;
+			let entityDivIndex;
 			if(locationIndex(playerLocation, GOLD) != null){
-				dungeonMessage('+1', GOLD_MSG_COLOR);
+				dungeonMessage('+1', messageColors.gold);
 				PLAYER.gold += 1;
-				i = locationIndex(playerLocation, GOLD)
-				set = true;
+				
+				entityDivIndex = locationIndex(playerLocation, GOLD)
 			}
 			else if(locationIndex(playerLocation, HEALTHPOTION) != null){							
-				dungeonMessage(`+${(10-PLAYER.health).toFixed(2)}`, HEALTH_MSG_COLOR);
+				dungeonMessage(`+${(10-PLAYER.health).toFixed(2)}`, messageColors.health);
 				PLAYER.health = 10;
-				i = locationIndex(playerLocation, HEALTHPOTION);
-				set = true;
+				entityDivIndex = locationIndex(playerLocation, HEALTHPOTION);
 			}
 
-			if(set){
-				removeEntityDiv(i);
-				LOCATIONS.splice(i, 1);
+			if(entityDivIndex != null){
+				removeEntityDiv(entityDivIndex);
+				LOCATIONS.splice(entityDivIndex, 1);
 			}
 
 			const char = document.getElementById('0');
@@ -270,12 +269,15 @@ function movePlayer(keyPress){
 	}
 	else if(MOBTYPES.includes(getEntityAtLocation(playerLocation))){
 		logMsg('Walking into the enemy is an odd approach...', FADE);
-		return false;
+	}
+	else if(getEntityAtLocation(playerLocation) === TRAINER){
+		logMsg('Shove off punk');
 	}
 	else{
-		logMsg('Shove off punk', FADE);
-		return false;
+		logMsg('Can\'t walk there', FADE);
 	}
+
+	return false;
 }
 
 function enterStairs(){
@@ -293,12 +295,9 @@ function enterStairs(){
 		return false;
 	}
 	else{
-		localStorage.removeItem('fd');
-		localStorage.removeItem('loc');
 		FLOORDIMENSION = createFloorDimension();
 		LOCATIONS = generateFloor(++PLAYER.level, FLOORDIMENSION);
 		displayDungeon();
-
 		save();
 		return true;
 	}
@@ -321,7 +320,7 @@ function train(key){
 			const attribute = key === 's' ? 'Strength' : 'Defense'
 
 			logMsg(`Paid 5 gold`, FADE);
-			dungeonMessage(`+${attribute}`, DEFAULT_MSG_COLOR, true);
+			dungeonMessage(`+${attribute}`, messageColors.default, true);
 
 			PLAYER.gold -= 5;
 			return true;
@@ -336,7 +335,7 @@ function train(key){
 		else{
 			PLAYER.gold -= numInput; 
 			const amtAdded = ((PLAYER.health + numInput) > 10 ? 10 - PLAYER.health : numInput);
-			dungeonMessage(`+${amtAdded.toFixed(2)}`, HEALTH_MSG_COLOR);
+			dungeonMessage(`+${amtAdded.toFixed(2)}`, messageColors.health);
 			PLAYER.health += amtAdded;
 			logMsg(`Paid ${numInput} gold`, FADE);
 			return true;
@@ -362,7 +361,7 @@ function attack(){
 				LOCATIONS.splice(i, 1);
 				i -= 1;
 			}
-			dungeonMessage('-' + attackDamage.toFixed(2), ATTACK_MSG_COLOR, false);
+			dungeonMessage('-' + attackDamage.toFixed(2), messageColors.attack, false);
 			attacked = true;
 		}
 	}
@@ -478,7 +477,6 @@ function generateFloor(floorNum, floorDimension){
 	if(Math.random() <= (0.05 * floorNum)){
 		placeObject(floorDimension, HEALTHPOTION);
 	}
-
 
     return entity_locations;
 }
