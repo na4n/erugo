@@ -1,4 +1,4 @@
-const VERSION = 6;
+const VERSION = 2;
 
 const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		enableMobileButtons();
 	}
 
-	dungeonRefresh();
+	displayDungeon();
 	enableDungeonEventListener();
 	document.getElementById('dungeon').click();
 });
@@ -119,12 +119,20 @@ function reset(){
 	d.style.left = '0px';
 
 	localStorage.clear();
-	PLAYER = createNewPlayer(), FLOORDIMENSION = null, LOCATIONS = null;
+
+	storedPlayer = createNewPlayer();
+	for(let attribute in storedPlayer){
+		PLAYER[attribute] = storedPlayer[attribute];
+	}
+
 	gameOver = 0;
 
-	dungeonRefresh();
+	FLOORDIMENSION = createFloorDimension();
+	LOCATIONS = generateFloor(1, FLOORDIMENSION);
+	displayDungeon();
 
 	document.getElementById('dungeon').click();
+	save();
 }
 
 function save(){
@@ -133,8 +141,6 @@ function save(){
 	localStorage.setItem('gameOver', gameOver);
 	logMsg('Saved Game', FADE);
 }
-
-
 
 function collapseToggle(){
 	const textDiv = document.getElementById('collapse');

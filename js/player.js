@@ -1,14 +1,15 @@
 let storedPlayer = JSON.parse(localStorage.getItem("player")) ?? createNewPlayer();
 let PLAYER;
+
 document.addEventListener('DOMContentLoaded', ()=>{
 	PLAYER = new Proxy(storedPlayer, {
-  		set(target, property, value, receiver) {
+        set(target, property, value, receiver){
             const updateProperties = ['level', 'gold', 'health', 'strength', 'defense']
             if(updateProperties.includes(property)){
                 target[property] = value;
                 document.getElementById(property).innerText = `${property === 'health' ? value.toFixed(2) : value}`;
             }
-  	    }
+        }
     });
 });
 

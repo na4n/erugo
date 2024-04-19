@@ -1,5 +1,3 @@
-let LOCATIONS;
-let FLOORDIMENSION;
 
 let CHARHEIGHT;
 let CHARWIDTH;
@@ -11,6 +9,9 @@ const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
 
+let FLOORDIMENSION = JSON.parse(localStorage.getItem('floorDimension')) ?? createFloorDimension();
+let LOCATIONS = JSON.parse(localStorage.getItem('locations')) ?? generateFloor(null, FLOORDIMENSION);
+
 const ATTACK_MSG_COLOR = 'green';
 const DAMAGE_MSG_COLOR = 'red';
 const GOLD_MSG_COLOR = 'goldenrod';
@@ -18,6 +19,16 @@ const HEALTH_MSG_COLOR = '#66CCFF';
 const DEFAULT_MSG_COLOR = 'grey';
 
 const ONE_SPACE_AWAY = 1.42;
+
+document.addEventListener('DOMContentLoaded', () => {
+	if(VERSION != null && VERSION != localStorage.getItem('version')){
+		reset();
+	}
+});
+
+function createFloorDimension() {
+	return [Math.floor(Math.random() * 10) + 15, Math.floor(Math.random() * 10) + 15];   
+}
 
 async function dungeonMessage(message, color, up){
 	let loc = structuredClone(LOCATIONS[0].loc);
@@ -284,7 +295,10 @@ function enterStairs(){
 	else{
 		localStorage.removeItem('fd');
 		localStorage.removeItem('loc');
-		dungeonRefresh(++PLAYER.level);
+		FLOORDIMENSION = createFloorDimension();
+		LOCATIONS = generateFloor(++PLAYER.level, FLOORDIMENSION);
+		displayDungeon();
+
 		save();
 		return true;
 	}
@@ -406,29 +420,20 @@ function keyHandler(keyPress){
 	return;
 }
 
-function dungeonBackground(dungeonDimension){
-    let stringRepresentation = "";
-
-    for(let j = 0; j < dungeonDimension[1]+2; j++){ 
-		stringRepresentation += "-"; 
-	}
-    stringRepresentation += "<br>";
-	for(let i = 0; i < dungeonDimension[0]; i++){
-        stringRepresentation += "|";
-        for(let j = 0; j < dungeonDimension[1]; j++){ 
-			stringRepresentation += "&nbsp;" 
-		}
-        stringRepresentation += "|<br>";
-    }
-    for(let j = 0; j < dungeonDimension[1]+2; j++){ 
-		stringRepresentation += "-"; 
-	}
-
-    return stringRepresentation;
+function dungeonBackground(floorDimension){
+	const row = floorDimension[0];
+	const col = floorDimension[1];
+    
+	let stringRepresentation = "";
+	stringRepresentation += "-".repeat(col+1) + "<br>";
+	stringRepresentation += ("|" + "&nbsp;".repeat(col) + "|<br>").repeat(row);
+	stringRepresentation += "-".repeat(col+1);
+    
+	return stringRepresentation;
 }
 
-function generateFloor(floorNum){
-	const ENTITY_LOCATIONS = [];
+function generateFloor(floorNum, floorDimension){
+	const entity_locations = [];
 	
 	function generateLocation(floorDimension){ 
 		return [Math.floor(Math.random()*floorDimension[0]), Math.floor(Math.random()*floorDimension[1])]; 
@@ -438,8 +443,8 @@ function generateFloor(floorNum){
 	}
 
 	function entityLocationIncludes(location){
-		for(let i = 0; i < ENTITY_LOCATIONS.length; i++){
-			if(ENTITY_LOCATIONS[i].loc[0] == location[0] && ENTITY_LOCATIONS[i].loc[1] == location[1]){
+		for(let i = 0; i < entity_locations.length; i++){
+			if(entity_locations[i].loc[0] == location[0] && entity_locations[i].loc[1] == location[1]){
 				return true;
 			}
 		}
@@ -455,10 +460,9 @@ function generateFloor(floorNum){
 		const entity = { ch: object, loc: objectLocation };
 		if (health !== undefined) entity.health = health;
 			
-		ENTITY_LOCATIONS.push(entity);
+		entity_locations.push(entity);
 	}
 	
-    const floorDimension = [Math.floor(Math.random()*10)+15, Math.floor(Math.random()*10)+15];
     placeObject(floorDimension, CHARACTER);
     if(Math.random() <= 0.5){
 		placeObject(floorDimension, TRAINER);
@@ -475,19 +479,14 @@ function generateFloor(floorNum){
 		placeObject(floorDimension, HEALTHPOTION);
 	}
 
-	LOCATIONS = ENTITY_LOCATIONS;
-	FLOORDIMENSION = floorDimension;
-    return;
+
+    return entity_locations;
 }
 
 function saveData(){
-	if(LOCATIONS != null && FLOORDIMENSION != null){
-		localStorage.setItem('loc', JSON.stringify(LOCATIONS));
-		localStorage.setItem('fd', JSON.stringify(FLOORDIMENSION));
-		localStorage.setItem('version', VERSION);
-	}
-	
-	return;
+	localStorage.setItem('locations', JSON.stringify(LOCATIONS));
+	localStorage.setItem('floorDimension', JSON.stringify(FLOORDIMENSION));
+	localStorage.setItem('version', VERSION);
 }
 
 function getScore(){
@@ -518,36 +517,11 @@ function displayGameOver(endCondition){
 	return;
 }
 
-function dungeonRefresh(floor){
-	function getData(){
-		const isVersionValid = Number(localStorage.getItem('version')) === VERSION;
-		const isLocValid = localStorage.getItem('loc') !== null;
-		const isFdValid = localStorage.getItem('fd') !== null;
-		
-		if (!isVersionValid || !isLocValid || !isFdValid) {
-			localStorage.clear();
-			return false;
-		}
-		
-		LOCATIONS = JSON.parse(localStorage.getItem('loc'));
-		FLOORDIMENSION = JSON.parse(localStorage.getItem('fd'));
-		return true;
-	}
-	
-	if(!getData()){		// this is handled really poorly (conditions: new game, load previous game, next floor)
-		generateFloor(floor ?? 1);
-		PLAYER = (floor ?? 1) == 1 ? createNewPlayer() : PLAYER;
-		save();
-	}
-
+function displayDungeon(floor){
 	const dungeonDiv = document.getElementById('dungeon-background');
 	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
-	if(gameOver != 0){
-		displayGameOver(gameOver);
-	}
-	else{
-		entitiesRefresh();
-	}
+	
+	gameOver != 0 ? displayGameOver(gameOver) : entitiesRefresh();
 	
 	return;
 }
