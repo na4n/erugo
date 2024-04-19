@@ -424,9 +424,9 @@ function dungeonBackground(floorDimension){
 	const col = floorDimension[1];
     
 	let stringRepresentation = "";
-	stringRepresentation += "-".repeat(col+1) + "<br>";
+	stringRepresentation += "-".repeat(col+2) + "<br>";
 	stringRepresentation += ("|" + "&nbsp;".repeat(col) + "|<br>").repeat(row);
-	stringRepresentation += "-".repeat(col+1);
+	stringRepresentation += "-".repeat(col+2);
     
 	return stringRepresentation;
 }
