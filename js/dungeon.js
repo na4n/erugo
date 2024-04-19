@@ -7,15 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
 let CHARHEIGHT;
 let CHARWIDTH;
 
-let FLOORDIMENSION = JSON.parse(localStorage.getItem('floorDimension')) ?? createFloorDimension();
-let LOCATIONS = JSON.parse(localStorage.getItem('locations')) ?? generateFloor(null, FLOORDIMENSION);
-
 const MOBTYPES = ['%', '>', '~', '^', '&'];
 const CHARACTER = '@';
 const STAIRS = '\\';
 const TRAINER = '+';
 const GOLD = '*';
 const HEALTHPOTION = 'o';
+
+let FLOORDIMENSION = JSON.parse(localStorage.getItem('floorDimension')) ?? createFloorDimension();
+let LOCATIONS = JSON.parse(localStorage.getItem('locations')) ?? generateFloor(null, FLOORDIMENSION);
 
 const messageColors = {
 	attack: 'green',
