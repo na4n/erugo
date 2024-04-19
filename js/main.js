@@ -73,7 +73,7 @@ function delay(milliseconds){
     });
 }
 
-//replace with async request queue
+//replace with async request queue (max size 5?)
 const FADE = 'FADE';
 const LOCK = 'LOCK';
 let interval;
@@ -112,10 +112,10 @@ async function logMsg(message, option){
 function reset(){
 	logMsg('Reset Game', FADE);
 
-	const d = document.getElementById('entity-layer');
-	d.innerHTML = '';
-	d.style.top = '0px';
-	d.style.left = '0px';
+	const entityLayerDiv = document.getElementById('entity-layer');
+	entityLayerDiv.innerHTML = '';
+	entityLayerDiv.style.top = '0px';
+	entityLayerDiv.style.left = '0px';
 
 	localStorage.clear();
 
@@ -125,13 +125,14 @@ function reset(){
 	}
 
 	gameOver = 0;
-
 	FLOORDIMENSION = createFloorDimension();
 	LOCATIONS = generateFloor(1, FLOORDIMENSION);
-	displayDungeon();
 
+	displayDungeon();
 	document.getElementById('dungeon').click();
-	save();
+	
+	savePlayer();
+	saveData();
 }
 
 function save(){
