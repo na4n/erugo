@@ -1,17 +1,19 @@
-document.addEventListener('DOMContentLoaded', ()=>{
-	PLAYER = new Proxy(storedPlayer, {
-        set(target, property, value, receiver){
-            const updateProperties = ['level', 'gold', 'health', 'strength', 'defense']
-            if(updateProperties.includes(property)){
-                target[property] = value;
-                document.getElementById(property).innerText = `${property === 'health' ? value.toFixed(2) : value}`;
+const setHandlerUpdateDOM = {
+    set(target, key, value){
+        if(key in target){
+            target[key] = value;
+            const updateDOMProperties = ['level', 'gold', 'health', 'strength', 'defense']
+            if(updateDOMProperties.includes(key)){
+                document.getElementById(key).innerText = `${key === 'health' ? value.toFixed(2) : value}`;
             }
+            return true;
         }
-    });
-});
+        return false;
+    }
+}
 
 let storedPlayer = JSON.parse(localStorage.getItem("player")) ?? createNewPlayer();
-let PLAYER;
+let PLAYER = new Proxy(storedPlayer, setHandlerUpdateDOM);
 
 function createNewPlayer() {
     return {
@@ -27,6 +29,6 @@ function createNewPlayer() {
 }
 
 function savePlayer() {
-    localStorage.setItem("player", JSON.stringify(PLAYER));
+    localStorage.setItem("player", JSON.stringify(storedPlayer));
     return;
 }

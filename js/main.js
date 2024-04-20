@@ -120,6 +120,9 @@ function reset(){
 	localStorage.clear();
 
 	storedPlayer = createNewPlayer();
+	PLAYER = new Proxy(storedPlayer, setHandlerUpdateDOM);
+	
+	
 	for(let attribute in storedPlayer){
 		PLAYER[attribute] = storedPlayer[attribute];
 	}
