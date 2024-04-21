@@ -1,80 +1,83 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Erugo</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<link rel="icon" type="image/x-icon" href="./images/favicon.png">
-		<link rel="stylesheet" href="./css/style.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<script src="./js/main.js"></script>
-		<script src="./js/player.js"></script>
-		<script src="./js/dungeon.js"></script>
-		<script src="./js/theme.js"></script>
-		<script src="./js/clipboard.js"></script>
-	</head>
+<head>
+	<title>Erugo</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<body>
-		<h1 id='title'>Erugo)</h1>
-		<script>
-			document.getElementById('title').addEventListener('click', toggleTheme);
-		</script>
-	
-		<div id="stats" style="display:flex;flex-wrap:wrap;font-size:13px;">
-			<div id="n" style="display:inline-flex;column-gap:20px;margin-right:auto">
-				<div style="display:inline-block;"><b>Level: </b><a id="level"></a></div>
-				<div style="display:inline-block;"><b>Gold: </b><a id="gold"></a></div>
-			</div>
-			<div id="contain" style="display:inline-flex;column-gap:20px;margin-left:auto">
-				<div style="display:inline-block;margin-left:auto;"><b>Health: </b><a id="health"></a></div>
-				<div style="display:inline-block;margin-left:auto;"><b>Strength: </b><a id="strength"></a></div>
-				<div style="display:inline-block;margin-left:auto;"><b>Defense: </b><a id="defense"></a></div>	
-			</div>
+	<link rel="icon" type="image/x-icon" href="./images/favicon.png">
+	<link rel="stylesheet" href="./css/style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<script src="./js/main.js"></script>
+	<script src="./js/player.js"></script>
+	<script src="./js/dungeon.js"></script>
+	<script src="./js/theme.js"></script>
+	<script src="./js/clipboard.js"></script>
+</head>
+
+<body>
+	<h1 id='title'>Erugo)</h1>
+	<script>
+		document.getElementById('title').addEventListener('click', toggleTheme);
+	</script>
+
+	<div id="stats" style="display:flex;flex-wrap:wrap;font-size:13px;">
+		<div id="n" style="display:inline-flex;column-gap:20px;margin-right:auto">
+			<div style="display:inline-block;"><b>Level: </b><a id="level"></a></div>
+			<div style="display:inline-block;"><b>Gold: </b><a id="gold"></a></div>
 		</div>
-		<script>
-			document.addEventListener('DOMContentLoaded', () => {
-				document.getElementById("level").innerText = `${PLAYER.level}`;
-				document.getElementById("gold").innerText = `${PLAYER.gold}`;
-				document.getElementById("health").innerText = `${PLAYER.health.toFixed(2)}`;
-				document.getElementById("strength").innerText = `${PLAYER.strength}`;
-				document.getElementById("defense").innerText = `${PLAYER.defense}`;
-			});
-		</script>
-
-		<div id="dungeon">
-            <div id="dungeon-background"></div>
-			<div id="entity-layer" style="position:absolute;left:0px;top:0px"></div>
+		<div id="contain" style="display:inline-flex;column-gap:20px;margin-left:auto">
+			<div style="display:inline-block;margin-left:auto;"><b>Health: </b><a id="health"></a></div>
+			<div style="display:inline-block;margin-left:auto;"><b>Strength: </b><a id="strength"></a></div>
+			<div style="display:inline-block;margin-left:auto;"><b>Defense: </b><a id="defense"></a></div>
 		</div>
-		<div id="msg" class="unselectable" style="text-align:center;height:1em;"></div>
-		<br class="unselectable">
-		<div id="arrow" class="unselectable" style="align-items:center;justify-content:center;text-align:center;"></div>
-		<div id="buttons" class="unselectable" style="align-items:center;justify-content:center;text-align:center;">
-			<button class="lazy unselectable" onclick="reset()">Reset Game</button>
-			<button class="lazy unselectable" onclick="save()">Save Game</button>
-		</div>
-		<script>
-			document.addEventListener('DOMContentLoaded', () => {
-				function enableMobileButtons(){
-					const buttonDiv = document.getElementById('arrow');
-					buttonDiv.style.touchAction = 'none';
-					buttonDiv.innerHTML = '<button id="input" onclick="keyHandler(`ArrowUp`);">Up</button><br><button id="input" onclick="keyHandler(`ArrowLeft`);">Left</button><button id="input" onclick="keyHandler(`ArrowRight`);">Right</button><br><button id="input" onclick="keyHandler(`ArrowDown`);">Down</button><br><br>';
-					buttonDiv.innerHTML += '<button id="input" onclick="keyHandler(`e`)">E</button><a>&emsp;</a><button id="input" onclick="keyHandler(`s`)">S</button><button id="input" onclick="keyHandler(`d`);"">D</button><a>&emsp;</a><button id="input" onclick="keyHandler(`a`);">A</button><br><br>'
-				}				
-				
-				const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-				if (isMobileDevice) {
-					enableMobileButtons();
-				}
-			});
-		</script>
+	</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			document.getElementById("level").innerText = `${PLAYER.level}`;
+			document.getElementById("gold").innerText = `${PLAYER.gold}`;
+			document.getElementById("health").innerText = `${PLAYER.health.toFixed(2)}`;
+			document.getElementById("strength").innerText = `${PLAYER.strength}`;
+			document.getElementById("defense").innerText = `${PLAYER.defense}`;
+		});
+	</script>
+
+	<div id="dungeon">
+		<div id="dungeon-background"></div>
+		<div id="entity-layer" style="position:absolute;left:0px;top:0px"></div>
+	</div>
+	<div id="msg" class="unselectable" style="text-align:center;height:1em;"></div>
+	<br class="unselectable">
+	<div id="arrow" class="unselectable" style="align-items:center;justify-content:center;text-align:center;"></div>
+	<div id="buttons" class="unselectable" style="align-items:center;justify-content:center;text-align:center;">
+		<button class="lazy unselectable" onclick="reset()">Reset Game</button>
+		<button class="lazy unselectable" onclick="save()">Save Game</button>
+	</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			function enableMobileButtons() {
+				const buttonDiv = document.getElementById('arrow');
+				buttonDiv.style.touchAction = 'none';
+				buttonDiv.innerHTML = '<button id="input" onclick="keyHandler(`ArrowUp`);">Up</button><br><button id="input" onclick="keyHandler(`ArrowLeft`);">Left</button><button id="input" onclick="keyHandler(`ArrowRight`);">Right</button><br><button id="input" onclick="keyHandler(`ArrowDown`);">Down</button><br><br>';
+				buttonDiv.innerHTML += '<button id="input" onclick="keyHandler(`e`)">E</button><a>&emsp;</a><button id="input" onclick="keyHandler(`s`)">S</button><button id="input" onclick="keyHandler(`d`);"">D</button><a>&emsp;</a><button id="input" onclick="keyHandler(`a`);">A</button><br><br>'
+			}
+
+			const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			if (isMobileDevice) {
+				enableMobileButtons();
+			}
+		});
+	</script>
 
 
-<br class="unselectable">
-<div class="lazy unselectable" style="font-size:1.5em;font-weight:bold;cursor:pointer;width:fit-content;" onclick="collapseToggle();">Controls<a style="font-size:1rem;font-weight:normal;cursor:pointer;" id="collapse"> &lt;expand&gt;</a></div>
-		<div class="unselectable" id="legend" style="display:none;font-size:13px;">
-<pre>'@': Character      &rarr; Use arrow keys to move and 'a' to attack enemies
+	<br class="unselectable">
+	<div class="lazy unselectable" style="font-size:1.5em;font-weight:bold;cursor:pointer;width:fit-content;"
+		onclick="collapseToggle();">Controls<a style="font-size:1rem;font-weight:normal;cursor:pointer;" id="collapse">
+			&lt;expand&gt;</a></div>
+	<div class="unselectable" id="legend" style="display:none;font-size:13px;">
+		<pre>'@': Character      &rarr; Use arrow keys to move and 'a' to attack enemies
 '\': Stairs         &rarr; Use 'e' or move into stairs to enter the next floor
 '+': Trainer        &rarr; Use 's', 'd' to train strength or defense next for 5 gold
                       Or use '1' to '9' to pay 1-9 gold to regain 1-9 HP (max HP: 10)
@@ -91,7 +94,7 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
 			const lazyElements = document.getElementsByClassName('lazy');
-			for(let i = 0; i < lazyElements.length; i++){
+			for (let i = 0; i < lazyElements.length; i++) {
 				lazyElements[i].style.display = 'initial';
 			}
 		})
