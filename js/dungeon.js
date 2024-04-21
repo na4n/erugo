@@ -487,28 +487,15 @@ function saveData(){
 	localStorage.setItem('version', VERSION);
 }
 
-function getScore(){
-	let score = 0;
-	for(let i = 0; i < storedPlayer.mobKilled.length; i++){
-		score += storedPlayer.mobKilled[i] * (i * 5)
-	}
-	score += storedPlayer.gold * 2;
-	score += (storedPlayer.strength + storedPlayer.defense)
-
-	return score;
-}
-
 function displayGameOver(endCondition){
 	const arr = ['&#x1F389', '&#x1F973', '&#x1F483', '&#x1F57A', '&#x1F37E', '&#x1F37B', '&#129321', '&#127880', '&#x1F9A9']
 	let finalText = endCondition > 0 ? `${arr[Math.floor(Math.random()*(arr.length-1))]}YOU WON${arr[Math.floor(Math.random()*(arr.length-1))]}` : 'GAME OVER'; 
 	
-	let score = getScore();
-
 	const dungeonBackground = document.getElementById('dungeon-background');
 	const entityLayer = document.getElementById('entity-layer');
 	
 	entityLayer.style.textAlign = 'center';
-	entityLayer.innerHTML = `<b>${finalText}</b><br>Score: ${score}<br><br>Strength: ${storedPlayer.baseStats[0]}<small>+${storedPlayer.strength}</small><br>Defense: ${storedPlayer.baseStats[1]}<small>+${storedPlayer.defense}</small><br><br>Killed<br>%: ${storedPlayer.mobKilled[0]}<br>\>: ${storedPlayer.mobKilled[1]}<br>~: ${storedPlayer.mobKilled[2]}<br>^: ${storedPlayer.mobKilled[3]}<br>&: ${storedPlayer.mobKilled[4]}<br>`;
+	entityLayer.innerHTML = `<b>${finalText}</b><br>Strength: ${storedPlayer.baseStats[0]}<small>+${storedPlayer.strength}</small><br>Defense: ${storedPlayer.baseStats[1]}<small>+${storedPlayer.defense}</small><br><br>Killed<br>%: ${storedPlayer.mobKilled[0]}<br>\>: ${storedPlayer.mobKilled[1]}<br>~: ${storedPlayer.mobKilled[2]}<br>^: ${storedPlayer.mobKilled[3]}<br>&: ${storedPlayer.mobKilled[4]}<br>`;
 	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - (11 * CHARHEIGHT/2)}px`;
 	entityLayer.style.left = `${((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length)/2) * CHARWIDTH)) + 1}px`;
 

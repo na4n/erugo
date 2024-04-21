@@ -39,9 +39,8 @@ let gameOver = localStorage.getItem('gameOver') === null ? 0 : Number(localStora
 
 const VERSION = 12;
 
-const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
 function divKeyDownHandler(event) {
+	const VALID_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'e', 'a', 's', 'd', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 	if (VALID_KEYS.includes(event.key)) {
 		event.preventDefault();
 		keyHandler(event.key);
@@ -122,7 +121,6 @@ function reset(){
 	storedPlayer = createNewPlayer();
 	PLAYER = new Proxy(storedPlayer, setHandlerUpdateDOM);
 	
-	
 	for(let attribute in storedPlayer){
 		PLAYER[attribute] = storedPlayer[attribute];
 	}
@@ -132,10 +130,8 @@ function reset(){
 	LOCATIONS = generateFloor(1, FLOORDIMENSION);
 
 	displayDungeon();
-	document.getElementById('dungeon').click();
 	
-	savePlayer();
-	saveData();
+	save();
 }
 
 function save(){
