@@ -1,9 +1,9 @@
 const setHandlerUpdateDOM = {
-    set(target, key, value){
-        if(key in target){
+    set(target, key, value) {
+        if (key in target) {
             target[key] = value;
             const updateDOMProperties = ['level', 'gold', 'health', 'strength', 'defense']
-            if(updateDOMProperties.includes(key)){
+            if (updateDOMProperties.includes(key)) {
                 document.getElementById(key).innerText = `${key === 'health' ? value.toFixed(2) : value}`;
             }
             return true;
@@ -18,7 +18,7 @@ let PLAYER = new Proxy(storedPlayer, setHandlerUpdateDOM);
 function createNewPlayer() {
     return {
         baseStats: [Math.floor(Math.random() * 5) + 5,
-                    Math.floor(Math.random() * 5) + 5],
+        Math.floor(Math.random() * 5) + 5],
         level: 1,
         gold: 0,
         health: 10.0,

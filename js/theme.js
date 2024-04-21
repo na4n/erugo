@@ -8,21 +8,21 @@ const THEMES = {
 const osTheme = window.matchMedia('(prefers-color-scheme: dark)');
 const setOSTheme = () => setTheme(osTheme.matches);
 
-function setTheme(isDark){
+function setTheme(isDark) {
 	document.body.style.backgroundColor = isDark ? THEMES.BLACK : THEMES.WHITE;
 	document.body.style.color = isDark ? THEMES.WHITE : THEMES.BLACK;
 	document.getElementById('title').style.color = isDark ? THEMES.WHITE : THEMES.BLACK;
 }
 
-function toggleTheme(){
+function toggleTheme() {
 	let currentTheme = localStorage.getItem('theme') ?? (osTheme.matches ? THEMES.DARK : THEMES.LIGHT);
 	currentTheme === THEMES.DARK ? setTheme(false) : setTheme(true);
 
-	if((currentTheme === THEMES.DARK && !osTheme.matches) || (currentTheme === THEMES.LIGHT && osTheme.matches)){
+	if ((currentTheme === THEMES.DARK && !osTheme.matches) || (currentTheme === THEMES.LIGHT && osTheme.matches)) {
 		localStorage.removeItem('theme');
 		osTheme.addEventListener('change', setOSTheme);
 	}
-	else{
+	else {
 		localStorage.setItem('theme', (currentTheme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK));
 		osTheme.removeEventListener('change', setOSTheme);
 	}
@@ -30,11 +30,11 @@ function toggleTheme(){
 
 document.addEventListener("DOMContentLoaded", (event) => {
 	let theme = localStorage.getItem('theme');
-	if(theme == undefined){
-		osTheme.addEventListener('change', setOSTheme);	
+	if (theme == undefined) {
+		osTheme.addEventListener('change', setOSTheme);
 		theme = (osTheme.matches ? THEMES.DARK : THEMES.LIGHT);
 	}
 
-	theme === THEMES.DARK ? setTheme(true) : setTheme(false);  
+	theme === THEMES.DARK ? setTheme(true) : setTheme(false);
 });
 

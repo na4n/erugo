@@ -30,10 +30,10 @@
   user-select: none; 
 }
 
-
 #entity-layer {
   float:left;
-  position: absolute;
+  position: unset;
+  top: unset;
 }
 
 #input{
@@ -62,4 +62,3 @@
   font-weight: normal;
   src: local('Barbarian'), url('Barbarian.ttf') format('truetype');
 }
-
