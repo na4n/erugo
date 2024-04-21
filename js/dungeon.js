@@ -471,7 +471,8 @@ function displayGameOver(endCondition) {
 
 	entityLayer.style.position = 'absolute';
 	entityLayer.style.textAlign = 'center';
-	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - (11 * CHARHEIGHT / 2)}px`;
+	
+	entityLayer.style.top = `${(dungeonBackground.clientHeight / 2) - ((10 / 2) * CHARHEIGHT)}px`;
 	entityLayer.style.left = `${((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length) / 2) * CHARWIDTH)) + 1}px`;
 
 	entityLayer.innerHTML = `<b>${finalText}</b><br>Strength: ${storedPlayer.baseStats[0]}<small>+${storedPlayer.strength}</small><br>Defense: ${storedPlayer.baseStats[1]}<small>+${storedPlayer.defense}</small><br><br>Killed<br>%: ${storedPlayer.mobKilled[0]}<br>\>: ${storedPlayer.mobKilled[1]}<br>~: ${storedPlayer.mobKilled[2]}<br>^: ${storedPlayer.mobKilled[3]}<br>&: ${storedPlayer.mobKilled[4]}<br>`;
