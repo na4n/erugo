@@ -31,59 +31,36 @@ function createFloorDimension() {
 	return [Math.floor(Math.random() * 10) + 15, Math.floor(Math.random() * 10) + 15];
 }
 
-async function dungeonMessage(message, color, up) {
-	let loc = structuredClone(LOCATIONS[0].loc);
-	!up ? loc[0]++ : loc[0]--;
+function createMessageElement(message, color, location, charHeight, charWidth) {
+	const messageElement = document.createElement('div');
+	messageElement.innerHTML = `<b>${message}</b>`;
+	messageElement.style.color = color;
+	messageElement.style.float = 'left';
+	messageElement.style.position = 'absolute';
+	messageElement.style.backgroundColor = document.body.style.backgroundColor;
+
+	const messageLength = Math.floor(message.length / 2) === 1 ? 0 : message.length / 2;
+	const left = `${charWidth * (-messageLength + 1 + location[1])}px`;
+	const top = `${charHeight * (1 + location[0])}px`;
+
+	messageElement.style.left = left;
+	messageElement.style.top = top;
+
+	return messageElement;
+}
+
+async function dungeonMessage(message, color, isUpward = false) {
+	const location = structuredClone(LOCATIONS[0].loc);
+	isUpward ? location[0]-- : location[0]++;
 
 	const entityLayerDiv = document.getElementById('entity-layer');
-	if (document.getElementById('dmg') !== null) {
-		document.getElementById('dmg').remove();
-	}
 
-	const div = document.createElement('div');
-	div.innerHTML = `<b>${message}</b>`;
+	const messageElement = createMessageElement(message, color, location, CHARHEIGHT, CHARWIDTH);
+	entityLayerDiv.appendChild(messageElement);
 
-	let i, divId;
-	if (up === undefined) {
-		divId = 'temp';
-		i = 1;
-	}
-	else if (up) {
-		for (i = 1; i < 10; i++) {
-			if (document.getElementById(','.repeat(i)) == null) {
-				divId = ','.repeat(i);
-				break;
-			}
-		}
-	}
-	else if (!up) {
-		for (i = 1; i < 10; i++) {
-			if (document.getElementById('.'.repeat(i)) == null) {
-				divId = '.'.repeat(i);
-				break;
-			}
-		}
-	}
-	div.id = divId;
-
-	const lsz = Math.floor(message.length / 2) == 1 ? 0 : message.length / 2;
-	const topVal = up || up === undefined ? `${CHARHEIGHT * (1 + loc[0] - (i - 1))}px` : `${CHARHEIGHT * (1 + loc[0] + (i - 1))}px`;
-	Object.assign(div.style, {
-		opacity: '1',
-		color: color,
-		float: 'left',
-		position: 'absolute',
-		left: `${CHARWIDTH * (-lsz + 1 + loc[1])}px`,
-		top: topVal,
-		backgroundColor: document.body.style.backgroundColor
-	});
-
-	entityLayerDiv.appendChild(div);
-	fade(div, 30);
+	fade(messageElement, 30);
 	await delay(500);
-	div.remove();
-
-	return;
+	messageElement.remove();
 }
 
 function mobAttack() {
@@ -415,8 +392,6 @@ function keyHandler(keyPress) {
 			lockMoveWait();
 		}
 	}
-
-	return;
 }
 
 function dungeonBackground(floorDimension) {
@@ -500,8 +475,6 @@ function displayGameOver(endCondition) {
 	entityLayer.style.left = `${((dungeonBackground.clientWidth / 2) - ((Math.floor('Strength: x+x'.length) / 2) * CHARWIDTH)) + 1}px`;
 
 	entityLayer.innerHTML = `<b>${finalText}</b><br>Strength: ${storedPlayer.baseStats[0]}<small>+${storedPlayer.strength}</small><br>Defense: ${storedPlayer.baseStats[1]}<small>+${storedPlayer.defense}</small><br><br>Killed<br>%: ${storedPlayer.mobKilled[0]}<br>\>: ${storedPlayer.mobKilled[1]}<br>~: ${storedPlayer.mobKilled[2]}<br>^: ${storedPlayer.mobKilled[3]}<br>&: ${storedPlayer.mobKilled[4]}<br>`;
-
-	return;
 }
 
 function displayDungeon(floor) {
@@ -509,6 +482,4 @@ function displayDungeon(floor) {
 	dungeonDiv.innerHTML = dungeonBackground(FLOORDIMENSION, true);
 
 	gameOver != 0 ? displayGameOver(gameOver) : entitiesRefresh();
-
-	return;
 }
