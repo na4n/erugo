@@ -1,19 +1,14 @@
 addEventListener('copy', (event) => {
 	event.preventDefault();
 
-	// const attackStat = gameOver === 0 ? `?+${PLAYER.strength}` : `${PLAYER.baseStats[0]}+${PLAYER.strength}`
-	// const defenseStat = gameOver === 0 ? `?+${PLAYER.defense}` : `${PLAYER.baseStats[1]}+${PLAYER.defense}`
+	const attackStat = `?+${PLAYER.strength}`;
+	const defenseStat = `?+${PLAYER.defense}`;
 
-	// const head = `Erugo @ na4n.github.io/erugo/\n\nLevel: ${PLAYER.level}          Gold: ${PLAYER.gold}\nStrength: ${attackStat}     Defense: ${defenseStat}`;
+	const head = `Erugo @ na4n.github.io/erugo/\n\nLevel: ${PLAYER.level}          Gold: ${PLAYER.gold}`
+	const stats = `Health: ${PLAYER.health}\n\nStrength: ${attackStat}     Defense: ${defenseStat}`;
 
-	event.clipboardData.setData("text/plain", gameOver === 0 ? `${boardEntityRepresentation()}` : `${boardMobsKilledRepresentation()}`);
-	
+	event.clipboardData.setData("text/plain", gameOver === 0 ? `${head}\n${stats}\n${boardEntityRepresentation()}` : `${head}\n${boardMobsKilledRepresentation()}`);
 
-	// if (gameOver == 0) {
-	// }
-	// else{
-	// 	event.clipboardData.setData("text/plain", `${boardMobsKilledRepresentation()}`);
-	// }
 });
 
 const dungeonBackgroundText = () => {
@@ -36,32 +31,27 @@ function boardEntityRepresentation() {
 	return rowArrayDungeonText.join("\n");
 }
 
-const dungeonText = [((gameOver > 0) ? "YOU WON!" : "GAME OVER"), `Strength: ${PLAYER.baseStats[0]}+${PLAYER.strength}`, 
-`Defense: ${PLAYER.baseStats[1]}+${PLAYER.defense}`, " ",
-"Killed", `%: ${PLAYER.mobKilled[0]}`, `>: ${PLAYER.mobKilled[1]}`,
-`~: ${PLAYER.mobKilled[2]}`, `^: ${PLAYER.mobKilled[3]}`,
-`&: ${PLAYER.mobKilled[4]}`];
-
 function boardMobsKilledRepresentation(){
+	const dungeonText = [((gameOver > 0) ? "YOU WON!" : "GAME OVER"), `Strength: ${PLAYER.baseStats[0]}+${PLAYER.strength}`, 
+	`Defense: ${PLAYER.baseStats[1]}+${PLAYER.defense}`, " ",
+	"Killed", `%: ${PLAYER.mobKilled[0]}`, `>: ${PLAYER.mobKilled[1]}`,
+	`~: ${PLAYER.mobKilled[2]}`, `^: ${PLAYER.mobKilled[3]}`,
+	`&: ${PLAYER.mobKilled[4]}`];
+	
 	const dungeonRowArr = dungeonBackgroundText().split("\n");
 	
 	const rows = FLOORDIMENSION[0], columns = FLOORDIMENSION[1];
-	let current = 1 + Math.floor(rows/2) - 5;
+	let rowStartIndex = 1+Math.floor(rows/2) - 5;
 
-	let j = 0;
-	const rowArrayDungeonText = dungeonRowArr.map((row, i) => {
-		if(i === current){
+	const rowArrayDungeonText = dungeonRowArr.map((row, rowIndex) => {
+		if(rowIndex >= rowStartIndex && rowIndex < rowStartIndex+10){
 			const rowArr = row.split("");
-			let start = 1+Math.floor(columns/2)-Math.floor(dungeonText[j].length/2);
-			for(let k = 0; k < dungeonText[j].length; k++){
-				rowArr[start++] = dungeonText[j][k];
+
+			let colStartIndex = 1+Math.floor(columns/2)-Math.floor(dungeonText[rowIndex-rowStartIndex].length/2);
+			for(let k = 0; k < dungeonText[rowIndex-rowStartIndex].length; k++){
+				rowArr[colStartIndex++] = dungeonText[rowIndex-rowStartIndex][k];
 			}
 
-			current++;
-			j++;
-			if(j >= 10){
-				current = -1;
-			}
 			return rowArr.join("");
 		}
 
