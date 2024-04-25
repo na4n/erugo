@@ -9,7 +9,7 @@ I grew up (mostly) without modern consoles and the earliest gaming experience I 
 
 # To Do
 ## Code Quality
-- add win condition to *clipboard.js*
+- add stats to non-ending game condition (clipboard.js)
 1. implement async request queue to handle messages
 2. separate *dungeon.js* --> Entity Manager (character/enemy things), Dungeon (layout, refresh, etc.), Messages (pull current from *main.js*)
 3. split entity types in *dungeon.js*
